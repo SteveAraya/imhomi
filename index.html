@@ -3,25 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!-- SEO -->
   <title>ImHomi — Encontrá tu hogar ideal en Costa Rica</title>
   <meta name="description" content="ImHomi es la app para buscar casas y apartamentos en alquiler en Costa Rica. Filtrá por mascotas, roommates y publicá gratis.">
   <meta property="og:title" content="ImHomi — Tu hogar te está esperando">
   <meta property="og:description" content="Buscá casas y apartamentos en alquiler en Costa Rica. Filtros de mascotas, roommates y publicaciones gratis.">
   <meta property="og:type" content="website">
-  <meta property="og:image" content="favicon.svg">
-  <meta name="theme-color" content="#2D6E7E">
-
-  <!-- Favicon -->
-  <link rel="icon" type="image/svg+xml" href="favicon.svg">
-
-  <!-- Google Fonts -->
+  <meta name="theme-color" content="#0F2329">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230F2329'/%3E%3Crect x='10' y='16' width='12' height='10' rx='1.5' fill='none' stroke='%234ECDC4' stroke-width='1.5'/%3E%3Cpath d='M7 17 L16 9 L25 17' fill='none' stroke='%234ECDC4' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3Crect x='14' y='20' width='4' height='6' rx='1' fill='none' stroke='%234ECDC4' stroke-width='1.2'/%3E%3Ccircle cx='16' cy='14.5' r='1' fill='%23E76F51'/%3E%3Ccircle cx='22' cy='11' r='1.5' fill='%23E76F51' opacity='0.7'/%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
-  <!-- Styles -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
@@ -29,16 +20,12 @@
   <!-- ==================== HEADER ==================== -->
   <header class="header" id="header">
     <div class="container">
-      <a href="#" class="logo">
-        <img src="imhomi-logo.png" alt="ImHomi" class="logo-img">
-      </a>
-
+      <a href="#" class="imhomi-logo">ImHom<span class="i-teal">i</span></a>
       <nav class="nav-links" id="nav">
         <a href="#features">Características</a>
         <a href="#how">Cómo funciona</a>
-        <a href="#cta">Contacto</a>
+        <a href="#cta" class="nav-cta">Descargar</a>
       </nav>
-
       <button class="hamburger" id="hamburger" aria-label="Menú" aria-expanded="false">
         <span></span><span></span><span></span>
       </button>
@@ -47,29 +34,34 @@
 
   <!-- ==================== HERO ==================== -->
   <section class="hero" id="hero">
-    <div class="hero-content fade-in">
-      <h1>Tu <span class="highlight">hogar</span> te está esperando</h1>
-      <p>Encontrá casas y apartamentos en alquiler en Costa Rica. Filtrá por mascotas, roommates y mucho más.</p>
+    <div class="orb orb--teal" style="width:420px;height:420px;top:8%;right:5%;"></div>
+    <div class="orb orb--coral" style="width:320px;height:320px;bottom:10%;left:-8%;"></div>
+    <div class="orb orb--teal" style="width:180px;height:180px;top:55%;left:38%;"></div>
 
-      <div class="store-buttons">
-        <!-- App Store -->
-        <div class="store-btn">
-          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
-          <div>
-            <small style="font-size:0.7rem;opacity:0.7;">Disponible en</small><br>
-            <strong>App Store</strong>
-          </div>
-          <span class="soon">Pronto</span>
+    <div class="container">
+      <div class="hero-text">
+        <div class="hero-tag fade-in">
+          <span class="dot"></span> Próximamente en Costa Rica
         </div>
+        <h1 class="fade-in fade-in-d1">Encontrá tu <span class="gradient-text">hogar ideal</span></h1>
+        <p class="fade-in fade-in-d2">Buscá casas y apartamentos en alquiler en todo Costa Rica. Filtrá por mascotas, roommates y publicá tu anuncio completamente gratis.</p>
+        <div class="hero-buttons fade-in fade-in-d3">
+          <a href="#cta" class="btn btn--coral">📲 Descargá la app</a>
+          <a href="#features" class="btn btn--glass">Conocé más</a>
+        </div>
+      </div>
 
-        <!-- Google Play -->
-        <div class="store-btn">
-          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3.18 23.49c-.35-.2-.56-.58-.56-1V1.51c0-.42.21-.8.56-1l11.62 11.5L3.18 23.49zM15.82 13.01L5.15 24l13.5-7.8-2.83-3.19zM20.16 10.31l-3.08-1.8-3.27 3.5 3.27 3.5 3.08-1.8c.93-.53.93-1.87 0-2.4h0zM5.15 0l10.67 10.99 2.83-3.19L5.15 0z"/></svg>
-          <div>
-            <small style="font-size:0.7rem;opacity:0.7;">Disponible en</small><br>
-            <strong>Google Play</strong>
+      <div class="phones-showcase fade-in fade-in-d4">
+        <div class="phone-glow"></div>
+        <div class="phone phone--main">
+          <div class="phone-screen">
+            <img src="screen-login.png" alt="Pantalla de login">
           </div>
-          <span class="soon">Pronto</span>
+        </div>
+        <div class="phone phone--secondary">
+          <div class="phone-screen">
+            <img src="screen-main.png" alt="Pantalla de búsqueda">
+          </div>
         </div>
       </div>
     </div>
@@ -78,60 +70,66 @@
   <!-- ==================== FEATURES ==================== -->
   <section class="features" id="features">
     <div class="container">
-      <h2 class="section-title fade-in">Todo lo que necesitás</h2>
+      <div class="section-label fade-in">Características</div>
+      <h2 class="section-title fade-in">Todo lo que necesitás, en una sola app</h2>
       <p class="section-subtitle fade-in">Herramientas pensadas para simplificar tu búsqueda de alquiler.</p>
 
       <div class="features-grid">
         <div class="feature-card fade-in">
-          <div class="feature-icon">🏠</div>
+          <div class="feature-icon fi-teal">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4ECDC4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          </div>
           <h3>Casas y apartamentos</h3>
-          <p>Explorá cientos de opciones de alquiler en todo Costa Rica, desde apartamentos en la ciudad hasta casas en la playa.</p>
+          <p>Explorá opciones en todo el país, desde la ciudad hasta la playa.</p>
         </div>
-
-        <div class="feature-card fade-in">
-          <div class="feature-icon">🐾</div>
-          <h3>Filtro de mascotas</h3>
-          <p>Encontrá lugares que aceptan a tu mejor amigo. Filtrá directamente por propiedades pet-friendly.</p>
+        <div class="feature-card fade-in fade-in-d1">
+          <div class="feature-icon fi-coral">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="#E76F51" xmlns="http://www.w3.org/2000/svg"><ellipse cx="7.5" cy="4.5" rx="2" ry="2.5"/><ellipse cx="16.5" cy="4.5" rx="2" ry="2.5"/><ellipse cx="4" cy="9" rx="1.8" ry="2.3"/><ellipse cx="20" cy="9" rx="1.8" ry="2.3"/><path d="M12 22c-4 0-7-2.5-7-5.5 0-2 1.5-4 3.5-5s3-1.5 3.5-1.5.5 0 3.5 1.5 3.5 3 3.5 5c0 3-3 5.5-7 5.5z"/></svg>
+          </div>
+          <h3>Filtro pet-friendly</h3>
+          <p>Encontrá lugares que aceptan a tu mejor amigo con un solo toque.</p>
         </div>
-
-        <div class="feature-card fade-in">
-          <div class="feature-icon">👥</div>
-          <h3>Filtro de roommates</h3>
-          <p>¿Buscás compartir? Filtrá anuncios que aceptan roommates y ahorrá en tu alquiler mensual.</p>
+        <div class="feature-card fade-in fade-in-d2">
+          <div class="feature-icon fi-teal">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4ECDC4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+          </div>
+          <h3>Roommates</h3>
+          <p>Filtrá anuncios que aceptan compañeros de cuarto y ahorrá.</p>
         </div>
-
-        <div class="feature-card fade-in">
-          <div class="feature-icon">📢</div>
+        <div class="feature-card fade-in fade-in-d3">
+          <div class="feature-icon fi-gold">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#E6B840" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+          </div>
           <h3>Publicá gratis</h3>
-          <p>Si tenés un espacio disponible, publicá tu anuncio sin costo y conectá con inquilinos potenciales.</p>
+          <p>Publicá tu anuncio sin costo y conectá con inquilinos.</p>
         </div>
       </div>
     </div>
   </section>
 
   <!-- ==================== HOW IT WORKS ==================== -->
-  <section class="how-it-works" id="how">
+  <section class="how-section" id="how">
     <div class="container">
-      <h2 class="section-title fade-in">¿Cómo funciona?</h2>
-      <p class="section-subtitle fade-in">En tres simples pasos encontrás tu próximo hogar.</p>
-
-      <div class="steps">
-        <div class="step fade-in">
-          <div class="step-number">1</div>
-          <h3>Filtrá tu búsqueda</h3>
-          <p>Elegí entre casa o apartamento, si aceptan mascotas o roommates y la zona que preferís.</p>
-        </div>
-
-        <div class="step fade-in">
-          <div class="step-number">2</div>
-          <h3>Explorá los resultados</h3>
-          <p>Revisá fotos, descripciones y detalles de cada propiedad disponible.</p>
-        </div>
-
-        <div class="step fade-in">
-          <div class="step-number">3</div>
-          <h3>Contactá al propietario</h3>
-          <p>Comunicáte directamente con el dueño o agente para coordinar tu visita.</p>
+      <div>
+        <img src="illustration-howit.png" alt="Cómo funciona ImHomi" class="how-illustration fade-in">
+      </div>
+      <div>
+        <div class="section-label fade-in">Proceso</div>
+        <h2 class="section-title fade-in">¿Cómo funciona?</h2>
+        <p class="section-subtitle fade-in">En tres simples pasos encontrás tu próximo hogar.</p>
+        <div class="steps-list">
+          <div class="step-item fade-in">
+            <div class="step-num">1</div>
+            <div><h3>Filtrá tu búsqueda</h3><p>Elegí tipo de propiedad, zona, mascotas y roommates.</p></div>
+          </div>
+          <div class="step-item fade-in fade-in-d1">
+            <div class="step-num">2</div>
+            <div><h3>Explorá los resultados</h3><p>Revisá fotos, descripciones y detalles de cada propiedad.</p></div>
+          </div>
+          <div class="step-item fade-in fade-in-d2">
+            <div class="step-num">3</div>
+            <div><h3>Contactá al propietario</h3><p>Comunicáte por WhatsApp o teléfono para coordinar visita.</p></div>
+          </div>
         </div>
       </div>
     </div>
@@ -139,31 +137,28 @@
 
   <!-- ==================== CTA ==================== -->
   <section class="cta" id="cta">
-    <div class="container fade-in">
-      <h2>Próximamente en App Store y Google Play</h2>
-      <p>Estamos trabajando para vos. Muy pronto podrás descargar ImHomi y encontrar tu hogar ideal.</p>
-
-      <div class="store-buttons">
-        <div class="store-btn">
-          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
-          <div>
-            <small style="font-size:0.7rem;opacity:0.7;">Disponible en</small><br>
-            <strong>App Store</strong>
+    <div class="container">
+      <div class="cta-box fade-in">
+        <div class="orb orb--teal" style="width:250px;height:250px;top:-80px;right:-50px;filter:blur(60px);"></div>
+        <div class="orb orb--coral" style="width:200px;height:200px;bottom:-60px;left:-40px;filter:blur(60px);"></div>
+        <h2>Próximamente en App Store y Google Play</h2>
+        <p>Estamos trabajando para vos. Muy pronto podrás descargar ImHomi.</p>
+        <div class="store-badges">
+          <div class="store-badge">
+            <svg viewBox="0 0 24 24"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+            <div class="store-badge-text"><small>Disponible en</small><strong>App Store</strong></div>
+            <span class="badge-soon">Pronto</span>
           </div>
-          <span class="soon">Pronto</span>
-        </div>
-
-        <div class="store-btn">
-          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M3.18 23.49c-.35-.2-.56-.58-.56-1V1.51c0-.42.21-.8.56-1l11.62 11.5L3.18 23.49zM15.82 13.01L5.15 24l13.5-7.8-2.83-3.19zM20.16 10.31l-3.08-1.8-3.27 3.5 3.27 3.5 3.08-1.8c.93-.53.93-1.87 0-2.4h0zM5.15 0l10.67 10.99 2.83-3.19L5.15 0z"/></svg>
-          <div>
-            <small style="font-size:0.7rem;opacity:0.7;">Disponible en</small><br>
-            <strong>Google Play</strong>
+          <div class="store-badge">
+            <svg viewBox="0 0 24 24"><path d="M3.18 23.49c-.35-.2-.56-.58-.56-1V1.51c0-.42.21-.8.56-1l11.62 11.5L3.18 23.49zM15.82 13.01L5.15 24l13.5-7.8-2.83-3.19zM20.16 10.31l-3.08-1.8-3.27 3.5 3.27 3.5 3.08-1.8c.93-.53.93-1.87 0-2.4h0zM5.15 0l10.67 10.99 2.83-3.19L5.15 0z"/></svg>
+            <div class="store-badge-text"><small>Disponible en</small><strong>Google Play</strong></div>
+            <span class="badge-soon">Pronto</span>
           </div>
-          <span class="soon">Pronto</span>
         </div>
+        <p style="margin-top:2rem;font-size:0.88rem;position:relative;z-index:1;">
+          ¿Preguntas? <a href="mailto:hola@imhomi.com" style="color:var(--teal-light);font-weight:600;">hola@imhomi.com</a>
+        </p>
       </div>
-
-      <p style="margin-top:2rem;font-size:0.95rem;">¿Preguntas? Escribinos a <a href="mailto:hola@imhomi.com" style="color:#fff;font-weight:700;text-decoration:underline;">hola@imhomi.com</a></p>
     </div>
   </section>
 
@@ -173,17 +168,16 @@
       <div class="footer-links">
         <a href="privacy.html">Política de Privacidad</a>
         <a href="terms.html">Términos y Condiciones</a>
-        <a href="mailto:hola@imhomi.com" class="email-link">hola@imhomi.com</a>
+        <a href="mailto:hola@imhomi.com" class="footer-email">hola@imhomi.com</a>
       </div>
-      <p>&copy; <span id="year">2025</span> ImHomi. Todos los derechos reservados.</p>
-      <div class="footer-brand">
+      <p class="footer-copy">&copy; <span id="year">2025</span> ImHomi. Todos los derechos reservados.</p>
+      <a href="https://dimonkey.com" target="_blank" rel="noopener" class="footer-brand">
         <span>Desarrollado por</span>
-        <img src="dimonkey-logo.svg" alt="DiMonkey" loading="lazy">
-      </div>
+        <span class="dm-logo">DiMonkey</span>
+      </a>
     </div>
   </footer>
 
-  <!-- JS -->
   <script src="js/main.js"></script>
 </body>
 </html>

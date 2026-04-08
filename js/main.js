@@ -1,35 +1,24 @@
 /* ========================================
-   ImHomi Landing Page — main.js
+   ImHomi Landing — main.js v2
    ======================================== */
-
 document.addEventListener('DOMContentLoaded', () => {
 
   /* ---------- Sticky header ---------- */
   const header = document.querySelector('.header');
-  const scrollThreshold = 60;
-
-  function handleScroll() {
-    if (window.scrollY > scrollThreshold) {
-      header.classList.add('scrolled');
-    } else {
-      header.classList.remove('scrolled');
-    }
-  }
-  window.addEventListener('scroll', handleScroll, { passive: true });
-  handleScroll();
+  window.addEventListener('scroll', () => {
+    header.classList.toggle('scrolled', window.scrollY > 50);
+  }, { passive: true });
 
   /* ---------- Mobile menu ---------- */
   const hamburger = document.querySelector('.hamburger');
-  const navLinks  = document.querySelector('.nav-links');
+  const navLinks = document.querySelector('.nav-links');
 
   if (hamburger && navLinks) {
     hamburger.addEventListener('click', () => {
       navLinks.classList.toggle('open');
-      hamburger.setAttribute('aria-expanded',
-        navLinks.classList.contains('open'));
+      hamburger.setAttribute('aria-expanded', navLinks.classList.contains('open'));
     });
 
-    // Close menu on link click
     navLinks.querySelectorAll('a').forEach(link => {
       link.addEventListener('click', () => {
         navLinks.classList.remove('open');
@@ -37,7 +26,6 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    // Close menu on outside click
     document.addEventListener('click', (e) => {
       if (!navLinks.contains(e.target) && !hamburger.contains(e.target)) {
         navLinks.classList.remove('open');
@@ -47,8 +35,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ---------- Fade-in on scroll ---------- */
-  const fadeEls = document.querySelectorAll('.fade-in');
-
   if ('IntersectionObserver' in window) {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
@@ -57,28 +43,26 @@ document.addEventListener('DOMContentLoaded', () => {
           observer.unobserve(entry.target);
         }
       });
-    }, { threshold: 0.15 });
+    }, { threshold: 0.1 });
 
-    fadeEls.forEach(el => observer.observe(el));
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
   } else {
-    // Fallback: show everything
-    fadeEls.forEach(el => el.classList.add('visible'));
+    document.querySelectorAll('.fade-in').forEach(el => el.classList.add('visible'));
   }
 
-  /* ---------- Smooth scroll for anchor links ---------- */
+  /* ---------- Smooth scroll ---------- */
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', (e) => {
       const target = document.querySelector(anchor.getAttribute('href'));
       if (target) {
         e.preventDefault();
-        const headerH = header.offsetHeight;
-        const top = target.getBoundingClientRect().top + window.scrollY - headerH;
+        const top = target.getBoundingClientRect().top + window.scrollY - header.offsetHeight;
         window.scrollTo({ top, behavior: 'smooth' });
       }
     });
   });
 
-  /* ---------- Current year in footer ---------- */
+  /* ---------- Current year ---------- */
   const yearEl = document.getElementById('year');
   if (yearEl) yearEl.textContent = new Date().getFullYear();
 });
