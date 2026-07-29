@@ -62,6 +62,23 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  /* ---------- Nav: resaltar la sección visible ---------- */
+  const sections = document.querySelectorAll('section[id]');
+  const navAnchors = navLinks ? navLinks.querySelectorAll('a[href^="#"]') : [];
+
+  if ('IntersectionObserver' in window && sections.length && navAnchors.length) {
+    const spy = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        navAnchors.forEach(a => {
+          a.classList.toggle('active', a.getAttribute('href') === `#${entry.target.id}`);
+        });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+
+    sections.forEach(s => spy.observe(s));
+  }
+
   /* ---------- Current year ---------- */
   const yearEl = document.getElementById('year');
   if (yearEl) yearEl.textContent = new Date().getFullYear();
