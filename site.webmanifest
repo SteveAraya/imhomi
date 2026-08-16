@@ -1,7 +1,7 @@
 {
   "name": "ImHomi",
   "short_name": "ImHomi",
-  "description": "Alquilar en Costa Rica de principio a fin: búsqueda, chat, visitas, contrato digital, incidencias y liquidación del depósito.",
+  "description": "Alquilar en Costa Rica de principio a fin: búsqueda, chat, visitas, términos aceptados por ambas partes, incidencias y liquidación del depósito.",
   "lang": "es-CR",
   "start_url": "/",
   "display": "standalone",

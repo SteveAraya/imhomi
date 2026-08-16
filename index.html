@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ImHomi — Alquilar en Costa Rica, de principio a fin</title>
-  <meta name="description" content="ImHomi es la app que cubre todo el alquiler en Costa Rica: búsqueda con filtros reales, chat, visitas agendadas, contrato digital, incidencias y liquidación del depósito. Publicá gratis.">
-  <meta name="keywords" content="alquiler Costa Rica, casas en alquiler, apartamentos en alquiler, contrato de alquiler, depósito de garantía, app alquiler Costa Rica">
-  <meta property="og:title" content="ImHomi — Del primer mensaje a la devolución del depósito">
-  <meta property="og:description" content="La primera app que cubre el ciclo completo del alquiler en Costa Rica: buscar, conversar, visitar, firmar, convivir y salir. Con reputación de ambos lados.">
+  <meta name="description" content="ImHomi cubre todo lo que pasa en un alquiler en Costa Rica: buscar casa o cuarto, chat, visitas, términos aceptados por ambas partes, convivencia, inventario y liquidación del depósito. Publicá gratis.">
+  <meta name="keywords" content="alquiler Costa Rica, casas en alquiler, apartamentos en alquiler, cuartos en alquiler, roomie Costa Rica, contrato de alquiler, depósito de garantía, app alquiler Costa Rica">
+  <meta property="og:title" content="ImHomi — Todo lo que pasa en un alquiler, en una sola app">
+  <meta property="og:description" content="Desde buscar cuarto hasta liquidar el depósito. Incluso si ya estás alquilando: traés tu contrato con un código y seguís desde ahí.">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="es_CR">
   <meta property="og:url" content="https://www.imhomi.com">
@@ -15,10 +15,10 @@
   <meta property="og:image" content="https://www.imhomi.com/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="ImHomi — del primer mensaje a la devolución del depósito">
+  <meta property="og:image:alt" content="ImHomi — todo lo que pasa en un alquiler, en una sola app">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="ImHomi — Del primer mensaje a la devolución del depósito">
-  <meta name="twitter:description" content="La primera app que cubre el ciclo completo del alquiler en Costa Rica: buscar, conversar, visitar, firmar, convivir y salir.">
+  <meta name="twitter:title" content="ImHomi — Todo lo que pasa en un alquiler, en una sola app">
+  <meta name="twitter:description" content="Desde buscar cuarto hasta liquidar el depósito. Incluso si ya estás alquilando.">
   <meta name="twitter:image" content="https://www.imhomi.com/og-image.png">
   <meta name="theme-color" content="#0F2329">
   <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
@@ -33,15 +33,38 @@
 </head>
 <body>
 
+  <!-- Sprite de iconos. Trazo de 1.6 sobre grilla de 24, heredando currentColor. -->
+  <svg class="icon-sprite" aria-hidden="true" focusable="false">
+    <defs>
+      <g id="i-search"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5"/></g>
+      <g id="i-bell"><path d="M18 15V10a6 6 0 1 0-12 0v5l-1.5 2.5h15L18 15Z"/><path d="M10 20a2 2 0 0 0 4 0"/></g>
+      <g id="i-chat"><path d="M20 12a7 7 0 0 1-7 7H8l-4 3v-4.5A7 7 0 0 1 4 12v-1a7 7 0 0 1 7-7h2a7 7 0 0 1 7 7Z"/></g>
+      <g id="i-calendar"><rect x="4" y="5" width="16" height="16" rx="2.5"/><path d="M4 10h16M9 3v4M15 3v4"/></g>
+      <g id="i-star"><path d="M12 4l2.4 5 5.6.8-4 3.9 1 5.5-5-2.6-5 2.6 1-5.5-4-3.9 5.6-.8L12 4Z"/></g>
+      <g id="i-heart"><path d="M12 20s-7-4.4-7-9.2A3.9 3.9 0 0 1 12 8a3.9 3.9 0 0 1 7 2.8C19 15.6 12 20 12 20Z"/></g>
+      <g id="i-door"><path d="M6 21V4.5A1.5 1.5 0 0 1 7.5 3h9A1.5 1.5 0 0 1 18 4.5V21"/><path d="M4 21h16"/><circle cx="14.5" cy="12.5" r="1"/></g>
+      <g id="i-users"><circle cx="9" cy="9" r="3.2"/><path d="M3.5 20a5.5 5.5 0 0 1 11 0"/><path d="M16 6.3a3.2 3.2 0 0 1 0 6.4M17.5 20a5.5 5.5 0 0 0-2.2-4.4"/></g>
+      <g id="i-ticket"><path d="M4 9.5V7a1.5 1.5 0 0 1 1.5-1.5h13A1.5 1.5 0 0 1 20 7v2.5a2.5 2.5 0 0 0 0 5V17a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 17v-2.5a2.5 2.5 0 0 0 0-5Z"/><path d="M12 8.5v7"/></g>
+      <g id="i-split"><rect x="3.5" y="5" width="17" height="14" rx="2.5"/><path d="M12 5v14"/><circle cx="7.75" cy="12" r="1.3"/><circle cx="16.25" cy="12" r="1.3"/></g>
+      <g id="i-clipboard"><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M9 5V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1"/><path d="M9 13l2 2 4-4"/></g>
+      <g id="i-coins"><ellipse cx="12" cy="7" rx="6.5" ry="3"/><path d="M5.5 7v5c0 1.7 2.9 3 6.5 3s6.5-1.3 6.5-3V7"/><path d="M5.5 12v5c0 1.7 2.9 3 6.5 3s6.5-1.3 6.5-3v-5"/></g>
+      <g id="i-shield"><path d="M12 3l7 2.8V11c0 4.3-2.9 7.8-7 9.4-4.1-1.6-7-5.1-7-9.4V5.8L12 3Z"/><path d="M9 11.8l2 2 4-4"/></g>
+      <g id="i-clock"><circle cx="12" cy="12" r="8"/><path d="M12 7.5V12l3 2"/></g>
+      <g id="i-tag"><path d="M11 3H4.5A1.5 1.5 0 0 0 3 4.5V11l9.5 9.5a1.5 1.5 0 0 0 2.1 0l6-6a1.5 1.5 0 0 0 0-2.1L11 3Z"/><circle cx="7.5" cy="7.5" r="1.2"/></g>
+      <g id="i-doc"><path d="M14 3H7a1.5 1.5 0 0 0-1.5 1.5v15A1.5 1.5 0 0 0 7 21h10a1.5 1.5 0 0 0 1.5-1.5V7.5L14 3Z"/><path d="M13.5 3v5h5"/><path d="M9 16.5c1.5-3.5 3-3.5 4.5 0"/></g>
+      <g id="i-pin"><path d="M12 21s6-5.2 6-10a6 6 0 1 0-12 0c0 4.8 6 10 6 10Z"/><circle cx="12" cy="11" r="2.2"/></g>
+      <g id="i-swap"><path d="M4 8h13l-3-3M20 16H7l3 3"/></g>
+    </defs>
+  </svg>
+
   <!-- ==================== HEADER ==================== -->
   <header class="header" id="header">
     <div class="container">
       <a href="#hero" class="imhomi-logo">ImHom<span class="i-teal">i</span></a>
       <nav class="nav-links" id="nav">
-        <a href="#ciclo">El ciclo</a>
+        <a href="#diferencia">La diferencia</a>
+        <a href="#capacidades">Qué podés hacer</a>
         <a href="#confianza">Confianza</a>
-        <a href="#features">Funciones</a>
-        <a href="#roles">Para vos</a>
         <a href="#cta" class="nav-cta">Descargar</a>
       </nav>
       <button class="hamburger" id="hamburger" aria-label="Menú" aria-expanded="false">
@@ -61,32 +84,19 @@
         <div class="hero-tag fade-in">
           <span class="dot"></span> Próximamente en Costa Rica
         </div>
-        <h1 class="fade-in fade-in-d1">Del primer mensaje a la <span class="gradient-text">devolución del depósito</span></h1>
+        <h1 class="fade-in fade-in-d1">Todo lo que pasa en un alquiler, <span class="gradient-text">en una sola app</span></h1>
         <p class="fade-in fade-in-d2">
-          Alquilar hoy es un grupo de WhatsApp, un contrato en Word y cruzar los dedos.
-          ImHomi cubre <strong>todo el ciclo</strong> en una sola app: buscás, conversás, agendás la visita,
-          acordás el contrato, resolvés incidencias y liquidás el depósito. Con reputación de ambos lados.
+          Desde buscar cuarto hasta liquidar el depósito. Incluso si ya estás alquilando:
+          traés tu contrato con un código y seguís desde ahí.
         </p>
         <div class="hero-buttons fade-in fade-in-d3">
-          <a href="#cta" class="btn btn--coral">📲 Descargá la app</a>
-          <a href="#ciclo" class="btn btn--glass">Ver el ciclo completo</a>
+          <a href="#cta" class="btn btn--coral">Descargá la app</a>
+          <a href="#capacidades" class="btn btn--glass">Ver qué podés hacer</a>
         </div>
 
-        <div class="hero-proof fade-in fade-in-d4">
-          <div class="proof-item">
-            <strong>7</strong>
-            <span>provincias<br>cubiertas</span>
-          </div>
-          <div class="proof-sep"></div>
-          <div class="proof-item">
-            <strong>₡&nbsp;/&nbsp;$</strong>
-            <span>tipo de cambio<br>oficial diario</span>
-          </div>
-          <div class="proof-sep"></div>
-          <div class="proof-item">
-            <strong>Gratis</strong>
-            <span>publicar tu<br>propiedad</span>
-          </div>
+        <div class="hero-claim fade-in fade-in-d4">
+          <strong>Publicar es <em>gratis</em>.</strong>
+          <span>Y nadie paga por aparecer primero.</span>
         </div>
       </div>
 
@@ -106,173 +116,296 @@
     </div>
   </section>
 
-  <!-- ==================== PROBLEMA / CONTRASTE ==================== -->
-  <section class="contrast" id="problema">
+  <!-- ==================== LA DIFERENCIA ==================== -->
+  <section class="gap" id="diferencia">
     <div class="container">
-      <div class="contrast-head">
-        <div class="section-label fade-in">El problema</div>
-        <h2 class="section-title fade-in">Alquilar en Costa Rica no debería ser un acto de fe</h2>
+      <div class="gap-head">
+        <div class="section-label fade-in">La diferencia</div>
+        <h2 class="section-title fade-in">Todos te ayudan a encontrar. Después te sueltan.</h2>
         <p class="section-subtitle fade-in">
-          El anuncio lo encontrás rápido. Lo difícil viene después — y ahí no hay ninguna herramienta.
+          Un clasificado termina su trabajo el día que conseguís el lugar. El problema es que
+          ahí apenas empieza todo lo que puede salir mal.
         </p>
       </div>
 
-      <div class="contrast-grid">
-        <div class="contrast-col contrast-col--before fade-in">
-          <div class="contrast-tag contrast-tag--before">Hoy</div>
-          <ul class="contrast-list">
-            <li>Anuncios sin verificar, fotos de hace tres años</li>
-            <li>Todo se coordina en WhatsApp y se pierde en el scroll</li>
-            <li>Contrato en Word, sin registro de lo que se acordó</li>
-            <li>¿Se dañó la refri? Mensajes sueltos, cero seguimiento</li>
-            <li>El depósito se devuelve "cuando se pueda", sin desglose</li>
-            <li>Nadie sabe si el inquilino —o el dueño— es confiable</li>
+      <!-- Pista comparativa. En pantallas angostas hace scroll horizontal
+           dentro de su propio contenedor: la página nunca se mueve de lado. -->
+      <div class="gap-scroll fade-in">
+        <div class="gap-track">
+          <span class="gap-corner" aria-hidden="true"></span>
+          <!-- role explícito: display:contents descarta la semántica de lista
+               en algunos lectores de pantalla. -->
+          <ol class="gap-stages" role="list">
+            <li>Buscar</li>
+            <li>Conversar</li>
+            <li>Visitar</li>
+            <li>Acordar</li>
+            <li>Convivir</li>
+            <li>Salir</li>
+          </ol>
+
+          <span class="gap-name">Un clasificado</span>
+          <div class="gap-bar gap-bar--them">
+            <span>Te muestra el anuncio y un contacto</span>
+          </div>
+          <div class="gap-void">
+            <span class="gap-cut">Desde acá, arreglate</span>
+          </div>
+
+          <span class="gap-name gap-name--us">ImHomi</span>
+          <div class="gap-bar gap-bar--us">
+            <span>Todo el trato, y todo queda registrado</span>
+          </div>
+
+          <!-- Rieles verticales: solo en móvil, donde las barras horizontales
+               no caben. Son la comparación por longitud, que es el argumento. -->
+          <span class="gap-rail gap-rail--them" aria-hidden="true"></span>
+          <span class="gap-rail gap-rail--us" aria-hidden="true"></span>
+        </div>
+      </div>
+
+      <p class="gap-foot fade-in">
+        Lo que nadie cubre es justo donde se pierde la plata: el acuerdo que nadie recuerda,
+        el daño que apareció de la nada y el depósito que no volvió.
+      </p>
+
+      <!-- Prueba de profundidad: lo que ya existe construido, sin adjetivos. -->
+      <ul class="gap-proof fade-in">
+        <li>Contratos con enmiendas y renovaciones</li>
+        <li>Inventario con disputas y plazos</li>
+        <li>Calificación doble-ciega</li>
+        <li>Liquidación con contrapropuesta</li>
+        <li>Incidencias con seguimiento y reapertura</li>
+        <li>Acuerdos de convivencia</li>
+        <li>Vinculación por código de invitación</li>
+        <li>Alertas de búsqueda guardadas</li>
+        <li>Tipo de cambio oficial diario</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ==================== QUÉ PODÉS HACER ==================== -->
+  <section class="caps" id="capacidades">
+    <div class="container">
+      <div class="caps-head">
+        <div class="section-label fade-in">Qué podés hacer</div>
+        <h2 class="section-title fade-in">Alquilar no es una sola cosa</h2>
+        <p class="section-subtitle fade-in">
+          Son cuatro situaciones distintas, y podés estar en más de una a la vez.
+          Esto es lo que ImHomi resuelve en cada una.
+        </p>
+      </div>
+
+      <div class="caps-tabs fade-in" role="tablist" aria-label="Situaciones de uso">
+        <button class="caps-tab is-active" role="tab" id="tab-buscar" aria-controls="panel-buscar" aria-selected="true">
+          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-search"/></svg>
+          <span><strong>Busco dónde vivir</strong><small>Casa, apartamento o cuarto</small></span>
+        </button>
+        <button class="caps-tab" role="tab" id="tab-cuarto" aria-controls="panel-cuarto" aria-selected="false" tabindex="-1">
+          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-door"/></svg>
+          <span><strong>Comparto un cuarto</strong><small>Busco roomie o busco cuarto</small></span>
+        </button>
+        <button class="caps-tab" role="tab" id="tab-yaalquilo" aria-controls="panel-yaalquilo" aria-selected="false" tabindex="-1">
+          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-ticket"/></svg>
+          <span><strong>Ya estoy alquilando</strong><small>Quiero traerlo a ImHomi</small></span>
+        </button>
+        <button class="caps-tab" role="tab" id="tab-propietario" aria-controls="panel-propietario" aria-selected="false" tabindex="-1">
+          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-pin"/></svg>
+          <span><strong>Alquilo mi propiedad</strong><small>Soy el arrendador</small></span>
+        </button>
+      </div>
+
+      <div class="caps-stage">
+        <!-- 1 · Busco dónde vivir -->
+        <div class="caps-panel is-active" role="tabpanel" id="panel-buscar" aria-labelledby="tab-buscar">
+          <h3 class="caps-panel-title">Busco dónde vivir<span>Casa, apartamento o cuarto</span></h3>
+          <ul class="caps-grid">
+            <li class="cap">
+              <span class="cap-ico cap-ico--teal"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-search"/></svg></span>
+              <h3>Filtros que sí importan</h3>
+              <p>Mascotas, precio en colones o dólares, provincia, cantón y distrito, amueblado, cuántas personas pueden vivir. Y si querés un cuarto o la propiedad entera.</p>
+            </li>
+            <li class="cap">
+              <span class="cap-ico cap-ico--gold"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-bell"/></svg></span>
+              <h3>Alertas de búsqueda</h3>
+              <p>Guardás lo que buscás y te avisamos cuando aparece algo que calza. No hay que estar refrescando.</p>
+            </li>
+            <li class="cap">
+              <span class="cap-ico cap-ico--coral"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chat"/></svg></span>
+              <h3>Chat con quien publica</h3>
+              <p>Preguntás todo desde la app, sin grupos de WhatsApp ni números sueltos. La conversación queda con el anuncio.</p>
+            </li>
+            <li class="cap">
+              <span class="cap-ico cap-ico--teal"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-calendar"/></svg></span>
+              <h3>Visitas agendadas</h3>
+              <p>Proponés día y hora, la otra parte confirma. Queda registrado quién dijo qué y cuándo.</p>
+            </li>
+            <li class="cap">
+              <span class="cap-ico cap-ico--gold"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-star"/></svg></span>
+              <h3>Reputación antes de escribir</h3>
+              <p>Ves cómo califican a quien publica antes de mandar el primer mensaje.</p>
+            </li>
+            <li class="cap">
+              <span class="cap-ico cap-ico--coral"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-heart"/></svg></span>
+              <h3>Favoritos</h3>
+              <p>Guardás los que te gustan y los comparás sin volver a buscarlos.</p>
+            </li>
           </ul>
         </div>
 
-        <div class="contrast-arrow" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        <!-- 2 · Comparto un cuarto -->
+        <div class="caps-panel" role="tabpanel" id="panel-cuarto" aria-labelledby="tab-cuarto" hidden>
+          <h3 class="caps-panel-title">Comparto un cuarto<span>Busco roomie o busco cuarto</span></h3>
+          <ul class="caps-grid">
+            <li class="cap">
+              <span class="cap-ico cap-ico--teal"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-door"/></svg></span>
+              <h3>Cuartos, no solo propiedades</h3>
+              <p>Buscás cuartos como una categoría propia. El precio y el depósito que ves son <strong>por cuarto</strong>, no por la casa entera.</p>
+            </li>
+            <li class="cap cap--wide">
+              <span class="cap-ico cap-ico--coral"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-doc"/></svg></span>
+              <h3>Publicá tu cuarto, con permiso del dueño</h3>
+              <p>Si ya vivís ahí y te sobra un cuarto, pedís la autorización a tu arrendador desde la app. Cuando la da, el anuncio sale de tu contrato activo y hereda ubicación y servicios del anuncio del dueño. Vos ponés tu precio y tu depósito. Nada de subarriendo a escondidas.</p>
+            </li>
+            <li class="cap">
+              <span class="cap-ico cap-ico--gold"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-users"/></svg></span>
+              <h3>Cuántos lugares quedan</h3>
+              <p>El anuncio dice cuántos cupos tiene y cuántos siguen libres. Nadie escribe por un cuarto que ya se ocupó.</p>
+            </li>
+            <li class="cap">
+              <span class="cap-ico cap-ico--teal"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-split"/></svg></span>
+              <h3>Acuerdo de convivencia</h3>
+              <p>Quién paga qué, desde cuándo y hasta cuándo. Con su propio estado, aparte del contrato del dueño.</p>
+            </li>
+            <li class="cap">
+              <span class="cap-ico cap-ico--gold"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-star"/></svg></span>
+              <h3>Calificá a tu roomie</h3>
+              <p>La convivencia también deja reputación, no solo el trato con el arrendador.</p>
+            </li>
+          </ul>
         </div>
 
-        <div class="contrast-col contrast-col--after fade-in fade-in-d2">
-          <div class="contrast-tag contrast-tag--after">Con ImHomi</div>
-          <ul class="contrast-list">
-            <li>Anuncios con verificación por fotos de exterior, interior y detalle</li>
-            <li>Chat en tiempo real, atado a la propiedad y al contrato</li>
-            <li>Contrato digital con enmiendas y renovaciones negociables</li>
-            <li>Incidencias con estado: abierta, en progreso, resuelta, cerrada</li>
-            <li>Liquidación del depósito con deducciones detalladas y contrapropuesta</li>
-            <li>Calificaciones doble-ciegas: ambos lados construyen reputación</li>
+        <!-- 3 · Ya estoy alquilando -->
+        <div class="caps-panel" role="tabpanel" id="panel-yaalquilo" aria-labelledby="tab-yaalquilo" hidden>
+          <h3 class="caps-panel-title">Ya estoy alquilando<span>Quiero traerlo a ImHomi</span></h3>
+          <ul class="caps-grid">
+            <li class="cap cap--wide">
+              <span class="cap-ico cap-ico--coral"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-ticket"/></svg></span>
+              <h3>Traé tu alquiler con un código</h3>
+              <p>No hace falta que empiece en ImHomi. Generás un código, se lo pasás a la otra parte y se une a la propiedad. Si todavía no tiene cuenta, se registra y acepta. Funciona en las dos direcciones: quien llegó primero trae al otro.</p>
+            </li>
+            <li class="cap">
+              <span class="cap-ico cap-ico--teal"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-swap"/></svg></span>
+              <h3>Cuatro maneras de sumarse</h3>
+              <p>Tu arrendador, tu inquilino, un roomie, o quien te sucede en el contrato cuando te vas.</p>
+            </li>
+            <li class="cap">
+              <span class="cap-ico cap-ico--gold"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-clipboard"/></svg></span>
+              <h3>Inventario del inmueble</h3>
+              <p>Registrás cómo estaba todo al entrar, ítem por ítem. Sin esa línea base, cualquier daño al salir se te puede atribuir a vos.</p>
+            </li>
+            <li class="cap">
+              <span class="cap-ico cap-ico--coral"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-coins"/></svg></span>
+              <h3>Liquidación del depósito</h3>
+              <p>Al salir, una parte propone el desglose contra el inventario y la otra acepta o contrapropone. Se negocia dentro de la app, con todo a la vista, hasta que queda cerrado.</p>
+            </li>
+          </ul>
+        </div>
+
+        <!-- 4 · Alquilo mi propiedad -->
+        <div class="caps-panel" role="tabpanel" id="panel-propietario" aria-labelledby="tab-propietario" hidden>
+          <h3 class="caps-panel-title">Alquilo mi propiedad<span>Soy el arrendador</span></h3>
+          <ul class="caps-grid">
+            <li class="cap">
+              <span class="cap-ico cap-ico--teal"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-tag"/></svg></span>
+              <h3>Publicar es gratis</h3>
+              <p>Sin comisión y sin pagar para que tu anuncio se vea. Publicás las veces que necesités.</p>
+            </li>
+            <li class="cap">
+              <span class="cap-ico cap-ico--gold"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-shield"/></svg></span>
+              <h3>Anuncio verificado</h3>
+              <p>Pasás la verificación una vez y tu anuncio lo muestra. Quien busca sabe cuál mirar primero.</p>
+            </li>
+            <li class="cap">
+              <span class="cap-ico cap-ico--coral"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-doc"/></svg></span>
+              <h3>Términos que las dos partes aceptan</h3>
+              <p>Nadie firma nada: cada parte acepta los términos en la app y quedan registrados. Las enmiendas y renovaciones también se aceptan una por una, así que siempre hay una sola versión vigente.</p>
+            </li>
+            <li class="cap">
+              <span class="cap-ico cap-ico--teal"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-clock"/></svg></span>
+              <h3>Te avisamos antes del vencimiento</h3>
+              <p>Recordatorios automáticos conforme se acerca la fecha, para que renovar no se convierta en una carrera.</p>
+            </li>
+            <li class="cap">
+              <span class="cap-ico cap-ico--gold"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-calendar"/></svg></span>
+              <h3>Visitas ordenadas</h3>
+              <p>Las solicitudes llegan a un solo lugar, con día y hora. Se acabó el hilo de mensajes cruzados.</p>
+            </li>
+            <li class="cap">
+              <span class="cap-ico cap-ico--coral"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-star"/></svg></span>
+              <h3>Reputación de los dos lados</h3>
+              <p>Calificás al inquilino y el inquilino te califica a vos. La buena conducta se acumula.</p>
+            </li>
           </ul>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ==================== EL CICLO COMPLETO ==================== -->
-  <section class="cycle" id="ciclo">
-    <div class="orb orb--teal" style="width:500px;height:500px;top:20%;left:-15%;"></div>
+  <!-- ==================== DESTACADOS ==================== -->
+  <section class="hi" id="destacados">
     <div class="container">
-     <div class="cycle-layout">
-      <aside class="cycle-aside">
-        <div class="cycle-head">
-          <div class="section-label fade-in">El diferenciador</div>
-          <h2 class="section-title fade-in">Seis etapas. Una sola app.</h2>
-          <p class="section-subtitle fade-in">
-            Los clasificados te acompañan hasta el paso 2 y te sueltan. ImHomi te acompaña hasta el final.
+      <div class="hi-head">
+        <div class="section-label fade-in">Lo que nadie más hace</div>
+        <h2 class="section-title fade-in">Tres cosas que solo pasan acá</h2>
+        <p class="section-subtitle fade-in">
+          Los clasificados terminan cuando conseguís el lugar. Ahí es justo donde empieza lo difícil.
+        </p>
+      </div>
+
+      <div class="hi-grid">
+        <article class="hi-card fade-in">
+          <span class="hi-tag">Cuartos</span>
+          <h3>Tu cuarto sale de tu contrato</h3>
+          <p>
+            En Costa Rica lo normal cerca de las universidades es alquilar una casa entera y buscar
+            con quién compartirla. Hoy eso se resuelve en Facebook.
           </p>
-        </div>
+          <p>
+            En ImHomi el anuncio del cuarto lo publica <strong>el inquilino que ya vive ahí</strong>,
+            pero solo después de que <strong>el arrendador autoriza</strong> la búsqueda desde la app.
+            Sale de su contrato activo, hereda la ubicación y los servicios del anuncio del dueño, y
+            el precio es por cuarto. El anuncio del dueño no se toca.
+          </p>
+        </article>
 
-        <figure class="cycle-figure fade-in fade-in-d2">
-          <img src="assets/images/illustration-howit.png"
-               alt="Ilustración del recorrido: pines de ubicación, un camino que serpentea hasta una casa y, al final, dos personas con su perro"
-               loading="lazy" width="1024" height="1792">
-          <figcaption>De los primeros pines en el mapa a la puerta de tu casa.</figcaption>
-        </figure>
-      </aside>
+        <article class="hi-card fade-in fade-in-d1">
+          <span class="hi-tag">Invitaciones</span>
+          <h3>Un código y ya están adentro</h3>
+          <p>
+            Tu alquiler no tiene que haber nacido en la app. Generás un código, se lo pasás a la otra
+            parte y quedan vinculados a la propiedad.
+          </p>
+          <p>
+            Sirve para traer a tu arrendador, a tu inquilino, sumar un roomie o pasarle el contrato a
+            quien te sucede. <strong>Quien llegó primero trae al otro.</strong>
+          </p>
+        </article>
 
-      <ol class="cycle-rail">
-        <li class="cycle-step fade-in">
-          <div class="cycle-node"><span>1</span></div>
-          <div class="cycle-card">
-            <div class="cycle-card-head">
-              <h3>Buscá</h3>
-              <span class="chip chip--teal">Filtros reales</span>
-            </div>
-            <p>
-              Provincia, cantón y distrito. Precio en colones o dólares. Mascotas, roommates, amueblado,
-              cuarto de servicio, accesibilidad, residencial. Y qué servicios vienen incluidos:
-              agua, luz, internet, basura, gas, cable.
-            </p>
-            <div class="cycle-tags">
-              <span>Pet-friendly</span><span>Roommates</span><span>Amueblado</span><span>Accesible</span><span>Servicios incluidos</span>
-            </div>
-          </div>
-        </li>
-
-        <li class="cycle-step fade-in">
-          <div class="cycle-node"><span>2</span></div>
-          <div class="cycle-card">
-            <div class="cycle-card-head">
-              <h3>Conversá</h3>
-              <span class="chip chip--teal">Tiempo real</span>
-            </div>
-            <p>
-              Chat instantáneo dentro de la app, siempre atado a la propiedad de la que están hablando.
-              Desde la conversación agendás la visita o abrís el contrato, sin salirte ni perder el hilo.
-            </p>
-          </div>
-        </li>
-
-        <li class="cycle-step fade-in">
-          <div class="cycle-node"><span>3</span></div>
-          <div class="cycle-card">
-            <div class="cycle-card-head">
-              <h3>Visitá</h3>
-              <span class="chip chip--teal">Agenda ordenada</span>
-            </div>
-            <p>
-              Solicitud de visita con fecha y hora. El dueño acepta, propone otro horario o la rechaza.
-              Cualquiera de los dos puede reagendar o cancelar, y todo queda registrado.
-              Después de la visita, ambos se califican.
-            </p>
-          </div>
-        </li>
-
-        <li class="cycle-step fade-in">
-          <div class="cycle-node cycle-node--coral"><span>4</span></div>
-          <div class="cycle-card cycle-card--highlight">
-            <div class="cycle-card-head">
-              <h3>Acordá el contrato</h3>
-              <span class="chip chip--coral">Único en el mercado</span>
-            </div>
-            <p>
-              Monto, depósito, duración y fechas quedan en un contrato digital que ambos aceptan.
-              ¿Cambió algo? Se propone una <strong>enmienda</strong>. ¿Se vence? Se propone una
-              <strong>renovación</strong>. La cancelación es negociada: se solicita, la otra parte
-              confirma o rechaza, y existe salida inmediata cuando ambos están de acuerdo.
-            </p>
-            <div class="cycle-tags">
-              <span>Enmiendas</span><span>Renovaciones</span><span>Cancelación negociada</span><span>Recordatorio de vencimiento</span>
-            </div>
-          </div>
-        </li>
-
-        <li class="cycle-step fade-in">
-          <div class="cycle-node cycle-node--coral"><span>5</span></div>
-          <div class="cycle-card">
-            <div class="cycle-card-head">
-              <h3>Conviví</h3>
-              <span class="chip chip--coral">Incidencias</span>
-            </div>
-            <p>
-              Se rompió el calentador, hay una gotera, falló el portón. Se reporta como incidencia
-              y avanza por estados visibles para ambos: <em>abierta → en progreso → resuelta → cerrada</em>,
-              con opción de reabrir. Se acabaron los "yo te avisé por WhatsApp en marzo".
-            </p>
-          </div>
-        </li>
-
-        <li class="cycle-step fade-in">
-          <div class="cycle-node cycle-node--gold"><span>6</span></div>
-          <div class="cycle-card cycle-card--highlight">
-            <div class="cycle-card-head">
-              <h3>Salí — y recuperá tu depósito</h3>
-              <span class="chip chip--gold">Donde todo se rompe hoy</span>
-            </div>
-            <p>
-              La parte más conflictiva del alquiler, convertida en un proceso.
-              El dueño propone la liquidación con las deducciones desglosadas. El inquilino acepta
-              o <strong>contrapropone</strong>. Hay rondas de negociación, estado de disputa y un
-              plazo automático para que nadie deje el tema colgando.
-            </p>
-            <div class="cycle-tags">
-              <span>Deducciones detalladas</span><span>Contrapropuesta</span><span>Plazo automático</span>
-            </div>
-          </div>
-        </li>
-      </ol>
-     </div>
+        <article class="hi-card fade-in fade-in-d2">
+          <span class="hi-tag">Depósito</span>
+          <h3>El depósito deja de ser una discusión</h3>
+          <p>
+            El inventario documenta cómo estaba la propiedad al entrar, ítem por ítem: la puerta del
+            baño, la llave del lavatorio, la refrigeradora.
+          </p>
+          <p>
+            Al salir, la liquidación se negocia contra esa línea base: uno propone el desglose y el
+            otro acepta o contrapropone. <strong>Sin línea base, cualquier daño se le puede atribuir
+            a quien se va</strong> — y esa es exactamente la conversación que nadie quiere tener.
+          </p>
+        </article>
+      </div>
     </div>
   </section>
 
@@ -282,206 +415,47 @@
       <div class="section-label fade-in">Confianza</div>
       <h2 class="section-title fade-in">Reputación que va en los dos sentidos</h2>
       <p class="section-subtitle fade-in">
-        En el alquiler el riesgo es mutuo. Por eso la reputación también.
+        Quien alquila califica y también es calificado. Nadie construye reputación a costa del otro.
       </p>
 
       <div class="trust-grid">
         <div class="trust-card trust-card--wide fade-in">
           <div class="trust-icon fi-teal">
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#4ECDC4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-star"/></svg>
           </div>
           <h3>Calificaciones doble-ciegas</h3>
           <p>
-            Ninguno de los dos ve la calificación del otro hasta que <strong>ambos</strong> hayan calificado,
-            o hasta que se vence el plazo. Nadie puede esperar a ver qué le pusieron para responder con
-            represalia. Es el mismo modelo que hizo confiable a Airbnb, aplicado al alquiler de largo plazo
-            en Costa Rica. Y si algo te parece injusto, tenés derecho de respuesta pública.
+            Ninguna de las dos partes ve la calificación de la otra hasta que las dos calificaron o
+            se vence el plazo. Así nadie responde por represalia ni negocia la nota.
           </p>
           <div class="trust-demo" aria-hidden="true">
             <div class="trust-demo-row">
-              <span class="trust-demo-label">Tu calificación</span>
+              <span class="trust-demo-label">Vos calificaste</span>
               <span class="trust-demo-stars">★★★★★</span>
               <span class="trust-demo-state trust-demo-state--sent">Enviada</span>
             </div>
             <div class="trust-demo-row">
-              <span class="trust-demo-label">La de la contraparte</span>
+              <span class="trust-demo-label">Te calificaron</span>
               <span class="trust-demo-stars trust-demo-stars--hidden">? ? ? ? ?</span>
-              <span class="trust-demo-state">Oculta hasta que ambos califiquen</span>
+              <span class="trust-demo-state">Se revela al cerrar</span>
             </div>
           </div>
         </div>
 
         <div class="trust-card fade-in fade-in-d1">
           <div class="trust-icon fi-gold">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#E6B840" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-shield"/></svg>
           </div>
           <h3>Anuncios verificados</h3>
-          <p>
-            El propietario sube evidencia fotográfica de exterior, interior y detalles.
-            El anuncio pasa a estado <strong>verificado</strong> y se distingue del resto.
-            Menos sorpresas al llegar a la puerta.
-          </p>
+          <p>Los anuncios pasan por verificación y el estado se muestra en el anuncio, no en letra chica.</p>
         </div>
 
         <div class="trust-card fade-in fade-in-d2">
           <div class="trust-icon fi-coral">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#E76F51" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-doc"/></svg>
           </div>
-          <h3>Cuenta protegida</h3>
-          <p>
-            Verificación de correo, autenticación en dos pasos por código y sesiones seguras.
-            Tu cuenta guarda tus contratos: la tratamos como tal.
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ==================== FEATURES ==================== -->
-  <section class="features" id="features">
-    <div class="container">
-      <div class="section-label fade-in">Funciones</div>
-      <h2 class="section-title fade-in">Hecha para cómo se alquila aquí</h2>
-      <p class="section-subtitle fade-in">
-        Colones y dólares. Provincia, cantón y distrito. Mascotas y roommates.
-        Los detalles que definen tu búsqueda.
-      </p>
-
-      <div class="features-grid">
-        <div class="feature-card fade-in">
-          <div class="feature-icon fi-teal">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4ECDC4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
-          </div>
-          <h3>Alertas inteligentes</h3>
-          <p>
-            Guardá tus criterios y olvidate de refrescar. Cuando entra un anuncio que calza,
-            te llega la notificación al instante.
-          </p>
-        </div>
-
-        <div class="feature-card fade-in fade-in-d1">
-          <div class="feature-icon fi-gold">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#E6B840" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1v22"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
-          </div>
-          <h3>Colones y dólares, resueltos</h3>
-          <p>
-            Buscás en la moneda que querés y ves anuncios en las dos. La app usa el tipo de cambio
-            oficial de Hacienda, actualizado todos los días.
-          </p>
-        </div>
-
-        <div class="feature-card fade-in fade-in-d2">
-          <div class="feature-icon fi-coral">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="#E76F51" xmlns="http://www.w3.org/2000/svg"><ellipse cx="7.5" cy="4.5" rx="2" ry="2.5"/><ellipse cx="16.5" cy="4.5" rx="2" ry="2.5"/><ellipse cx="4" cy="9" rx="1.8" ry="2.3"/><ellipse cx="20" cy="9" rx="1.8" ry="2.3"/><path d="M12 22c-4 0-7-2.5-7-5.5 0-2 1.5-4 3.5-5s3-1.5 3.5-1.5.5 0 3.5 1.5 3.5 3 3.5 5c0 3-3 5.5-7 5.5z"/></svg>
-          </div>
-          <h3>Pet-friendly de verdad</h3>
-          <p>
-            Un filtro, no una promesa enterrada en la descripción.
-            Si el anuncio no acepta mascotas, no aparece.
-          </p>
-        </div>
-
-        <div class="feature-card fade-in fade-in-d3">
-          <div class="feature-icon fi-teal">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4ECDC4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
-          </div>
-          <h3>Se busca roomie</h3>
-          <p>
-            Encontrá lugares abiertos a compartir, los publique el dueño o alguien que
-            ya vive ahí y busca con quién dividir el alquiler.
-          </p>
-        </div>
-
-        <div class="feature-card fade-in">
-          <div class="feature-icon fi-coral">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#E76F51" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
-          </div>
-          <h3>Favoritos y comparación</h3>
-          <p>
-            Guardá las propiedades que te interesan y volvé a ellas con la calificación
-            del propietario a la vista.
-          </p>
-        </div>
-
-        <div class="feature-card fade-in fade-in-d1">
-          <div class="feature-icon fi-teal">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4ECDC4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-          </div>
-          <h3>Ubicación al detalle</h3>
-          <p>
-            Provincia, cantón y distrito de todo el país, con referencia de barrio.
-            Desde el centro de San José hasta la costa.
-          </p>
-        </div>
-
-        <div class="feature-card fade-in fade-in-d2">
-          <div class="feature-icon fi-gold">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#E6B840" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-          </div>
-          <h3>Nada se te pasa</h3>
-          <p>
-            Notificaciones en tiempo real de visitas, mensajes, enmiendas, incidencias
-            y vencimiento de contrato.
-          </p>
-        </div>
-
-        <div class="feature-card fade-in fade-in-d3">
-          <div class="feature-icon fi-coral">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#E76F51" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-          </div>
-          <h3>Publicar es gratis</h3>
-          <p>
-            Sin comisión, sin plan premium para aparecer. Publicá tu propiedad y
-            gestioná el alquiler completo sin costo.
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ==================== ROLES ==================== -->
-  <section class="roles" id="roles">
-    <div class="orb orb--coral" style="width:380px;height:380px;bottom:0;right:-10%;"></div>
-    <div class="container">
-      <div class="section-label fade-in">Para vos</div>
-      <h2 class="section-title fade-in">Dos lados del mismo trato</h2>
-      <p class="section-subtitle fade-in">
-        Una sola cuenta. Podés ser inquilino en una propiedad y propietario en otra.
-      </p>
-
-      <div class="roles-grid">
-        <div class="role-card fade-in">
-          <div class="role-head">
-            <div class="role-icon fi-teal">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4ECDC4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-            </div>
-            <h3>Si estás buscando</h3>
-          </div>
-          <ul class="role-list">
-            <li>Filtrá por lo que de verdad te importa, no por lo que el anuncio quiso decir</li>
-            <li>Poné una alerta y que la app busque por vos</li>
-            <li>Mirá la calificación del propietario antes de escribirle</li>
-            <li>Agendá la visita sin quedar en visto</li>
-            <li>Dejá por escrito lo que se acordó, desde el día uno</li>
-            <li>Recuperá tu depósito con un desglose que podés discutir</li>
-          </ul>
-        </div>
-
-        <div class="role-card fade-in fade-in-d2">
-          <div class="role-head">
-            <div class="role-icon fi-coral">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#E76F51" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-            </div>
-            <h3>Si estás alquilando</h3>
-          </div>
-          <ul class="role-list">
-            <li>Publicá gratis, con fotos y ficha completa de la propiedad</li>
-            <li>Verificá tu anuncio y destacá sobre los que no lo hacen</li>
-            <li>Revisá la reputación del interesado antes de entregarle llaves</li>
-            <li>Manejá visitas sin coordinar por mensajes sueltos</li>
-            <li>Llevá el contrato, sus enmiendas y renovaciones en un solo lugar</li>
-            <li>Documentá incidencias y justificá cada deducción del depósito</li>
-          </ul>
+          <h3>Todo queda registrado</h3>
+          <p>Términos, inventario, acuerdos de convivencia y liquidación. Cada parte acepta desde su cuenta y queda la fecha, así que lo que se acordó no depende de la memoria de nadie.</p>
         </div>
       </div>
     </div>
@@ -491,31 +465,32 @@
   <section class="cta" id="cta">
     <div class="container">
       <div class="cta-box fade-in">
-        <div class="orb orb--teal" style="width:250px;height:250px;top:-80px;right:-50px;filter:blur(60px);"></div>
-        <div class="orb orb--coral" style="width:200px;height:200px;bottom:-60px;left:-40px;filter:blur(60px);"></div>
-
+        <div class="orb orb--teal" style="width:300px;height:300px;top:-40%;right:-5%;"></div>
         <h2>Próximamente en App Store y Google Play</h2>
         <p>
-          Estamos afinando los últimos detalles. Muy pronto vas a poder llevar
-          todo tu alquiler —de la búsqueda al depósito— desde el teléfono.
+          Estamos terminando ImHomi en Costa Rica. Si querés probarla antes que nadie o publicar
+          tu propiedad desde el primer día, escribinos.
         </p>
-
         <div class="store-badges">
           <div class="store-badge">
-            <svg viewBox="0 0 24 24"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
-            <div class="store-badge-text"><small>Disponible en</small><strong>App Store</strong></div>
             <span class="badge-soon">Pronto</span>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.05 12.54c-.02-2.2 1.8-3.26 1.88-3.31-1.02-1.5-2.61-1.7-3.18-1.72-1.35-.14-2.64.8-3.33.8-.69 0-1.75-.78-2.87-.76-1.48.02-2.84.86-3.6 2.18-1.53 2.66-.39 6.6 1.1 8.76.73 1.06 1.6 2.25 2.74 2.2 1.1-.04 1.51-.71 2.84-.71 1.32 0 1.7.71 2.86.69 1.18-.02 1.93-1.08 2.65-2.14.84-1.23 1.18-2.42 1.2-2.48-.03-.01-2.29-.88-2.31-3.5zM14.9 5.6c.6-.74 1.01-1.76.9-2.78-.87.04-1.93.58-2.56 1.31-.56.65-1.05 1.69-.92 2.68.97.08 1.97-.49 2.58-1.21z"/></svg>
+            <div class="store-badge-text">
+              <small>Descargalo en</small>
+              <strong>App Store</strong>
+            </div>
           </div>
           <div class="store-badge">
-            <svg viewBox="0 0 24 24"><path d="M3.18 23.49c-.35-.2-.56-.58-.56-1V1.51c0-.42.21-.8.56-1l11.62 11.5L3.18 23.49zM15.82 13.01L5.15 24l13.5-7.8-2.83-3.19zM20.16 10.31l-3.08-1.8-3.27 3.5 3.27 3.5 3.08-1.8c.93-.53.93-1.87 0-2.4h0zM5.15 0l10.67 10.99 2.83-3.19L5.15 0z"/></svg>
-            <div class="store-badge-text"><small>Disponible en</small><strong>Google Play</strong></div>
             <span class="badge-soon">Pronto</span>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.6 2.2c-.3.3-.5.8-.5 1.4v16.8c0 .6.2 1.1.5 1.4l.1.1 9.4-9.4v-.2L3.7 2.1l-.1.1zm12.6 6.3L13.1 11l-9-9c.2-.1.5-.1.7 0l11.4 6.5zM17.9 9.6l2.4 1.4c.7.4.7 1.6 0 2l-2.4 1.4-2.7-2.4 2.7-2.4zM13.1 13l3.1 2.5-11.4 6.5c-.2.1-.5.1-.7 0l9-9z"/></svg>
+            <div class="store-badge-text">
+              <small>Disponible en</small>
+              <strong>Google Play</strong>
+            </div>
           </div>
         </div>
-
         <p class="cta-contact">
-          ¿Preguntas? Escribinos a
-          <a href="mailto:hola@imhomi.com">hola@imhomi.com</a>
+          ¿Consultas? Escribinos a <a href="mailto:hola@imhomi.com">hola@imhomi.com</a>
         </p>
       </div>
     </div>
@@ -524,17 +499,19 @@
   <!-- ==================== FOOTER ==================== -->
   <footer class="footer">
     <div class="container">
-      <div class="footer-links">
-        <a href="#ciclo">El ciclo</a>
+      <a href="#hero" class="imhomi-logo">ImHom<span class="i-teal">i</span></a>
+      <nav class="footer-links">
+        <a href="#diferencia">La diferencia</a>
+        <a href="#capacidades">Qué podés hacer</a>
+        <a href="#destacados">Destacados</a>
         <a href="#confianza">Confianza</a>
-        <a href="privacy.html">Política de Privacidad</a>
-        <a href="terms.html">Términos y Condiciones</a>
+        <a href="privacy.html">Privacidad</a>
+        <a href="terms.html">Términos</a>
         <a href="mailto:hola@imhomi.com" class="footer-email">hola@imhomi.com</a>
-      </div>
-      <p class="footer-copy">&copy; <span id="year">2025</span> ImHomi. Todos los derechos reservados.</p>
-      <a href="https://dimonkey.com" target="_blank" rel="noopener" class="footer-brand">
-        <span>Desarrollado por</span>
-        <span class="dm-logo">DiMonkey</span>
+      </nav>
+      <p class="footer-copy">© <span id="year">2026</span> ImHomi. Hecho en Costa Rica.</p>
+      <a href="https://www.dimonkey.com" target="_blank" rel="noopener" class="footer-brand">
+        Un producto de <span class="dm-logo">DiMonkey</span>
       </a>
     </div>
   </footer>

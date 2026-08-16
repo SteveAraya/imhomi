@@ -28,8 +28,8 @@ BOLD = HERE / "SpaceGrotesk-Bold.ttf"
 MEDIUM = HERE / "SpaceGrotesk-Medium.ttf"
 
 WORDMARK = "ImHomi"
-HEADLINE = "Del primer mensaje a la devolución del depósito"
-SUB = "Búsqueda, chat, visitas, contrato digital y liquidación del depósito. Publicá gratis."
+HEADLINE = "Todo lo que pasa en un alquiler, en una sola app"
+SUB = "Desde buscar cuarto hasta liquidar el depósito. Incluso si ya estás alquilando."
 DOMAIN = "imhomi.com"
 
 TEXT = "#FFFFFF"

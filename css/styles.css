@@ -261,268 +261,247 @@ ul { list-style: none; }
   text-wrap: pretty;
 }
 
-/* ============ FEATURES ============ */
-.features { padding: 6rem 0; position: relative; }
+/* ============ ICONOS ============ */
+/* El sprite vive en el DOM pero no ocupa lugar. */
+.icon-sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
 
-.features-grid {
-  display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem;
+/* Los iconos son de trazo y heredan el color del contenedor. */
+.ico,
+.cap-ico svg,
+.trust-icon svg {
+  width: 24px; height: 24px;
+  fill: none; stroke: currentColor; stroke-width: 1.6;
+  stroke-linecap: round; stroke-linejoin: round;
 }
 
-.feature-card {
+/* ============ CAPACIDADES (qué podés hacer) ============ */
+.caps { padding: 6rem 0; position: relative; }
+.caps-head { margin-bottom: 2.5rem; }
+.caps-head .section-subtitle { margin-bottom: 0; }
+
+/* --- Selector de situación --- */
+.caps-tabs {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem; margin-bottom: 2.5rem;
+}
+.caps-tab {
+  display: flex; align-items: flex-start; gap: 0.75rem;
+  text-align: left; padding: 1.1rem 1.2rem;
+  border-radius: var(--radius);
   background: var(--glass-bg); border: 1px solid var(--glass-border);
-  border-radius: var(--radius); padding: 2rem 1.5rem;
+  color: inherit; font: inherit; cursor: pointer;
+  transition: background var(--transition), border-color var(--transition), transform var(--transition);
+}
+.caps-tab:hover { background: var(--glass-hover); transform: translateY(-2px); }
+.caps-tab:focus-visible { outline: 2px solid var(--teal-light); outline-offset: 3px; }
+.caps-tab .ico {
+  flex: none; margin-top: 2px;
+  color: rgba(255, 255, 255, 0.42);
+  transition: color var(--transition);
+}
+.caps-tab > span { display: flex; flex-direction: column; gap: 0.15rem; min-width: 0; }
+.caps-tab strong { font-size: 0.92rem; font-weight: 700; line-height: 1.25; }
+.caps-tab small {
+  font-size: 0.72rem; line-height: 1.3;
+  color: rgba(255, 255, 255, 0.42);
+}
+.caps-tab.is-active {
+  background: linear-gradient(155deg, rgba(42, 157, 143, 0.16), rgba(255, 255, 255, 0.03));
+  border-color: rgba(78, 205, 196, 0.45);
+}
+.caps-tab.is-active .ico { color: var(--teal-light); }
+.caps-tab.is-active small { color: rgba(255, 255, 255, 0.55); }
+
+/* --- Panel de capacidades --- */
+.caps-panel[hidden] { display: none; }
+
+/* Encabezado de cada situación. En escritorio el nombre lo da la pestaña;
+   en móvil no hay pestañas y este toma su lugar. */
+.caps-panel-title { display: none; }
+.caps-panel { animation: capsIn 0.4s ease both; }
+@keyframes capsIn {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.caps-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+.cap {
+  background: var(--glass-bg); border: 1px solid var(--glass-border);
+  border-radius: var(--radius); padding: 1.6rem;
   transition: transform var(--transition), background var(--transition), border-color var(--transition);
-  position: relative; overflow: hidden;
 }
-.feature-card::before {
-  content: ''; position: absolute; top: 0; left: 0; right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--teal), transparent);
-  opacity: 0; transition: opacity var(--transition);
-}
-.feature-card:hover {
+.cap:hover {
   transform: translateY(-4px); background: var(--glass-hover);
-  border-color: rgba(42, 157, 143, 0.2);
+  border-color: rgba(42, 157, 143, 0.22);
 }
-.feature-card:hover::before { opacity: 1; }
+.cap--wide { grid-column: span 2; }
 
-.feature-icon {
-  width: 50px; height: 50px; border-radius: 14px;
+.cap-ico {
+  width: 44px; height: 44px; border-radius: 12px;
   display: flex; align-items: center; justify-content: center;
-  font-size: 1.4rem; margin-bottom: 1.2rem;
+  margin-bottom: 1rem;
 }
-.fi-teal  { background: rgba(42, 157, 143, 0.15); }
-.fi-coral { background: rgba(231, 111, 81, 0.15); }
-.fi-gold  { background: rgba(230, 184, 64, 0.15); }
+.cap-ico--teal  { background: rgba(42, 157, 143, 0.15); color: var(--teal-light); }
+.cap-ico--gold  { background: rgba(230, 184, 64, 0.14); color: var(--gold); }
+.cap-ico--coral { background: rgba(231, 111, 81, 0.14); color: var(--coral-light); }
 
-.feature-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.4rem; }
-.feature-card p { font-size: 0.85rem; color: rgba(255, 255, 255, 0.5); line-height: 1.6; }
-
-/* ============ HOW IT WORKS ============ */
-.how-section { padding: 6rem 0; position: relative; overflow: hidden; }
-.how-section .container {
-  display: grid; grid-template-columns: 1fr 1fr;
-  gap: 4rem; align-items: center;
+.cap h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.45rem; }
+.cap p {
+  font-size: 0.88rem; line-height: 1.65;
+  color: rgba(255, 255, 255, 0.58);
 }
+.cap p strong { color: rgba(255, 255, 255, 0.9); font-weight: 600; }
 
-.how-illustration {
-  width: 100%; max-width: 480px;
-  border-radius: 20px;
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35);
+/* ============ LA DIFERENCIA (pista comparativa) ============ */
+.gap {
+  padding: 5.5rem 0; position: relative;
+  border-top: 1px solid var(--glass-border);
+  border-bottom: 1px solid var(--glass-border);
+  background: rgba(0, 0, 0, 0.12);
 }
+.gap-head { margin-bottom: 2.5rem; }
+.gap-head .section-subtitle { margin-bottom: 0; max-width: 620px; }
 
-.steps-list { display: flex; flex-direction: column; gap: 1.5rem; }
-
-.step-item {
-  display: flex; align-items: flex-start; gap: 1.2rem;
-  padding: 1.2rem; border-radius: var(--radius);
-  transition: background var(--transition);
-}
-.step-item:hover { background: var(--glass-bg); }
-
-.step-num {
-  width: 48px; height: 48px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1.1rem; font-weight: 800; flex-shrink: 0;
-  background: var(--bg-primary); border: 2px solid var(--teal);
-  color: var(--teal-light); transition: var(--transition);
-}
-.step-item:hover .step-num {
-  background: var(--teal); color: var(--white);
-  box-shadow: 0 0 20px rgba(42, 157, 143, 0.3);
+/* La pista es ancha por naturaleza: scrollea dentro de su caja, nunca el body. */
+.gap-scroll { overflow-x: auto; padding-bottom: 0.5rem; }
+/* Sin gap de columna: así la regla del encabezado sale continua y las
+   barras se miden contra las etapas sin desfase. */
+.gap-track {
+  display: grid;
+  grid-template-columns: 150px repeat(6, minmax(104px, 1fr));
+  gap: 0.85rem 0;
+  align-items: center;
+  min-width: 780px;
 }
 
-.step-item h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.3rem; }
-.step-item p { font-size: 0.88rem; color: rgba(255, 255, 255, 0.5); }
+/* Fila 1: encabezados de etapa. El <ol> se disuelve para que cada
+   etapa caiga en su propia columna. */
+.gap-stages { display: contents; }
+.gap-corner,
+.gap-stages li {
+  padding-bottom: 0.7rem;
+  border-bottom: 1px solid var(--glass-border);
+}
+.gap-stages li {
+  list-style: none;          /* el <ol> ordena; el número no aporta acá */
+  font-size: 0.7rem; font-weight: 600;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.4);
+  text-align: center;
+}
 
-/* ============ HERO PROOF STRIP ============ */
-.hero-proof {
-  display: flex; align-items: center; gap: 1.6rem;
+.gap-name {
+  font-size: 0.85rem; font-weight: 700;
+  color: rgba(255, 255, 255, 0.5);
+  padding-right: 1rem;
+}
+.gap-name--us { color: var(--teal-light); }
+
+.gap-bar {
+  display: flex; align-items: center;
+  padding: 0.95rem 1.15rem; border-radius: 12px;
+  font-size: 0.8rem; line-height: 1.35;
+}
+.gap-bar--them {
+  grid-column: span 2; margin-right: 0.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px dashed rgba(255, 255, 255, 0.18);
+  color: rgba(255, 255, 255, 0.48);
+}
+.gap-bar--us {
+  grid-column: span 6;
+  background: linear-gradient(100deg, rgba(42, 157, 143, 0.3), rgba(42, 157, 143, 0.08));
+  border: 1px solid rgba(78, 205, 196, 0.38);
+  color: rgba(255, 255, 255, 0.92); font-weight: 600;
+}
+
+/* Donde el clasificado ya no está. */
+.gap-void {
+  grid-column: span 4;
+  display: flex; align-items: center; padding-left: 1.15rem;
+}
+.gap-cut {
+  display: inline-flex; align-items: center; gap: 0.65rem;
+  font-size: 0.76rem; font-weight: 600; color: var(--coral-light);
+}
+.gap-cut::before {
+  content: ''; width: 1px; height: 32px;
+  background: linear-gradient(180deg, transparent, var(--coral), transparent);
+}
+
+.gap-rail { display: none; }   /* solo existen en el layout angosto */
+
+.gap-foot {
+  margin-top: 1.8rem; max-width: 62ch;
+  font-size: 0.9rem; line-height: 1.7;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* Profundidad como prueba: lo construido, enumerado sin adjetivos. */
+.gap-proof {
+  display: flex; flex-wrap: wrap; gap: 0.6rem;
+  margin-top: 2.2rem;
+}
+.gap-proof li {
+  padding: 0.45rem 0.95rem; border-radius: var(--radius-pill);
+  background: var(--glass-bg); border: 1px solid var(--glass-border);
+  font-size: 0.78rem; color: rgba(255, 255, 255, 0.62);
+}
+
+/* ============ DESTACADOS ============ */
+.hi { padding: 6rem 0; position: relative; }
+.hi-head { margin-bottom: 3rem; }
+
+.hi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+.hi-card {
+  padding: 2.2rem 1.9rem; border-radius: var(--radius);
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.015));
+  border: 1px solid var(--glass-border);
+  transition: transform var(--transition), border-color var(--transition);
+}
+.hi-card:hover { transform: translateY(-4px); border-color: rgba(42, 157, 143, 0.25); }
+
+/* La etiqueta nombra el tema de la tarjeta; no son pasos de una secuencia. */
+.hi-tag {
+  display: inline-block; margin-bottom: 0.9rem;
+  padding: 0.25rem 0.7rem; border-radius: var(--radius-pill);
+  background: rgba(42, 157, 143, 0.14);
+  border: 1px solid rgba(42, 157, 143, 0.28);
+  font-size: 0.68rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--teal-light);
+}
+.hi-card h3 {
+  font-size: 1.25rem; font-weight: 800;
+  margin-bottom: 0.8rem; letter-spacing: -0.01em; text-wrap: balance;
+}
+.hi-card p {
+  font-size: 0.9rem; line-height: 1.7;
+  color: rgba(255, 255, 255, 0.58);
+}
+.hi-card p + p { margin-top: 0.8rem; }
+.hi-card p strong { color: rgba(255, 255, 255, 0.92); font-weight: 600; }
+
+/* ============ HERO CLAIM ============ */
+/* Un solo enunciado en vez de tres datos: el hero ya carga suficiente.
+   La primera línea le habla a quien publica, la segunda a quien busca. */
+.hero-claim {
   margin-top: 2.5rem; padding-top: 2rem;
   border-top: 1px solid var(--glass-border);
   max-width: 460px;
 }
-.proof-item { display: flex; flex-direction: column; gap: 0.15rem; }
-.proof-item strong {
-  font-size: 1.5rem; font-weight: 800; letter-spacing: -0.02em;
-  color: var(--teal-light); line-height: 1;
+.hero-claim strong {
+  display: block;
+  font-size: 1.65rem; font-weight: 800;
+  letter-spacing: -0.02em; line-height: 1.15;
 }
-.proof-item span {
-  font-size: 0.72rem; line-height: 1.35;
-  color: rgba(255, 255, 255, 0.45);
-}
-.proof-sep { width: 1px; height: 34px; background: var(--glass-border); flex-shrink: 0; }
-
-/* ============ CONTRAST (problema) ============ */
-.contrast { padding: 6rem 0; position: relative; }
-.contrast-head { max-width: 620px; margin-bottom: 3.5rem; }
-
-.contrast-grid {
-  display: grid; grid-template-columns: 1fr auto 1fr;
-  gap: 1.5rem; align-items: stretch;
-}
-
-.contrast-col {
-  border-radius: var(--radius); padding: 2rem 1.75rem;
-  border: 1px solid var(--glass-border);
-  background: var(--glass-bg);
-}
-.contrast-col--before { opacity: 0.72; }
-.contrast-col--after {
-  background: linear-gradient(160deg, rgba(42, 157, 143, 0.10), rgba(42, 157, 143, 0.02));
-  border-color: rgba(42, 157, 143, 0.22);
-}
-
-.contrast-tag {
-  display: inline-block; padding: 0.3rem 0.85rem;
-  border-radius: var(--radius-pill); margin-bottom: 1.4rem;
-  font-size: 0.7rem; font-weight: 700;
-  text-transform: uppercase; letter-spacing: 0.09em;
-}
-.contrast-tag--before {
-  background: rgba(255, 255, 255, 0.06);
-  color: rgba(255, 255, 255, 0.5);
-}
-.contrast-tag--after { background: rgba(42, 157, 143, 0.18); color: var(--teal-light); }
-
-.contrast-list { display: flex; flex-direction: column; gap: 0.9rem; }
-.contrast-list li {
-  position: relative; padding-left: 1.7rem;
-  font-size: 0.9rem; line-height: 1.55;
-  color: rgba(255, 255, 255, 0.62);
-}
-.contrast-list li::before {
-  position: absolute; left: 0; top: 0;
-  font-weight: 700; font-size: 0.95rem;
-}
-.contrast-col--before .contrast-list li::before { content: '✕'; color: var(--coral); opacity: 0.65; }
-.contrast-col--after .contrast-list li::before { content: '✓'; color: var(--teal-light); }
-.contrast-col--after .contrast-list li { color: rgba(255, 255, 255, 0.78); }
-
-.contrast-arrow {
-  display: flex; align-items: center; justify-content: center;
-  width: 44px; color: var(--teal); opacity: 0.5;
-}
-.contrast-arrow svg { width: 26px; height: 26px; }
-
-/* ============ CYCLE (el ciclo completo) ============ */
-.cycle { padding: 6rem 0; position: relative; overflow: hidden; }
-.cycle .container { position: relative; z-index: 1; }
-.cycle-head { max-width: 620px; margin-bottom: 2.5rem; }
-
-.cycle-layout {
-  display: grid;
-  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
-  gap: 3.5rem; align-items: start;
-}
-
-.cycle-aside { position: sticky; top: 6.5rem; }
-
-/* La ilustración trae fondo crema: se presenta como un panel cálido sobre el
-   dark theme. El recorte vertical elimina el aire muerto de arriba y abajo. */
-.cycle-figure {
-  border-radius: 20px; overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4);
-  background: #FBEFDC;
-}
-.cycle-figure img {
-  width: 100%; height: auto;
-  aspect-ratio: 4 / 5;
-  object-fit: cover; object-position: center 48%;
-}
-.cycle-figure figcaption {
-  padding: 0.9rem 1.2rem;
-  background: var(--bg-nav);
-  border-top: 1px solid rgba(42, 157, 143, 0.18);
-  font-size: 0.78rem; line-height: 1.5;
-  color: rgba(255, 255, 255, 0.55); text-align: center;
-}
-
-.cycle-rail {
-  position: relative; list-style: none;
-  padding-left: 4.5rem;
-}
-.cycle-rail::before {
-  content: ''; position: absolute;
-  left: 23px; top: 12px; bottom: 12px; width: 2px;
-  background: linear-gradient(180deg,
-    var(--teal) 0%, var(--teal) 45%,
-    var(--coral) 62%, var(--coral) 80%,
-    var(--gold) 100%);
-  opacity: 0.35;
-}
-
-.cycle-step { position: relative; padding-bottom: 1.5rem; }
-.cycle-step:last-child { padding-bottom: 0; }
-
-.cycle-node {
-  position: absolute; left: -4.5rem; top: 4px;
-  width: 48px; height: 48px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1.05rem; font-weight: 800;
-  background: var(--bg-primary);
-  border: 2px solid var(--teal); color: var(--teal-light);
-  transition: var(--transition); z-index: 1;
-}
-.cycle-node--coral { border-color: var(--coral); color: var(--coral-light); }
-.cycle-node--gold  { border-color: var(--gold);  color: var(--gold); }
-
-.cycle-step:hover .cycle-node {
-  background: var(--teal); color: var(--white);
-  box-shadow: 0 0 24px rgba(42, 157, 143, 0.4);
-}
-.cycle-step:hover .cycle-node--coral {
-  background: var(--coral); box-shadow: 0 0 24px rgba(231, 111, 81, 0.4);
-}
-.cycle-step:hover .cycle-node--gold {
-  background: var(--gold); color: var(--bg-primary);
-  box-shadow: 0 0 24px rgba(230, 184, 64, 0.35);
-}
-
-.cycle-card {
-  background: var(--glass-bg); border: 1px solid var(--glass-border);
-  border-radius: var(--radius); padding: 1.6rem 1.75rem;
-  transition: transform var(--transition), background var(--transition), border-color var(--transition);
-}
-.cycle-card:hover {
-  transform: translateX(4px);
-  background: var(--glass-hover);
-  border-color: rgba(42, 157, 143, 0.22);
-}
-.cycle-card--highlight {
-  background: linear-gradient(140deg, rgba(231, 111, 81, 0.09), rgba(255, 255, 255, 0.03));
-  border-color: rgba(231, 111, 81, 0.2);
-}
-
-.cycle-card-head {
-  display: flex; align-items: center; gap: 0.75rem;
-  flex-wrap: wrap; margin-bottom: 0.6rem;
-}
-.cycle-card h3 { font-size: 1.15rem; font-weight: 700; letter-spacing: -0.01em; }
-.cycle-card p {
-  font-size: 0.92rem; line-height: 1.65;
-  color: rgba(255, 255, 255, 0.58);
-}
-.cycle-card p strong { color: rgba(255, 255, 255, 0.88); font-weight: 600; }
-.cycle-card p em { color: var(--teal-light); font-style: normal; font-weight: 500; }
-
-.chip {
-  padding: 0.22rem 0.7rem; border-radius: var(--radius-pill);
-  font-size: 0.66rem; font-weight: 700;
-  text-transform: uppercase; letter-spacing: 0.06em;
-  white-space: nowrap;
-}
-.chip--teal  { background: rgba(42, 157, 143, 0.16);  color: var(--teal-light); }
-.chip--coral { background: rgba(231, 111, 81, 0.16);  color: var(--coral-light); }
-.chip--gold  { background: rgba(230, 184, 64, 0.16);  color: var(--gold); }
-
-.cycle-tags { display: flex; flex-wrap: wrap; gap: 0.45rem; margin-top: 1rem; }
-.cycle-tags span {
-  padding: 0.3rem 0.75rem; border-radius: 8px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--glass-border);
-  font-size: 0.73rem; color: rgba(255, 255, 255, 0.55);
+.hero-claim em { font-style: normal; color: var(--teal-light); }
+.hero-claim span {
+  display: block; margin-top: 0.45rem;
+  font-size: 0.95rem; color: rgba(255, 255, 255, 0.5);
 }
 
 /* ============ TRUST (confianza) ============ */
@@ -583,39 +562,225 @@ ul { list-style: none; }
 }
 .trust-demo-state--sent { color: var(--teal-light); font-weight: 600; }
 
-/* ============ ROLES ============ */
-.roles { padding: 6rem 0; position: relative; overflow: hidden; }
-.roles .container { position: relative; z-index: 1; }
+/* ============ ICONOS DE CONFIANZA ============ */
+.trust-icon.fi-teal  { background: rgba(42, 157, 143, 0.15); color: var(--teal-light); }
+.trust-icon.fi-gold  { background: rgba(230, 184, 64, 0.14); color: var(--gold); }
+.trust-icon.fi-coral { background: rgba(231, 111, 81, 0.14); color: var(--coral-light); }
 
-.roles-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+/* ============ RESPONSIVE ============ */
+@media (max-width: 1024px) {
+  .nav-links { gap: 1.4rem; }
 
-.role-card {
-  background: var(--glass-bg); border: 1px solid var(--glass-border);
-  border-radius: var(--radius); padding: 2.2rem 2rem;
-  display: flex; flex-direction: column;
-  transition: transform var(--transition), border-color var(--transition);
-}
-.role-card:hover { transform: translateY(-4px); border-color: rgba(42, 157, 143, 0.22); }
+  /* Cuatro situaciones no caben en una fila: pasan a dos por fila. */
+  .caps-tabs { grid-template-columns: repeat(2, 1fr); }
+  .caps-grid { grid-template-columns: repeat(2, 1fr); }
+  .cap--wide { grid-column: span 2; }
 
-.role-head { display: flex; align-items: center; gap: 0.85rem; margin-bottom: 1.5rem; }
-.role-icon {
-  width: 44px; height: 44px; border-radius: 12px;
-  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-}
-.role-card h3 { font-size: 1.2rem; font-weight: 700; letter-spacing: -0.01em; }
+  .hi-grid { grid-template-columns: 1fr; }
 
-.role-list { display: flex; flex-direction: column; gap: 0.85rem; }
-.role-list li {
-  position: relative; padding-left: 1.6rem;
-  font-size: 0.9rem; line-height: 1.55;
-  color: rgba(255, 255, 255, 0.6);
+  .trust-grid { grid-template-columns: 1fr; }
+  .trust-card--wide { grid-row: auto; }
 }
-.role-list li::before {
-  content: ''; position: absolute; left: 0; top: 0.5rem;
-  width: 6px; height: 6px; border-radius: 50%;
-  background: var(--teal-light);
+
+@media (max-width: 768px) {
+  .container { width: 92%; }
+
+  .hero-claim { margin-left: auto; margin-right: auto; }
+
+  .nav-links {
+    position: fixed; top: 0; right: -100%;
+    width: 75%; max-width: 320px; height: 100vh;
+    background: rgba(8, 22, 27, 0.97);
+    backdrop-filter: blur(24px);
+    flex-direction: column; padding: 5rem 2rem 2rem; gap: 1.5rem;
+    transition: right var(--transition);
+    border-left: 1px solid rgba(42, 157, 143, 0.12);
+  }
+  .nav-links.open { right: 0; }
+  .hamburger { display: flex; }
+
+  .hero { padding: 6rem 0 3rem; }
+  .hero .container { grid-template-columns: 1fr; text-align: center; }
+  .hero h1 { font-size: clamp(2rem, 8vw, 2.6rem); }
+  .hero p { margin-left: auto; margin-right: auto; font-size: 1rem; }
+  .hero-buttons { justify-content: center; }
+  .hero-tag { margin-left: auto; margin-right: auto; }
+  .phones-showcase { margin-top: 2.5rem; gap: 1rem; }
+  .phone--main { width: 190px; height: 390px; }
+  .phone--secondary { width: 160px; height: 330px; }
+  .phone-glow { width: 280px; height: 280px; }
+
+  .section-subtitle { margin-left: auto; margin-right: auto; }
+
+  /* ---- Capacidades: sin pestañas, todo a la vista ----
+     En móvil ocultar 3 de 4 paneles detrás de taps es esconder el contenido.
+     Las situaciones pasan a ser secciones apiladas que se leen de corrido. */
+  .caps { padding: 4rem 0; }
+  .caps-tabs { display: none; }
+  .caps-panel { animation: none; }
+  .caps-panel + .caps-panel { margin-top: 2.75rem; }
+  .caps-grid { grid-template-columns: 1fr; gap: 0.85rem; }
+  .cap--wide { grid-column: auto; }
+  .cap:hover { transform: none; }
+
+  /* Icono en línea con el título: en una columna angosta apilarlo cuesta
+     ~60px por tarjeta, y son veintiuna. */
+  .cap {
+    display: grid; grid-template-columns: 40px 1fr;
+    gap: 0 0.85rem; padding: 1.35rem 1.3rem;
+  }
+  .cap-ico {
+    width: 40px; height: 40px; margin-bottom: 0;
+    grid-row: span 2; align-self: start;
+  }
+  .cap h3 { align-self: center; margin-bottom: 0.55rem; }
+
+  .caps-panel-title {
+    display: block; margin-bottom: 1.1rem;
+    font-size: 1.15rem; font-weight: 800; letter-spacing: -0.01em;
+    padding-left: 0.9rem;
+    border-left: 3px solid var(--teal-light);
+  }
+  .caps-panel-title span {
+    display: block; margin-top: 0.15rem;
+    font-size: 0.8rem; font-weight: 500;
+    color: rgba(255, 255, 255, 0.45);
+  }
+
+  /* ---- La diferencia: el mismo gráfico, rotado ----
+     A lo ancho pedía 780px, o sea scroll horizontal. Acá las barras se
+     vuelven rieles verticales que comparten el eje de etapas: la corta
+     contra la larga sigue siendo el argumento, y ninguna etapa queda
+     "perteneciendo" a un solo lado. */
+  .gap { padding: 4rem 0; }
+  .gap-scroll { overflow: visible; }
+  .gap-track {
+    min-width: 0;
+    grid-template-columns: 8px 8px 1fr;
+    column-gap: 0.9rem; row-gap: 0;
+    align-items: stretch;
+  }
+  .gap-corner { display: none; }
+
+  /* Filas 1-4: leyenda. El nombre y su descripción salen del gráfico. */
+  .gap-name {
+    grid-column: 1 / -1; padding: 0;
+    display: flex; align-items: center; gap: 0.55rem;
+    font-size: 0.92rem; font-weight: 700;
+    letter-spacing: 0; text-transform: none;
+    color: rgba(255, 255, 255, 0.9);
+  }
+  .gap-name::before {
+    content: ''; width: 8px; height: 8px; border-radius: 2px;
+    background: rgba(255, 255, 255, 0.28);
+  }
+  .gap-name--us { color: var(--teal-light); }
+  .gap-name--us::before { background: var(--teal-light); }
+  .gap-name:not(.gap-name--us) { grid-row: 1; }
+  .gap-name--us { grid-row: 3; margin-top: 0.9rem; }
+
+  .gap-bar {
+    grid-column: 1 / -1;
+    display: block; padding: 0.2rem 0 0 1.35rem; margin: 0;
+    border: 0; background: none; border-radius: 0;
+    font-size: 0.82rem; font-weight: 400; line-height: 1.5;
+    color: rgba(255, 255, 255, 0.5);
+  }
+  .gap-bar--them { grid-row: 2; }
+  .gap-bar--us { grid-row: 4; color: rgba(255, 255, 255, 0.75); }
+
+  /* Filas 5-11: el gráfico. Un riel se corta, el otro sigue. */
+  .gap-rail { display: block; border-radius: 4px; }
+  .gap-rail--them {
+    grid-column: 1; grid-row: 5 / 8;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.06));
+  }
+  .gap-rail--us {
+    grid-column: 2; grid-row: 5 / 12;
+    background: linear-gradient(180deg, var(--teal-light), rgba(42, 157, 143, 0.45));
+  }
+
+  .gap-stages li {
+    grid-column: 3; display: flex; align-items: center;
+    text-align: left; border: 0; padding: 0.8rem 0;
+    font-size: 0.92rem; font-weight: 600;
+    letter-spacing: 0; text-transform: none;
+    color: rgba(255, 255, 255, 0.82);
+  }
+  .gap-stages li:nth-child(1) { grid-row: 5; padding-top: 1.5rem; }
+  .gap-stages li:nth-child(2) { grid-row: 6; }
+  .gap-stages li:nth-child(3) { grid-row: 8; }
+  .gap-stages li:nth-child(4) { grid-row: 9; }
+  .gap-stages li:nth-child(5) { grid-row: 10; }
+  .gap-stages li:nth-child(6) { grid-row: 11; }
+
+  .gap-void { grid-column: 3; grid-row: 7; display: block; padding: 0.5rem 0; }
+  .gap-cut {
+    display: flex; flex-direction: row; align-items: center; gap: 0;
+    font-size: 0.82rem; font-weight: 700;
+  }
+  .gap-cut::before {
+    width: 20px; height: 1px; margin-right: 0.6rem;
+    background: var(--coral);
+  }
+
+  .hi { padding: 4.5rem 0; }
+  .hi-card:hover { transform: none; }
+
+  .trust { padding: 4.5rem 0; }
+
+  .cta-box { padding: 3rem 1.5rem; }
 }
-.role-card:nth-child(2) .role-list li::before { background: var(--coral); }
+
+@media (max-width: 480px) {
+  .hero { padding: 5.5rem 0 2.5rem; }
+  .hero h1 { font-size: 2rem; line-height: 1.15; }
+  .hero p { font-size: 0.95rem; }
+
+  .hero-buttons { flex-direction: column; gap: 0.75rem; width: 100%; max-width: 280px; margin: 0 auto; }
+  .hero-buttons .btn { width: 100%; justify-content: center; padding: 0.95rem 1.5rem; }
+
+  .phones-showcase { gap: 0.5rem; margin-top: 2rem; }
+  .phone--main { width: 160px; height: 330px; border-radius: 26px; }
+  .phone--secondary { width: 135px; height: 280px; border-radius: 22px; }
+  .phone-glow { width: 220px; height: 220px; }
+
+  .section-title { font-size: 1.85rem; }
+
+  /* Una sola columna: el selector se lee como lista. */
+  .caps-tabs { grid-template-columns: 1fr; }
+  .caps-tab { padding: 0.95rem 1rem; }
+  .caps-tab:hover { transform: none; }
+  .cap { padding: 1.5rem 1.35rem; }
+
+  .gap-proof li { font-size: 0.74rem; }
+
+  .hi-card { padding: 1.8rem 1.35rem; }
+  .trust-card { padding: 1.6rem 1.35rem; }
+
+  .trust-demo-label { min-width: 0; }
+  .trust-demo-state { margin-left: 0; width: 100%; }
+
+  .cta-box { padding: 2.5rem 1.25rem; }
+  .cta-box h2 { font-size: 1.7rem; }
+  .store-badges { flex-direction: column; align-items: center; gap: 0.75rem; }
+
+  .hero-claim { padding-top: 1.5rem; margin-top: 2rem; }
+  .hero-claim strong { font-size: 1.4rem; }
+  .hero-claim span { font-size: 0.88rem; }
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .fade-in { opacity: 1; transform: none; }
+  .caps-panel { animation: none; }
+}
 
 /* ============ CTA ============ */
 .cta { padding: 5rem 0; position: relative; }
@@ -727,125 +892,3 @@ ul { list-style: none; }
 .legal-content ul li { margin-bottom: 0.4rem; line-height: 1.6; color: rgba(255, 255, 255, 0.7); }
 .legal-content a { color: var(--coral); font-weight: 600; }
 
-/* ============ RESPONSIVE ============ */
-@media (max-width: 1024px) {
-  .features-grid { grid-template-columns: repeat(2, 1fr); }
-
-  .nav-links { gap: 1.4rem; }
-
-  .contrast-grid { grid-template-columns: 1fr; gap: 1.25rem; }
-  .contrast-arrow { width: auto; height: 34px; transform: rotate(90deg); margin: 0 auto; }
-
-  /* Sin espacio para la columna sticky: la ilustración se centra entre el
-     encabezado y las etapas. Se mantiene 4/5 porque la imagen es muy vertical
-     y cualquier recorte más ancho corta la casa y las personas. */
-  .cycle-layout { grid-template-columns: 1fr; gap: 2.5rem; }
-  .cycle-aside { position: static; }
-  .cycle-figure { max-width: 380px; margin: 0 auto; }
-  .cycle-rail { max-width: 760px; margin: 0 auto; }
-
-  .trust-grid { grid-template-columns: 1fr; }
-  .trust-card--wide { grid-row: auto; }
-}
-
-@media (max-width: 768px) {
-  .container { width: 92%; }
-
-  .hero-proof {
-    justify-content: center; margin-left: auto; margin-right: auto;
-    gap: 1.1rem;
-  }
-  .proof-item strong { font-size: 1.25rem; }
-
-  .contrast { padding: 4.5rem 0; }
-  .contrast-head { margin-bottom: 2.5rem; }
-
-  .cycle { padding: 4.5rem 0; }
-  .cycle-head { margin-bottom: 2.5rem; }
-  .cycle-rail { padding-left: 3.25rem; }
-  .cycle-rail::before { left: 17px; }
-  .cycle-node { left: -3.25rem; width: 36px; height: 36px; font-size: 0.9rem; }
-  .cycle-card { padding: 1.35rem 1.35rem; }
-  .cycle-card:hover { transform: none; }
-
-  .trust { padding: 4.5rem 0; }
-  .roles { padding: 4.5rem 0; }
-  .roles-grid { grid-template-columns: 1fr; }
-
-  .nav-links {
-    position: fixed; top: 0; right: -100%;
-    width: 75%; max-width: 320px; height: 100vh;
-    background: rgba(8, 22, 27, 0.97);
-    backdrop-filter: blur(24px);
-    flex-direction: column; padding: 5rem 2rem 2rem; gap: 1.5rem;
-    transition: right var(--transition);
-    border-left: 1px solid rgba(42, 157, 143, 0.12);
-  }
-  .nav-links.open { right: 0; }
-  .hamburger { display: flex; }
-
-  .hero { padding: 6rem 0 3rem; }
-  .hero .container { grid-template-columns: 1fr; text-align: center; }
-  .hero h1 { font-size: clamp(2rem, 8vw, 2.6rem); }
-  .hero p { margin-left: auto; margin-right: auto; font-size: 1rem; }
-  .hero-buttons { justify-content: center; }
-  .hero-tag { margin-left: auto; margin-right: auto; }
-  .phones-showcase { margin-top: 2.5rem; gap: 1rem; }
-  .phone--main { width: 190px; height: 390px; }
-  .phone--secondary { width: 160px; height: 330px; }
-  .phone-glow { width: 280px; height: 280px; }
-
-  .features-grid { grid-template-columns: 1fr; max-width: 380px; margin: 0 auto; }
-
-  .how-section .container { grid-template-columns: 1fr; }
-  .how-illustration { max-width: 360px; margin: 0 auto 2rem; }
-  .section-subtitle { margin-left: auto; margin-right: auto; }
-
-  .cta-box { padding: 3rem 1.5rem; }
-}
-
-@media (max-width: 480px) {
-  .container { width: 92%; }
-
-  .hero { padding: 5.5rem 0 2.5rem; }
-  .hero h1 { font-size: 2rem; line-height: 1.15; }
-  .hero p { font-size: 0.95rem; }
-
-  .hero-buttons { flex-direction: column; gap: 0.75rem; width: 100%; max-width: 280px; margin: 0 auto; }
-  .hero-buttons .btn { width: 100%; justify-content: center; padding: 0.95rem 1.5rem; }
-
-  .phones-showcase { gap: 0.5rem; margin-top: 2rem; }
-  .phone--main { width: 160px; height: 330px; border-radius: 26px; }
-  .phone--secondary { width: 135px; height: 280px; border-radius: 22px; }
-  .phone-glow { width: 220px; height: 220px; }
-
-  .section-title { font-size: 1.85rem; }
-  .feature-card { padding: 1.5rem; }
-
-  .cta-box { padding: 2.5rem 1.25rem; }
-  .cta-box h2 { font-size: 1.7rem; }
-  .store-badges { flex-direction: column; align-items: center; gap: 0.75rem; }
-
-  .hero-proof { gap: 0.8rem; padding-top: 1.5rem; margin-top: 2rem; }
-  .proof-item strong { font-size: 1.1rem; }
-  .proof-item span { font-size: 0.66rem; }
-
-  .contrast-col { padding: 1.6rem 1.35rem; }
-  .trust-card { padding: 1.6rem 1.35rem; }
-  .role-card { padding: 1.8rem 1.35rem; }
-
-  .trust-demo-label { min-width: 0; }
-  .trust-demo-state { margin-left: 0; width: 100%; }
-
-}
-
-/* ---------- Reduced motion ---------- */
-@media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
-  .fade-in { opacity: 1; transform: none; }
-}
