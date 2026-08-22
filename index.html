@@ -6,11 +6,14 @@
   <title>ImHomi — Alquilar en Costa Rica, de principio a fin</title>
   <meta name="description" content="ImHomi cubre todo lo que pasa en un alquiler en Costa Rica: buscar casa o cuarto, chat, visitas, términos aceptados por ambas partes, convivencia, inventario y liquidación del depósito. Publicá gratis.">
   <meta name="keywords" content="alquiler Costa Rica, casas en alquiler, apartamentos en alquiler, cuartos en alquiler, roomie Costa Rica, contrato de alquiler, depósito de garantía, app alquiler Costa Rica">
+  <meta name="author" content="DiMonkey">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://www.imhomi.com/">
   <meta property="og:title" content="ImHomi — Todo lo que pasa en un alquiler, en una sola app">
   <meta property="og:description" content="Desde buscar cuarto hasta liquidar el depósito. Incluso si ya estás alquilando: traés tu contrato con un código y seguís desde ahí.">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="es_CR">
-  <meta property="og:url" content="https://www.imhomi.com">
+  <meta property="og:url" content="https://www.imhomi.com/">
   <meta property="og:site_name" content="ImHomi">
   <meta property="og:image" content="https://www.imhomi.com/og-image.png">
   <meta property="og:image:width" content="1200">
@@ -28,8 +31,46 @@
   <link rel="manifest" href="/site.webmanifest">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://www.imhomi.com/#organization",
+        "name": "ImHomi",
+        "url": "https://www.imhomi.com/",
+        "description": "Plataforma para alquilar en Costa Rica de principio a fin: búsqueda, chat, visitas, términos aceptados por ambas partes, convivencia, inventario y liquidación del depósito.",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://www.imhomi.com/icon-512.png",
+          "width": 512,
+          "height": 512
+        },
+        "areaServed": {
+          "@type": "Country",
+          "name": "Costa Rica"
+        },
+        "parentOrganization": {
+          "@type": "Organization",
+          "name": "DiMonkey",
+          "url": "https://www.dimonkey.com/"
+        }
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://www.imhomi.com/#website",
+        "url": "https://www.imhomi.com/",
+        "name": "ImHomi",
+        "inLanguage": "es-CR",
+        "publisher": { "@id": "https://www.imhomi.com/#organization" }
+      }
+    ]
+  }
+  </script>
 </head>
 <body>
 
@@ -104,12 +145,12 @@
         <div class="phone-glow"></div>
         <div class="phone phone--main">
           <div class="phone-screen">
-            <img src="assets/images/screen-main.png" alt="Pantalla de búsqueda de ImHomi" loading="eager">
+            <img src="assets/images/screen-main.webp" alt="Pantalla de búsqueda de ImHomi" width="500" height="1087" loading="eager" fetchpriority="high" decoding="async">
           </div>
         </div>
         <div class="phone phone--secondary">
           <div class="phone-screen">
-            <img src="assets/images/screen-login.png" alt="Pantalla de inicio de sesión de ImHomi" loading="lazy">
+            <img src="assets/images/screen-login.webp" alt="Pantalla de inicio de sesión de ImHomi" width="440" height="957" loading="lazy" decoding="async">
           </div>
         </div>
       </div>
