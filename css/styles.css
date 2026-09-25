@@ -226,16 +226,21 @@ ul { list-style: none; }
   transition: transform 0.6s ease;
 }
 .phone--main {
-  width: 250px; height: 510px;
-  transform: rotateY(-5deg) rotateX(2deg); z-index: 2;
+  /* Alto = ancho x 2.174, la proporcion de las capturas: si no, cover recorta */
+  width: 250px; height: 537px;
+  transform: rotateX(2deg); z-index: 2;
 }
-.phone--secondary {
-  width: 220px; height: 450px;
-  transform: rotateY(6deg) rotateX(2deg) translateY(20px);
+.phone--secondary,
+.phone--tertiary {
+  width: 220px; height: 471px;
   z-index: 1; opacity: 0.9;
 }
+.phone--secondary { transform: rotateY(6deg) rotateX(2deg) translateY(20px); }
+/* La de registro va al otro lado, espejada, para que el trio quede simetrico */
+.phone--tertiary { transform: rotateY(-6deg) rotateX(2deg) translateY(20px); }
 .phone--main:hover { transform: rotateY(0) rotateX(0) scale(1.02); }
-.phone--secondary:hover { transform: rotateY(0) rotateX(0) translateY(10px) scale(1.02); opacity: 1; }
+.phone--secondary:hover,
+.phone--tertiary:hover { transform: rotateY(0) rotateX(0) translateY(10px) scale(1.02); opacity: 1; }
 
 .phone-screen { width: 100%; height: 100%; }
 .phone-screen img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
@@ -580,6 +585,9 @@ ul { list-style: none; }
 
   .trust-grid { grid-template-columns: 1fr; }
   .trust-card--wide { grid-row: auto; }
+
+  /* Tres telefonos se salen del ancho: se queda el par principal */
+  .phone--tertiary { display: none; }
 }
 
 @media (max-width: 768px) {
@@ -606,8 +614,8 @@ ul { list-style: none; }
   .hero-buttons { justify-content: center; }
   .hero-tag { margin-left: auto; margin-right: auto; }
   .phones-showcase { margin-top: 2.5rem; gap: 1rem; }
-  .phone--main { width: 190px; height: 390px; }
-  .phone--secondary { width: 160px; height: 330px; }
+  .phone--main { width: 190px; height: 406px; }
+  .phone--secondary { width: 160px; height: 341px; }
   .phone-glow { width: 280px; height: 280px; }
 
   .section-subtitle { margin-left: auto; margin-right: auto; }
@@ -741,8 +749,8 @@ ul { list-style: none; }
   .hero-buttons .btn { width: 100%; justify-content: center; padding: 0.95rem 1.5rem; }
 
   .phones-showcase { gap: 0.5rem; margin-top: 2rem; }
-  .phone--main { width: 160px; height: 330px; border-radius: 26px; }
-  .phone--secondary { width: 135px; height: 280px; border-radius: 22px; }
+  .phone--main { width: 160px; height: 341px; border-radius: 26px; }
+  .phone--secondary { width: 135px; height: 286px; border-radius: 22px; }
   .phone-glow { width: 220px; height: 220px; }
 
   .section-title { font-size: 1.85rem; }
