@@ -127,11 +127,13 @@ svg{display:block}
    ===================================================================== */
 .hdr-end{display:flex;align-items:center;gap:8px}
 .pause{position:relative;flex:none;display:grid;place-items:center;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.05);border:1px solid var(--line-2);color:var(--ink-2);transition:color .3s,background .3s,border-color .3s}
-.pause:hover{color:var(--ink);background:rgba(255,255,255,.1)}
+@media (hover:hover){.pause:hover{color:var(--ink);background:rgba(255,255,255,.1)}}
 .pause svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
 /* El texto es el nombre del botón y, a la vista, una etiqueta que aparece al apuntarlo o enfocarlo. */
 .pause-t{position:absolute;top:calc(100% + 10px);right:-4px;padding:7px 11px;border-radius:10px;background:#05141a;border:1px solid var(--line-2);box-shadow:0 12px 30px -12px rgba(0,0,0,.7);color:var(--ink);font-size:.8rem;font-weight:600;white-space:nowrap;opacity:0;translate:0 -4px;pointer-events:none;transition:opacity .25s,translate .25s var(--ease)}
-.pause:hover .pause-t,.pause:focus-visible .pause-t{opacity:1;translate:0 0}
+/* Solo con mouse: en el teléfono el :hover queda pegado después de tocar y el aviso tapaba el contenido. */
+@media (hover:hover) and (pointer:fine){.pause:hover .pause-t{opacity:1;translate:0 0}}
+.pause:focus-visible .pause-t{opacity:1;translate:0 0}
 /* En pausa queda a la vista, en dorado: que se note que algo está detenido. */
 .pause.is-paused{background:var(--gold);border-color:var(--gold);color:#1d1606}
 .pause .i-play{display:none;margin-left:2px}

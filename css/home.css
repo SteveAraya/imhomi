@@ -672,9 +672,14 @@
 .stack.loose .sc{position:relative;top:auto;transform:none;filter:none}
 @media (max-width:37.5em){.sc{padding:22px 18px 18px;border-radius:28px}.demo{padding:18px 14px;border-radius:22px}}
 /* Demo: el cuarto sale del contrato */
-.plan{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr) minmax(0,1fr);overflow-wrap:anywhere;grid-template-rows:96px 96px;gap:6px;padding:6px;border-radius:18px;background:var(--cream)}
+.plan{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr) minmax(0,1fr);grid-template-rows:96px 96px;gap:6px;padding:6px;border-radius:18px;background:var(--cream)}
 .room{border-radius:12px;background:#F3DDBC;color:#2B1D15;padding:10px 12px;display:flex;flex-direction:column;justify-content:flex-end;position:relative}
 .room b{font-size:.9rem;font-weight:800}.room small{font-size:.7rem;opacity:.7}
+/* El nombre baja entero de línea; la palabra de abajo, si no entra, se parte por sílaba y con guion
+   ("Compar-tidas"), no en cualquier letra. */
+.room small{-webkit-hyphens:auto;hyphens:auto}
+@media (max-width:30em){.room{padding:9px 8px}.room small{font-size:.66rem}}
+@media (max-width:24em){.room{padding:8px 6px}.room b{font-size:.82rem}.room small{font-size:.62rem}}
 .r-sala{grid-row:1/3;background:#EBCFA6}
 .r-3{background:#F3DDBC;transition:background .5s}
 .play .r-3{animation:libre 1.6s ease-in-out infinite 1.6s}
@@ -755,6 +760,12 @@
 .flip.turned{transform:rotateY(180deg)}
 .face{position:absolute;inset:0;-webkit-backface-visibility:hidden;backface-visibility:hidden;border-radius:20px;padding:18px;display:flex;flex-direction:column;gap:10px;background:#14313a;border:1px solid var(--line-2)}
 .face.back{transform:rotateY(180deg);background:linear-gradient(160deg,#17414a,#122d35);border-color:rgba(78,205,196,.45)}
+/* Safari no respeta backface-visibility acá y dibujaba la cara de atrás, en espejo, encima de la de
+   adelante. Cada cara se muestra solo de su lado: se cambian en la mitad del giro (cerca de los 90°). */
+.face.front{transform:rotateY(0deg);transition:visibility 0s .2s}
+.face.back{visibility:hidden;transition:visibility 0s .2s}
+.flip.turned .face.front{visibility:hidden}
+.flip.turned .face.back{visibility:visible}
 .face header{display:flex;align-items:center;gap:10px}
 .face header b{display:block;font-size:.92rem}.face header small{display:block;font-size:.75rem;color:var(--muted)}
 .stars{display:flex;gap:4px}

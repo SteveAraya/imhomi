@@ -241,8 +241,10 @@
     themLabel.classList.toggle('short', themLabel.scrollWidth > laneThem.clientWidth / 6 - 22);
     if (reduce) return;
     gap.classList.remove('loose');
+    // La altura real de la escena (100svh), no innerHeight: en el iPhone innerHeight crece cuando
+    // Safari esconde sus barras, la escena seguía fija y el final quedaba recortado.
     const cs = getComputedStyle(gapPin);
-    const room = innerHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
+    const room = gapPin.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom) - 8;
     gap.classList.toggle('loose', gapWrap.offsetHeight > room);
     lastP = -1;
   };
