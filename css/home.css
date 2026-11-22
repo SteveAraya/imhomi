@@ -486,7 +486,8 @@
 /* =====================================================================
    02 · CINTAS
    ===================================================================== */
-.bands{position:relative;height:170px;margin-block:10px;overflow:hidden}
+/* Por encima del camino (capa 3): la línea pasa por detrás de las cintas, no sobre las frases. */
+.bands{position:relative;z-index:4;height:170px;margin-block:10px;overflow:hidden}
 .band{position:absolute;left:-5%;right:-5%;top:50%;padding:15px 0;overflow:hidden;display:flex}
 .band--a{background:var(--teal);color:#05231f;transform:translateY(-50%) rotate(-3deg);z-index:2;box-shadow:0 20px 40px -20px rgba(0,0,0,.6)}
 .band--b{background:var(--cream);color:#2B1D15;transform:translateY(-50%) rotate(2.4deg)}
