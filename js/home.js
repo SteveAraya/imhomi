@@ -202,8 +202,21 @@
   /* ---------- Cintas ---------- */
   const proof = ['Contratos con enmiendas y renovaciones', 'Inventario con disputas y plazos', 'Calificación doble ciega', 'Liquidación con contrapropuesta', 'Incidencias con seguimiento', 'Acuerdos de convivencia', 'Vinculación por código', 'Alertas de búsqueda', 'Tipo de cambio oficial diario'];
   const moods = ['Buscar', 'Conversar', 'Visitar', 'Acordar', 'Convivir', 'Salir', 'y quedarse tranquilo'];
-  const fillTrack = (el, arr) => { const html = arr.map(t => `<span>${t}</span>`).join(''); el.innerHTML = html + html + html + html; };
-  fillTrack($('#trackA'), proof); fillTrack($('#trackB'), moods);
+  // Cada tira repite las frases solo lo justo para cubrir la cinta (dos mitades iguales: la animación
+  // corre -50% y empalma). Antes eran cuatro copias fijas: 11.626 px de tira, más de 34.000 en la
+  // pantalla de un iPhone, y Safari puede dejar en blanco una capa tan grande. La velocidad no cambia.
+  // Además va en dos mitades que se mueven juntas: cada una es su propia capa, de la mitad del tamaño.
+  const fillTrack = (el, arr, pxPerSec) => {
+    const one = arr.map(t => `<span>${t}</span>`).join('');
+    el.innerHTML = `<div class="grp">${one}</div>`;
+    const k = Math.max(1, Math.ceil(el.parentElement.offsetWidth / (el.firstElementChild.scrollWidth || 1)));
+    const half = one.repeat(k);
+    el.innerHTML = `<div class="grp">${half}</div><div class="grp" aria-hidden="true">${half}</div>`;
+    el.style.setProperty('--dur', (el.firstElementChild.scrollWidth / pxPerSec).toFixed(1) + 's');
+  };
+  const fillTracks = () => { fillTrack($('#trackA'), proof, 121); fillTrack($('#trackB'), moods, 39); };
+  fillTracks(); document.fonts?.ready.then(fillTracks);
+  let tkT, tkW = innerWidth; addEventListener('resize', () => { if (innerWidth === tkW) return; tkW = innerWidth; clearTimeout(tkT); tkT = setTimeout(fillTracks, 200); });
 
   /* ---------- La diferencia: escena que arma el scroll ---------- */
   const gap = $('#diferencia'), gapPin = $('.gap-pin', gap), gapWrap = $('.wrap', gap), gapTitle = $('#gapTitle');

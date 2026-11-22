@@ -490,13 +490,17 @@
 .band{position:absolute;left:-5%;right:-5%;top:50%;padding:15px 0;overflow:hidden;display:flex}
 .band--a{background:var(--teal);color:#05231f;transform:translateY(-50%) rotate(-3deg);z-index:2;box-shadow:0 20px 40px -20px rgba(0,0,0,.6)}
 .band--b{background:var(--cream);color:#2B1D15;transform:translateY(-50%) rotate(2.4deg)}
-.track{display:flex;flex:none;width:max-content;animation:marq 48s linear infinite}
-.band--b .track{animation-direction:reverse;animation-duration:56s}
-.bands:hover .track{animation-play-state:paused}
+.track{display:flex;flex:none;width:max-content}
+.track .grp{display:flex;flex:none;animation:marq var(--dur,48s) linear infinite}
+.band--b .track .grp{animation-direction:reverse}
+.bands:hover .track .grp{animation-play-state:paused}
 .track span{display:inline-flex;align-items:center;gap:16px;padding-inline:20px;font-weight:800;font-size:1.08rem;letter-spacing:-.01em;white-space:nowrap}
 .track span::after{content:"✦";font-size:.85rem;opacity:.6;margin-left:20px}
 .band--b .track span{font-family:var(--serif);font-style:italic;font-weight:400;font-size:1.3rem}
-@keyframes marq{to{transform:translateX(-50%)}}
+@keyframes marq{to{transform:translateX(-100%)}}
+/* En el teléfono las cintas se cruzaban casi encimadas y la verde tapaba entera a la crema:
+   se separan, una arriba y otra abajo, y se cruzan apenas en un costado. */
+@media (max-width:47.5em){.bands{height:190px}.band--a{top:34%}.band--b{top:68%}}
 
 /* =====================================================================
    03 · LA DIFERENCIA (escena fija que se arma con el scroll)
