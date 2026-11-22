@@ -31,8 +31,11 @@
   <link rel="manifest" href="/site.webmanifest">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css">
+  <!-- Inter como fuente variable (un solo archivo para 400–900) e Instrument Serif solo en cursiva, la única que se usa. -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400..900&family=Instrument+Serif:ital@1&display=swap">
+  <link rel="stylesheet" href="css/site.css">
+  <link rel="stylesheet" href="css/home.css">
+  <script>document.documentElement.classList.add('js')</script>
 
   <script type="application/ld+json">
   {
@@ -74,599 +77,669 @@
 </head>
 <body>
 
-  <!-- Sprite de iconos. Trazo de 1.6 sobre grilla de 24, heredando currentColor. -->
-  <svg class="icon-sprite" aria-hidden="true" focusable="false">
-    <defs>
-      <g id="i-search"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5"/></g>
-      <g id="i-bell"><path d="M18 15V10a6 6 0 1 0-12 0v5l-1.5 2.5h15L18 15Z"/><path d="M10 20a2 2 0 0 0 4 0"/></g>
-      <g id="i-chat"><path d="M20 12a7 7 0 0 1-7 7H8l-4 3v-4.5A7 7 0 0 1 4 12v-1a7 7 0 0 1 7-7h2a7 7 0 0 1 7 7Z"/></g>
-      <g id="i-calendar"><rect x="4" y="5" width="16" height="16" rx="2.5"/><path d="M4 10h16M9 3v4M15 3v4"/></g>
-      <g id="i-star"><path d="M12 4l2.4 5 5.6.8-4 3.9 1 5.5-5-2.6-5 2.6 1-5.5-4-3.9 5.6-.8L12 4Z"/></g>
-      <g id="i-heart"><path d="M12 20s-7-4.4-7-9.2A3.9 3.9 0 0 1 12 8a3.9 3.9 0 0 1 7 2.8C19 15.6 12 20 12 20Z"/></g>
-      <g id="i-door"><path d="M6 21V4.5A1.5 1.5 0 0 1 7.5 3h9A1.5 1.5 0 0 1 18 4.5V21"/><path d="M4 21h16"/><circle cx="14.5" cy="12.5" r="1"/></g>
-      <g id="i-users"><circle cx="9" cy="9" r="3.2"/><path d="M3.5 20a5.5 5.5 0 0 1 11 0"/><path d="M16 6.3a3.2 3.2 0 0 1 0 6.4M17.5 20a5.5 5.5 0 0 0-2.2-4.4"/></g>
-      <g id="i-ticket"><path d="M4 9.5V7a1.5 1.5 0 0 1 1.5-1.5h13A1.5 1.5 0 0 1 20 7v2.5a2.5 2.5 0 0 0 0 5V17a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 17v-2.5a2.5 2.5 0 0 0 0-5Z"/><path d="M12 8.5v7"/></g>
-      <g id="i-split"><rect x="3.5" y="5" width="17" height="14" rx="2.5"/><path d="M12 5v14"/><circle cx="7.75" cy="12" r="1.3"/><circle cx="16.25" cy="12" r="1.3"/></g>
-      <g id="i-clipboard"><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M9 5V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1"/><path d="M9 13l2 2 4-4"/></g>
-      <g id="i-coins"><ellipse cx="12" cy="7" rx="6.5" ry="3"/><path d="M5.5 7v5c0 1.7 2.9 3 6.5 3s6.5-1.3 6.5-3V7"/><path d="M5.5 12v5c0 1.7 2.9 3 6.5 3s6.5-1.3 6.5-3v-5"/></g>
-      <g id="i-shield"><path d="M12 3l7 2.8V11c0 4.3-2.9 7.8-7 9.4-4.1-1.6-7-5.1-7-9.4V5.8L12 3Z"/><path d="M9 11.8l2 2 4-4"/></g>
-      <g id="i-clock"><circle cx="12" cy="12" r="8"/><path d="M12 7.5V12l3 2"/></g>
-      <g id="i-tag"><path d="M11 3H4.5A1.5 1.5 0 0 0 3 4.5V11l9.5 9.5a1.5 1.5 0 0 0 2.1 0l6-6a1.5 1.5 0 0 0 0-2.1L11 3Z"/><circle cx="7.5" cy="7.5" r="1.2"/></g>
-      <g id="i-doc"><path d="M14 3H7a1.5 1.5 0 0 0-1.5 1.5v15A1.5 1.5 0 0 0 7 21h10a1.5 1.5 0 0 0 1.5-1.5V7.5L14 3Z"/><path d="M13.5 3v5h5"/><path d="M9 16.5c1.5-3.5 3-3.5 4.5 0"/></g>
-      <g id="i-pin"><path d="M12 21s6-5.2 6-10a6 6 0 1 0-12 0c0 4.8 6 10 6 10Z"/><circle cx="12" cy="11" r="2.2"/></g>
-      <g id="i-swap"><path d="M4 8h13l-3-3M20 16H7l3 3"/></g>
-    </defs>
-  </svg>
+<a class="skip" href="#main">Saltar al contenido</a>
 
-  <!-- ==================== HEADER ==================== -->
-  <header class="header" id="header">
-    <div class="container">
-      <a href="#hero" class="imhomi-logo">ImHom<span class="i-teal">i</span></a>
-      <nav class="nav-links" id="nav">
-        <a href="#diferencia">La diferencia</a>
-        <a href="#capacidades">Qué podés hacer</a>
-        <a href="#confianza">Confianza</a>
-        <a href="#cta" class="nav-cta">Descargar</a>
-      </nav>
-      <button class="hamburger" id="hamburger" aria-label="Menú" aria-expanded="false">
-        <span></span><span></span><span></span>
-      </button>
+<div class="progress" id="progress" aria-hidden="true"></div>
+
+<!-- El camino de la ilustración recorre la página por los márgenes y termina en la casa -->
+<svg class="camino" id="camino" aria-hidden="true">
+  <defs><linearGradient id="caminoGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4ECDC4"/><stop offset=".55" stop-color="#E6B840"/><stop offset="1" stop-color="#FF8A6B"/></linearGradient></defs>
+  <path class="c-base"/><path class="c-road" id="cRoad"/>
+  <g class="c-end" id="cEnd"><circle class="c-ring" r="16"/><circle class="c-ring c-ring2" r="16"/><circle class="c-dot" r="7"/></g>
+  <g class="c-car" id="cCar"><circle r="15"/><svg x="-9" y="-9" width="18" height="18" viewBox="0 0 24 24"><use href="#i-house"/></svg></g>
+</svg>
+
+<!-- Íconos: trazo 1.7 sobre grilla de 24, heredan el color -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <g id="i-search"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5"/></g>
+    <g id="i-bell"><path d="M18 15V10a6 6 0 1 0-12 0v5l-1.5 2.5h15L18 15Z"/><path d="M10 20a2 2 0 0 0 4 0"/></g>
+    <g id="i-chat"><path d="M20 12a7 7 0 0 1-7 7H8l-4 3v-4.5A7 7 0 0 1 4 12v-1a7 7 0 0 1 7-7h2a7 7 0 0 1 7 7Z"/></g>
+    <g id="i-calendar"><rect x="4" y="5" width="16" height="16" rx="2.5"/><path d="M4 10h16M9 3v4M15 3v4"/></g>
+    <g id="i-star"><path d="M12 4l2.4 5 5.6.8-4 3.9 1 5.5-5-2.6-5 2.6 1-5.5-4-3.9 5.6-.8L12 4Z"/></g>
+    <g id="i-heart"><path d="M12 20s-7-4.4-7-9.2A3.9 3.9 0 0 1 12 8a3.9 3.9 0 0 1 7 2.8C19 15.6 12 20 12 20Z"/></g>
+    <g id="i-door"><path d="M6 21V4.5A1.5 1.5 0 0 1 7.5 3h9A1.5 1.5 0 0 1 18 4.5V21"/><path d="M4 21h16"/><circle cx="14.5" cy="12.5" r="1"/></g>
+    <g id="i-users"><circle cx="9" cy="9" r="3.2"/><path d="M3.5 20a5.5 5.5 0 0 1 11 0"/><path d="M16 6.3a3.2 3.2 0 0 1 0 6.4M17.5 20a5.5 5.5 0 0 0-2.2-4.4"/></g>
+    <g id="i-ticket"><path d="M4 9.5V7a1.5 1.5 0 0 1 1.5-1.5h13A1.5 1.5 0 0 1 20 7v2.5a2.5 2.5 0 0 0 0 5V17a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 17v-2.5a2.5 2.5 0 0 0 0-5Z"/><path d="M12 8.5v7"/></g>
+    <g id="i-split"><rect x="3.5" y="5" width="17" height="14" rx="2.5"/><path d="M12 5v14"/><circle cx="7.75" cy="12" r="1.3"/><circle cx="16.25" cy="12" r="1.3"/></g>
+    <g id="i-clipboard"><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M9 5V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1"/><path d="M9 13l2 2 4-4"/></g>
+    <g id="i-coins"><ellipse cx="12" cy="7" rx="6.5" ry="3"/><path d="M5.5 7v5c0 1.7 2.9 3 6.5 3s6.5-1.3 6.5-3V7"/><path d="M5.5 12v5c0 1.7 2.9 3 6.5 3s6.5-1.3 6.5-3v-5"/></g>
+    <g id="i-shield"><path d="M12 3l7 2.8V11c0 4.3-2.9 7.8-7 9.4-4.1-1.6-7-5.1-7-9.4V5.8L12 3Z"/><path d="M9 11.8l2 2 4-4"/></g>
+    <g id="i-clock"><circle cx="12" cy="12" r="8"/><path d="M12 7.5V12l3 2"/></g>
+    <g id="i-tag"><path d="M11 3H4.5A1.5 1.5 0 0 0 3 4.5V11l9.5 9.5a1.5 1.5 0 0 0 2.1 0l6-6a1.5 1.5 0 0 0 0-2.1L11 3Z"/><circle cx="7.5" cy="7.5" r="1.2"/></g>
+    <g id="i-doc"><path d="M14 3H7a1.5 1.5 0 0 0-1.5 1.5v15A1.5 1.5 0 0 0 7 21h10a1.5 1.5 0 0 0 1.5-1.5V7.5L14 3Z"/><path d="M13.5 3v5h5"/><path d="M9 16.5c1.5-3.5 3-3.5 4.5 0"/></g>
+    <g id="i-pin"><path d="M12 21s6-5.2 6-10a6 6 0 1 0-12 0c0 4.8 6 10 6 10Z"/><circle cx="12" cy="11" r="2.2"/></g>
+    <g id="i-swap"><path d="M4 8h13l-3-3M20 16H7l3 3"/></g>
+    <g id="i-check"><path d="M6 12.5l4 4 8-9"/></g>
+    <g id="i-replay"><path d="M4 12a8 8 0 1 0 2.4-5.7"/><path d="M4 4v4.5h4.5"/></g>
+    <g id="i-chevd"><path d="M6 9l6 6 6-6"/></g>
+    <g id="i-back"><path d="M15 4l-8 8 8 8"/></g>
+    <g id="i-chev"><path d="M9 5l7 7-7 7"/></g>
+    <g id="i-tune"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></g>
+    <g id="i-photo"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 16l5-5 4 4 3-3 6 6"/></g>
+    <g id="i-verified"><path d="M12 2.5l2.4 1.8 3-.2.9 2.9 2.5 1.7-1 2.8 1 2.8-2.5 1.7-.9 2.9-3-.2L12 21.5l-2.4-1.8-3 .2-.9-2.9-2.5-1.7 1-2.8-1-2.8 2.5-1.7.9-2.9 3 .2z"/><path d="M8.5 12l2.4 2.4 4.6-4.8"/></g>
+    <g id="i-checkc"><circle cx="12" cy="12" r="9"/><path d="M8 12.2l2.8 2.8 5.2-5.6"/></g>
+    <g id="i-bed"><path d="M3 19V6M3 15h18v4M21 15v-3a3 3 0 0 0-3-3h-7v6"/><circle cx="7" cy="11" r="2"/></g>
+    <g id="i-shower"><path d="M5 21V7a3 3 0 0 1 6 0"/><path d="M7.5 10h7a3.5 3.5 0 0 0-7 0z"/><path d="M9 14v1M12 14v1M15 14v1M10.5 17.5v1M13.5 17.5v1"/></g>
+    <g id="i-ruler"><path d="M3 17L17 3l4 4L7 21z"/><path d="M7 13l2 2M10 10l2 2M13 7l2 2"/></g>
+    <g id="i-timer"><circle cx="12" cy="13.5" r="7.5"/><path d="M12 9.5v4l2.5 1.5M9.5 2.5h5"/></g>
+    <g id="i-info"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.8v.1"/></g>
+    <g id="i-hourglass"><path d="M6 3h12M6 21h12M7 3c0 5 10 5 10 9s-10 4-10 9M17 3c0 5-10 5-10 9s10 4 10 9"/></g>
+    <!-- Íconos llenos de la app (Font Awesome) -->
+    <g id="m-building"><path fill-rule="evenodd" d="M5 2h14v20h-5v-4h-4v4H5zM8 5v2h2V5zm6 0v2h2V5zM8 9v2h2V9zm6 0v2h2V9zm-6 4v2h2v-2zm6 0v2h2v-2z"/></g>
+    <g id="m-house"><path d="M12 3 1.5 12H5v9h5.5v-6h3v6H19v-9h3.5z"/></g>
+    <g id="m-door"><path fill-rule="evenodd" d="M3 21V4l10-2v20zm7.5-10a1.2 1.2 0 1 0 0 2.4 1.2 1.2 0 0 0 0-2.4zM14.5 4H20v15h2v2h-7.5z"/></g>
+    <g id="m-ugroup"><circle cx="8.5" cy="7.5" r="3.8"/><circle cx="17" cy="8.5" r="3"/><path d="M1.5 20c0-4 3.1-6.8 7-6.8s7 2.8 7 6.8zM16.5 20c0-2.6-.8-4.6-2.3-6 .8-.4 1.7-.6 2.8-.6 3.1 0 5.5 2.3 5.5 6.6z"/></g>
+    <g id="m-paw"><ellipse cx="5.5" cy="10.5" rx="2.1" ry="2.6"/><ellipse cx="9.3" cy="5.8" rx="2.1" ry="2.7"/><ellipse cx="14.7" cy="5.8" rx="2.1" ry="2.7"/><ellipse cx="18.5" cy="10.5" rx="2.1" ry="2.6"/><path d="M12 11c-3.1 0-6.3 4-6.3 6.6 0 1.9 1.5 2.7 3.1 2.2 1.3-.4 2.1-.8 3.2-.8s1.9.4 3.2.8c1.6.5 3.1-.3 3.1-2.2C18.3 15 15.1 11 12 11z"/></g>
+    <g id="m-locdot"><path fill-rule="evenodd" d="M12 1.5a7.5 7.5 0 0 0-7.5 7.5c0 5.3 7.5 13.5 7.5 13.5s7.5-8.2 7.5-13.5A7.5 7.5 0 0 0 12 1.5zm0 10.3a2.8 2.8 0 1 1 0-5.6 2.8 2.8 0 0 1 0 5.6z"/></g>
+    <g id="m-mappin"><circle cx="12" cy="7" r="5"/><path d="M11 11h2v11h-2z"/></g>
+    <g id="m-compass"><path fill-rule="evenodd" d="M12 1.5a10.5 10.5 0 1 0 0 21 10.5 10.5 0 0 0 0-21zm4.5 6-2.3 6.7-6.7 2.3 2.3-6.7z"/></g>
+    <g id="m-search"><path fill-rule="evenodd" d="M10.5 2a8.5 8.5 0 0 1 6.8 13.6l4.6 4.6-2 2-4.6-4.6A8.5 8.5 0 1 1 10.5 2zm0 3a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11z"/></g>
+    <g id="m-comment"><path fill-rule="evenodd" d="M12 3C6.5 3 2 6.6 2 11c0 2.3 1.2 4.4 3.2 5.8L4.4 21l4.6-2.3c1 .2 2 .3 3 .3 5.5 0 10-3.6 10-8S17.5 3 12 3zM7.6 12.4a1.4 1.4 0 1 1 0-2.8 1.4 1.4 0 0 1 0 2.8zm4.4 0a1.4 1.4 0 1 1 0-2.8 1.4 1.4 0 0 1 0 2.8zm4.4 0a1.4 1.4 0 1 1 0-2.8 1.4 1.4 0 0 1 0 2.8z"/></g>
+    <g id="m-bell"><path d="M12 22.5a2.6 2.6 0 0 0 2.6-2.5H9.4a2.6 2.6 0 0 0 2.6 2.5zM19 15.5V11a7 7 0 0 0-5.5-6.8V3.4a1.5 1.5 0 0 0-3 0v.8A7 7 0 0 0 5 11v4.5L3 18v1h18v-1z"/></g>
+    <g id="m-more"><circle cx="5" cy="12" r="2.2"/><circle cx="12" cy="12" r="2.2"/><circle cx="19" cy="12" r="2.2"/></g>
+    <g id="m-calcheck"><path fill-rule="evenodd" d="M7 2h2v2h6V2h2v2h2.5A1.5 1.5 0 0 1 21 5.5v15a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 20.5v-15A1.5 1.5 0 0 1 4.5 4H7zM5 9v11h14V9zm10.3 2.3 1.4 1.4-5.7 5.7-3.4-3.4 1.4-1.4 2 2z"/></g>
+    <g id="m-env"><path fill-rule="evenodd" d="M3 6.5A1.5 1.5 0 0 1 4.5 5h15A1.5 1.5 0 0 1 21 6.5v11a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 17.5zm2 .9V17h14V7.4l-7 5.1z"/></g>
+    <g id="m-plane"><path d="M22 2 2 10.5l7 2.6L19 5l-8.5 9.6v6.4l3.7-4.7 4.8 2.7z"/></g>
+    <g id="m-inbox"><path fill-rule="evenodd" d="M4.5 3h15l2.5 9v7.5a1.5 1.5 0 0 1-1.5 1.5h-17A1.5 1.5 0 0 1 2 19.5V12zm1.6 2L4.3 12H9l1 2h4l1-2h4.7l-1.8-7z"/></g>
+    <g id="m-send"><path d="M3 20.5 21 12 3 3.5V10l12 2-12 2z"/></g>
+    <g id="m-doc"><path fill-rule="evenodd" d="M6 2h8l6 6v12.5A1.5 1.5 0 0 1 18.5 22h-13A1.5 1.5 0 0 1 4 20.5v-17A1.5 1.5 0 0 1 5.5 2zm7 1.5V9h5.5zM8 13v1.6h8V13zm0 3.5v1.6h6v-1.6z"/></g>
+    <g id="i-house"><path d="M4 11l8-6.5 8 6.5"/><path d="M6 9.5V20h12V9.5"/><path d="M10 20v-5h4v5"/></g>
+  </defs>
+</svg>
+
+<!-- ==================== CABECERA ==================== -->
+<header class="hdr" id="hdr">
+  <a href="#inicio" class="logo" aria-label="ImHomi, inicio">ImHom<span class="idot">ı</span></a>
+  <nav class="nav" id="nav" aria-label="Secciones">
+    <span class="nav-ind" aria-hidden="true"></span>
+    <a href="#diferencia">La diferencia</a>
+    <a href="#capacidades">Qué podés hacer</a>
+    <a href="#solo-aca">Solo acá</a>
+    <a href="#confianza">Confianza</a>
+  </nav>
+  <div class="hdr-end">
+    <!-- Pausa de todo lo que se mueve solo (WCAG 2.2.2) -->
+    <button class="pause" id="pause" type="button"><svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5v14M15 5v14"/></svg><svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5l12 7-12 7z"/></svg><span class="pause-t">Pausar animaciones</span></button>
+    <a href="#descargar" class="btn btn--coral btn--sm magnet">Descargar</a>
+  </div>
+</header>
+
+
+
+<main id="main">
+<!-- ==================== 01 · HERO ==================== -->
+<section class="hero" id="inicio">
+  <div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+  <div class="dots" aria-hidden="true"></div>
+  <div class="spot" aria-hidden="true"></div>
+
+  <div class="wrap hero-grid">
+    <div>
+      <span class="tag" data-reveal><span class="dot"></span>Próximamente en Costa Rica</span>
+      <h1 data-split>Todo lo que pasa en un alquiler, <span class="serif shimmer">en una sola app</span></h1>
+      <p class="lead" data-reveal style="--d:4">Desde buscar cuarto hasta liquidar el depósito. Y si ya estás alquilando, traés tu contrato con un código y seguís desde ahí.</p>
+      <div class="hero-cta" data-reveal style="--d:5">
+        <a href="#descargar" class="btn btn--coral magnet">Descargá la app <span class="arr">→</span></a>
+        <a href="#diferencia" class="btn btn--glass magnet">Ver la diferencia</a>
+      </div>
+      <div class="claim" data-reveal style="--d:6"><b>Publicar es <em>gratis</em>.</b><span>Y nadie paga por aparecer primero.</span></div>
     </div>
-  </header>
 
-  <!-- ==================== HERO ==================== -->
-  <section class="hero" id="hero">
-    <div class="orb orb--teal" style="width:420px;height:420px;top:8%;right:5%;"></div>
-    <div class="orb orb--coral" style="width:320px;height:320px;bottom:10%;left:-8%;"></div>
-    <div class="orb orb--teal" style="width:180px;height:180px;top:55%;left:38%;"></div>
+    <div class="stage" data-reveal style="--d:3">
+      <p class="sr">Demostración: la app de ImHomi pasa por los seis momentos de un alquiler, desde buscar hasta liquidar el depósito.</p>
+      <div class="float f1" data-depth="26" aria-hidden="true"><div class="chipc"></div></div>
+      <div class="float f2" data-depth="-34" aria-hidden="true"><div class="chipc"></div></div>
 
-    <div class="container">
-      <div class="hero-text">
-        <div class="hero-tag fade-in">
-          <span class="dot"></span> Próximamente en Costa Rica
-        </div>
-        <h1 class="fade-in fade-in-d1">Todo lo que pasa en un alquiler, <span class="gradient-text">en una sola app</span></h1>
-        <p class="fade-in fade-in-d2">
-          Desde buscar cuarto hasta liquidar el depósito. Incluso si ya estás alquilando:
-          traés tu contrato con un código y seguís desde ahí.
-        </p>
-        <div class="hero-buttons fade-in fade-in-d3">
-          <a href="#cta" class="btn btn--coral">Descargá la app</a>
-          <a href="#capacidades" class="btn btn--glass">Ver qué podés hacer</a>
-        </div>
+      <div class="phone" id="phone" aria-hidden="true">
+        <div class="glass">
+          <div class="island"></div>
+          <div class="sbar"><span>9:41</span><span>●●● ▮</span></div>
 
-        <div class="hero-claim fade-in fade-in-d4">
-          <strong>Publicar es <em>gratis</em>.</strong>
-          <span>Y nadie paga por aparecer primero.</span>
+          <!-- Las pantallas calcan la app (imhomi_mobile) a 390 de ancho y se escalan al teléfono -->
+
+          <!-- 1 · Buscar: la principal y, después, los resultados -->
+          <div class="scr on">
+            <div class="sv v1" style="--sw:3100ms">
+              <div class="m-mainbg"><img src="assets/images/fondo-app.webp" alt="" width="390" height="845" decoding="async"><i class="m-orbp"></i></div>
+              <div class="m-main">
+                <div class="m-hdr a" style="--d:0"><span class="m-word">ImHom<b>i</b></span><span class="m-country"><i></i>🇨🇷 Costa Rica<svg class="ln" viewBox="0 0 24 24"><use href="#i-chevd"/></svg></span></div>
+                <h4 class="m-hero a" style="--d:80">Encontrá tu <b>hogar ideal</b></h4>
+                <p class="m-label a" style="--d:140">¿Qué tipo de espacio buscás?</p>
+                <div class="m-cats a" style="--d:200">
+                  <div class="m-cat"><span class="m-catic"><svg class="fl" viewBox="0 0 24 24"><use href="#m-building"/></svg></span>Apartamentos</div>
+                  <div class="m-cat go" style="--d:700"><span class="m-check"><svg class="ln" viewBox="0 0 24 24" style="stroke-width:3.4"><use href="#i-check"/></svg></span><span class="m-catic"><svg class="fl" viewBox="0 0 24 24"><use href="#m-house"/></svg></span>Casas</div>
+                </div>
+                <p class="m-label a" style="--d:260">Preferencias</p>
+                <div class="m-prefs a" style="--d:320">
+                  <div class="m-pref go" style="--d:1100"><svg class="fl" viewBox="0 0 24 24"><use href="#m-ugroup"/></svg><span>Ser roomie</span><span class="m-sw"><i></i></span></div>
+                  <div class="m-pref go" style="--d:1400"><svg class="fl" viewBox="0 0 24 24"><use href="#m-paw"/></svg><span>Mascotas</span><span class="m-sw"><i></i></span></div>
+                </div>
+                <p class="m-label a" style="--d:380">¿Dónde buscás?</p>
+                <div class="m-pks a" style="--d:440">
+                  <div class="m-pk go" style="--d:1800"><svg class="fl" viewBox="0 0 24 24"><use href="#m-locdot"/></svg><span class="xf" style="--d:1800"><span>Provincia</span><span>San José</span></span><span class="xf end" style="--d:1800"><svg class="ln" viewBox="0 0 24 24"><use href="#i-chevd"/></svg><span class="m-x">✕</span></span></div>
+                  <div class="m-pk dis go" style="--d:2150"><svg class="fl" viewBox="0 0 24 24"><use href="#m-mappin"/></svg><span class="xf" style="--d:2150"><span>Cantón</span><span>Montes de Oca</span></span><span class="xf end" style="--d:2150"><svg class="ln" viewBox="0 0 24 24"><use href="#i-chevd"/></svg><span class="m-x">✕</span></span></div>
+                  <div class="m-pk dis go" style="--d:2500"><svg class="fl" viewBox="0 0 24 24"><use href="#m-compass"/></svg><span class="xf" style="--d:2500"><span>Distrito</span><span>San Pedro</span></span><span class="xf end" style="--d:2500"><svg class="ln" viewBox="0 0 24 24"><use href="#i-chevd"/></svg><span class="m-x">✕</span></span></div>
+                </div>
+                <div class="m-btn shine tap a" style="--d:500;--t:2850"><svg class="fl" viewBox="0 0 24 24"><use href="#m-search"/></svg><span class="xf" style="--d:2550"><span>Buscar alojamiento</span><span>Buscar · 4 filtros</span></span></div>
+              </div>
+              <div class="m-nav"><div class="m-pill"><span class="m-tab"><svg class="fl" viewBox="0 0 24 24"><use href="#m-comment"/></svg>Mensajes<em class="m-badge">2</em></span><span class="m-tab"><svg class="fl" viewBox="0 0 24 24"><use href="#m-bell"/></svg>Notificaciones</span><span class="m-tab"><svg class="fl" viewBox="0 0 24 24" style="width:20px;height:20px"><use href="#m-more"/></svg>Más</span></div><div class="m-side"><span class="m-fab"><svg class="ln" viewBox="0 0 24 24" style="stroke-width:2.6"><path d="M12 5v14M5 12h14"/></svg></span><span class="m-orb on"><svg class="fl" viewBox="0 0 24 24"><use href="#m-search"/></svg></span></div></div>
+              <i class="m-touch" style="left:284px;top:233px;--t:700"></i>
+              <i class="m-touch" style="left:159px;top:360px;--t:1100"></i>
+              <i class="m-touch" style="left:337px;top:360px;--t:1400"></i>
+              <i class="m-touch" style="left:195px;top:451px;--t:1800"></i>
+              <i class="m-touch" style="left:195px;top:508px;--t:2150"></i>
+              <i class="m-touch" style="left:195px;top:565px;--t:2500"></i>
+              <i class="m-touch" style="left:195px;top:634px;--t:2850"></i>
+            </div>
+
+            <div class="sv v2" style="--sw:3100ms">
+              <div class="m-bd"></div>
+              <div class="m-shdr"><span class="m-circ"><svg class="ln" viewBox="0 0 24 24"><use href="#i-back"/></svg></span><div><b>San Pedro</b><small>San José · 12 resultados</small></div><span class="m-circ f"><svg class="ln" viewBox="0 0 24 24"><use href="#i-tune"/></svg><em>4</em></span></div>
+              <div class="m-fchips"><span class="m-chip c-t"><svg class="fl" viewBox="0 0 24 24"><use href="#m-house"/></svg>Casas</span><span class="m-chip c-t"><svg class="fl" viewBox="0 0 24 24"><use href="#m-ugroup"/></svg>Roomie</span><span class="m-chip c-t"><svg class="fl" viewBox="0 0 24 24"><use href="#m-paw"/></svg>Mascotas</span><span class="m-chip c-t"><svg class="fl" viewBox="0 0 24 24"><use href="#m-locdot"/></svg>San Pedro</span></div>
+              <div class="m-card a" style="--d:3350">
+                <div class="m-photo">
+                  <svg class="scene" viewBox="0 0 350 170" preserveAspectRatio="xMidYMid slice"><circle cx="268" cy="54" r="26" fill="#FFE3A0" opacity=".85"/><path d="M0 128 Q90 98 180 120 T350 110 V170 H0Z" fill="#3F7D7B"/><path d="M0 150 Q120 128 230 146 T350 140 V170 H0Z" fill="#2E6461"/><g transform="translate(122 62)"><rect x="66" y="14" width="10" height="20" fill="#2B1D15"/><path d="M-4 52 L46 12 L96 52Z" fill="#2B1D15"/><rect x="8" y="50" width="76" height="52" fill="#CB4F2F"/><rect x="18" y="60" width="22" height="20" rx="2" fill="#FFCE63"/><path d="M29 60v20M18 70h22" stroke="#B98B4E" stroke-width="2"/><rect x="56" y="66" width="17" height="36" rx="2" fill="#2B1D15"/></g><ellipse cx="96" cy="150" rx="26" ry="18" fill="#4A8B87"/><ellipse cx="262" cy="148" rx="20" ry="15" fill="#4A8B87"/></svg>
+                  <span class="m-chip ov c-tl m-tlc">Casas</span>
+                  <span class="m-tr"><span class="m-chip ov c-w"><svg class="ln" viewBox="0 0 24 24"><use href="#i-photo"/></svg>6</span><span class="m-fav" style="--d:4700"><svg viewBox="0 0 24 24"><use href="#i-heart"/></svg></span></span>
+                </div>
+                <div class="m-info">
+                  <div class="m-tl"><b>Cuarto en casa compartida</b><span class="m-chip c-t"><svg class="ln" viewBox="0 0 24 24"><use href="#i-verified"/></svg>Verificado</span></div>
+                  <div class="m-meta"><svg class="fl" viewBox="0 0 24 24" style="color:#E6B840"><use href="#i-star"/></svg><strong>4,9</strong>del dueño · 23 calificaciones</div>
+                  <div class="m-meta"><svg class="ln" viewBox="0 0 24 24" style="color:#4ECDC4;width:13px;height:13px"><use href="#i-pin"/></svg>San Pedro · hace 2 días</div>
+                  <div class="m-tags"><span class="m-chip c-b"><svg class="fl" viewBox="0 0 24 24"><use href="#m-door"/></svg>Cuarto</span><span class="m-chip c-o"><svg class="fl" viewBox="0 0 24 24"><use href="#m-paw"/></svg>Mascotas</span><span class="m-incl"><svg class="ln" viewBox="0 0 24 24"><use href="#i-checkc"/></svg>Incluye agua y luz</span></div>
+                  <div class="m-specs"><span><svg class="ln" viewBox="0 0 24 24"><use href="#i-bed"/></svg>3 hab</span><i></i><span><svg class="ln" viewBox="0 0 24 24"><use href="#i-shower"/></svg>2 baños</span><i></i><span><svg class="ln" viewBox="0 0 24 24"><use href="#i-ruler"/></svg>120 m²</span></div>
+                  <div class="m-price"><b>₡240.000</b><small>al mes</small></div>
+                </div>
+              </div>
+              <div class="m-card a" style="--d:3550"><div class="m-photo" style="background:linear-gradient(160deg,#3F7D7B,#1E3842)"></div></div>
+              <div class="m-nav"><div class="m-pill"><span class="m-tab"><svg class="fl" viewBox="0 0 24 24"><use href="#m-comment"/></svg>Mensajes<em class="m-badge">2</em></span><span class="m-tab"><svg class="fl" viewBox="0 0 24 24"><use href="#m-bell"/></svg>Notificaciones</span><span class="m-tab"><svg class="fl" viewBox="0 0 24 24" style="width:20px;height:20px"><use href="#m-more"/></svg>Más</span></div><div class="m-side"><span class="m-fab"><svg class="ln" viewBox="0 0 24 24" style="stroke-width:2.6"><path d="M12 5v14M5 12h14"/></svg></span><span class="m-orb"><svg class="fl" viewBox="0 0 24 24"><use href="#m-search"/></svg></span></div></div>
+              <i class="m-touch" style="left:343px;top:189px;--t:4700"></i>
+            </div>
+          </div>
+
+          <!-- 2 · Conversar -->
+          <div class="scr">
+            <div class="sv">
+              <div class="m-chatbg"></div>
+              <div class="m-chdr">
+                <div class="m-row"><span class="m-circ s"><svg class="ln" viewBox="0 0 24 24"><use href="#i-back"/></svg></span><span class="m-av">AR</span><div><b>Ana Rodríguez</b><small>Cuarto en casa compartida</small></div></div>
+                <div class="m-prop"><span class="m-pbox">🏠</span><div><b>Cuarto en casa compartida</b><em>₡240.000/mes</em><span class="m-minis"><i>3 hab.</i><i>2 baños</i><i>120 m²</i></span></div><span class="m-ver">Ver</span></div>
+                <div class="m-ctx c-tl glow" style="--d:4000"><svg class="ln" viewBox="0 0 24 24"><use href="#i-calendar"/></svg>Agendar visita<svg class="ln" viewBox="0 0 24 24"><use href="#i-chev"/></svg></div>
+              </div>
+              <div class="m-msgs">
+                <div class="m-date"><span>Hoy</span></div>
+                <div class="m-bub me a" style="--d:300">Hola, ¿el cuarto acepta mascotas?<small>9:12 ✓✓</small></div>
+                <div class="m-bub ot a" style="--d:1000">¡Hola! Sí, gatos y perros pequeños.<small>9:14</small></div>
+                <div class="m-bub me a" style="--d:1700">¿Puedo pasar a verlo el sábado?<small>9:15 ✓✓</small></div>
+                <div class="m-bub ot m-typing" style="--d:2300;--d2:3200"><i></i><i></i><i></i></div>
+                <div class="m-bub ot a" style="--d:3250">Claro, agendá la visita desde aquí arriba.<small>9:16</small></div>
+              </div>
+              <div class="m-input"><span class="m-field">Escribe un mensaje...</span><span class="m-send"><svg class="fl" viewBox="0 0 24 24"><use href="#m-send"/></svg></span></div>
+            </div>
+          </div>
+
+          <!-- 3 · Visitar: agendar desde el chat y verla confirmada en Mis Visitas -->
+          <div class="scr">
+            <div class="sv v1" style="--sw:2900ms">
+              <div class="m-chatbg"></div>
+              <div class="m-chdr">
+                <div class="m-row"><span class="m-circ s"><svg class="ln" viewBox="0 0 24 24"><use href="#i-back"/></svg></span><span class="m-av">AR</span><div><b>Ana Rodríguez</b><small>Cuarto en casa compartida</small></div></div>
+              </div>
+              <div class="m-dim"></div>
+              <div class="m-sheet">
+                <div class="m-handle"></div>
+                <div class="m-shh"><svg class="fl" viewBox="0 0 24 24"><use href="#m-calcheck"/></svg>Agendar visita</div>
+                <small>Cuarto en casa compartida</small>
+                <div class="m-sel go" style="--d:700"><svg class="ln" viewBox="0 0 24 24"><use href="#i-calendar"/></svg><span class="xf" style="--d:700"><span>Seleccioná la fecha</span><span>29/11/2026</span></span><svg class="ln chev" viewBox="0 0 24 24"><use href="#i-chev"/></svg></div>
+                <div class="m-sel go" style="--d:1300"><svg class="ln" viewBox="0 0 24 24"><use href="#i-clock"/></svg><span class="xf" style="--d:1300"><span>Seleccioná la hora</span><span>10:00</span></span><svg class="ln chev" viewBox="0 0 24 24"><use href="#i-chev"/></svg></div>
+                <div class="m-note">Nota para el propietario (opcional)</div>
+                <div class="m-btn2 pri tap" style="--t:2300">Solicitar visita</div>
+              </div>
+              <i class="m-touch" style="left:195px;top:567px;--t:700"></i>
+              <i class="m-touch" style="left:195px;top:624px;--t:1300"></i>
+              <i class="m-touch" style="left:195px;top:772px;--t:2300"></i>
+            </div>
+            <div class="sv v2" style="--sw:2900ms">
+              <div class="m-bd"></div>
+              <div class="m-phdr"><span class="m-circ s"><svg class="ln" viewBox="0 0 24 24"><use href="#i-back"/></svg></span><span class="m-phic"><svg class="fl" viewBox="0 0 24 24"><use href="#m-calcheck"/></svg></span><div><b>Mis Visitas</b><small>Agendá y gestioná tus visitas</small></div></div>
+              <div class="m-seg"><span class="sel"><svg class="fl" viewBox="0 0 24 24"><use href="#m-plane"/></svg>Solicité</span><span><svg class="fl" viewBox="0 0 24 24"><use href="#m-inbox"/></svg>Recibidas</span></div>
+              <div class="m-fcs"><span class="m-fc"><i></i>1 total</span><span class="m-fc"><span class="xf" style="--d:4300"><span class="c-y" style="display:inline-flex;align-items:center;gap:6px"><i style="background:#E6B840"></i>1 pendientes</span><span style="display:inline-flex;align-items:center;gap:6px"><i style="background:#2A9D8F"></i>1 confirmadas</span></span></span></div>
+              <div class="m-gh go" style="--d:4300"><i></i><span class="xf" style="--d:4300"><span>Pendientes</span><span>Confirmadas</span></span></div>
+              <div class="m-vcard go a" style="--d:3150">
+                <div class="m-vt">Cuarto en casa compartida</div>
+                <div class="m-dt"><span><svg class="ln" viewBox="0 0 24 24"><use href="#i-calendar"/></svg>29/11/2026</span><span><svg class="ln" viewBox="0 0 24 24"><use href="#i-clock"/></svg>10:00</span></div>
+                <div class="m-vnote"><svg class="ln" viewBox="0 0 24 24"><use href="#i-chat"/></svg>Me interesa el cuarto del fondo.</div>
+                <div class="m-addr go" style="--d:4500"><b>Dirección exacta</b>Del Más x Menos de San Pedro, 200 m norte, casa esquinera.</div>
+                <div class="m-vact"><div class="xf blk" style="--d:4500"><div class="m-btn2 scd red">Cancelar visita</div><div class="m-btn2 scd"><svg class="fl" viewBox="0 0 24 24"><use href="#m-locdot"/></svg>Ir con Google Maps</div></div></div>
+              </div>
+              <div class="m-nav"><div class="m-pill"><span class="m-tab"><svg class="fl" viewBox="0 0 24 24"><use href="#m-comment"/></svg>Mensajes</span><span class="m-tab"><svg class="fl" viewBox="0 0 24 24"><use href="#m-bell"/></svg>Notificaciones<em class="m-badge pop" style="--d:4300">1</em></span><span class="m-tab"><svg class="fl" viewBox="0 0 24 24" style="width:20px;height:20px"><use href="#m-more"/></svg>Más</span></div><div class="m-side"><span class="m-fab"><svg class="ln" viewBox="0 0 24 24" style="stroke-width:2.6"><path d="M12 5v14M5 12h14"/></svg></span><span class="m-orb"><svg class="fl" viewBox="0 0 24 24"><use href="#m-search"/></svg></span></div></div>
+            </div>
+          </div>
+
+          <!-- 4 · Acordar: el contrato propuesto, aceptado desde la app -->
+          <div class="scr">
+            <div class="sv">
+              <div class="m-bd"></div>
+              <div class="m-ctop"><span class="m-circ s"><svg class="ln" viewBox="0 0 24 24"><use href="#i-back"/></svg></span><b>Detalle del contrato</b><span class="xf" style="--d:2650"><span class="m-sbadge c-co">Pendiente</span><span class="m-sbadge c-t">Activo</span></span></div>
+              <div class="m-cs">
+                <div class="m-chero go a" style="--d:100;--hd:2650"><span class="m-chico"><span class="xf" style="--d:2650"><svg class="ln" viewBox="0 0 24 24"><use href="#i-hourglass"/></svg><svg class="ln" viewBox="0 0 24 24"><use href="#i-checkc"/></svg></span></span><div><b>Cuarto en casa compartida</b><small>San José - Montes de Oca</small></div></div>
+                <div class="m-sec a" style="--d:200"><svg class="fl" viewBox="0 0 24 24"><use href="#m-ugroup"/></svg>PARTES</div>
+                <div class="m-parties a" style="--d:260">
+                  <div class="m-party c-t"><span class="m-pav">AR<em>★</em></span><small>Propietario</small><b>Ana Rodríguez</b><u>Ver calificaciones</u></div>
+                  <div class="m-party c-co"><span class="m-pav">DM<em>★</em></span><small>Inquilino</small><b>Daniel Mora</b><u>Ver calificaciones</u></div>
+                </div>
+                <div class="m-sec a" style="--d:340"><svg class="fl" viewBox="0 0 24 24"><use href="#m-doc"/></svg>TÉRMINOS DEL CONTRATO</div>
+                <div class="m-terms a" style="--d:400">
+                  <div class="m-term"><small>Renta mensual</small><b class="t">₡240.000</b></div>
+                  <div class="m-term"><small>Día de pago</small><b>Día 5</b></div>
+                  <div class="m-term"><small>Inicio</small><b>1 Dic 2026</b></div>
+                  <div class="m-term"><small>Vencimiento</small><b>1 Dic 2027</b></div>
+                </div>
+                <div class="m-dep a" style="--d:480"><svg class="ln" viewBox="0 0 24 24"><use href="#i-shield"/></svg>Depósito de garantía: <b>₡240.000</b></div>
+              </div>
+              <div class="m-bact"><div class="xf blk" style="--d:2650"><div class="m-pair"><span class="m-btn2 scd red">Rechazar</span><span class="m-btn2 pri tap" style="--t:2450">Aceptar contrato</span></div><div class="m-pair"><span class="m-btn2 pri"><svg class="ln" viewBox="0 0 24 24"><use href="#i-chat"/></svg>Ir al chat</span><span class="m-btn2 ic scd"><svg class="ln" viewBox="0 0 24 24" style="stroke-width:2.6"><path d="M12 5v14M5 12h14"/></svg></span></div></div></div>
+              <i class="m-touch" style="left:287px;top:791px;--t:2450"></i>
+            </div>
+          </div>
+
+          <!-- 5 · Convivir: las convivencias, con un roomie que se acaba de sumar -->
+          <div class="scr">
+            <div class="sv">
+              <div class="m-bd"></div>
+              <div class="m-phdr"><span class="m-circ s"><svg class="ln" viewBox="0 0 24 24"><use href="#i-back"/></svg></span><span class="m-phic"><svg class="fl" viewBox="0 0 24 24"><use href="#m-ugroup"/></svg></span><div><b>Convivencias</b><small>Con quién compartís y quién comparte con vos</small></div><span class="m-circ s"><svg class="fl" viewBox="0 0 24 24" style="color:#2A9D8F"><use href="#m-env"/></svg></span></div>
+              <div class="m-tabbar"><span class="sel">Mis roomies</span><span>Donde vivo</span></div>
+              <div class="m-rcard a" style="--d:600">
+                <div class="m-rt"><b>Cuarto 3 · San Pedro</b><span class="xf" style="--d:2300"><span class="m-st c-b">Pendiente</span><span class="m-st c-g">Activa</span></span></div>
+                <p>Tu roomie: Mari Solís</p><p>₡120.000 por mes</p>
+                <p class="m-rn"><svg class="ln" viewBox="0 0 24 24"><use href="#i-info"/></svg>Este depósito se lo devolvés vos, no el dueño de la propiedad.</p>
+                <div class="m-pair m-reveal" style="--d:2500"><span class="m-btn2 scd">Inventario</span><span class="m-btn2 scd red">Terminar convivencia</span></div>
+              </div>
+              <div class="m-rcard a" style="--d:250">
+                <div class="m-rt"><b>Cuarto 2 · San Pedro</b><span class="m-st c-g">Activa</span></div>
+                <p>Tu roomie: Dani Mora</p><p>₡120.000 por mes</p>
+                <p class="m-rn"><svg class="ln" viewBox="0 0 24 24"><use href="#i-info"/></svg>Este depósito se lo devolvés vos, no el dueño de la propiedad.</p>
+                <div class="m-pair"><span class="m-btn2 scd">Inventario</span><span class="m-btn2 scd red">Terminar convivencia</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 6 · Salir: la liquidación del depósito, con contrapropuesta y acuerdo -->
+          <div class="scr">
+            <div class="sv" id="svSettle">
+              <div class="m-bd"></div>
+              <div class="m-ctop"><span class="m-circ s"><svg class="ln" viewBox="0 0 24 24"><use href="#i-back"/></svg></span><b>Detalle del contrato</b><span class="m-sbadge c-am">Liquidando</span></div>
+              <div class="m-cs">
+                <div class="m-sec a" style="--d:0"><svg class="ln" viewBox="0 0 24 24"><use href="#i-shield"/></svg>LIQUIDACIÓN DEL DEPÓSITO</div>
+                <div class="m-settle a" style="--d:120">
+                  <div class="m-srow"><span class="m-spill" id="sPill">Pendiente de aprobación del inquilino</span><span class="m-timer"><svg class="ln" viewBox="0 0 24 24"><use href="#i-timer"/></svg>2d 5h</span></div>
+                  <div class="m-amts"><div class="m-amt c-tl"><small>Depósito</small><b>₡240.000</b></div><div class="m-amt c-r"><small>Deducciones</small><b id="sDed">₡30.000</b></div><div class="m-amt c-g"><small>A devolver</small><b id="sRet">₡210.000</b></div></div>
+                  <p class="m-sub">DEDUCCIONES</p>
+                  <div class="m-ded"><span>Pintura del cuarto</span><b>₡18.000</b></div>
+                  <div class="m-ded"><span>Llave del lavatorio</span><b>₡12.000</b></div>
+                  <div class="m-nb c-r s1"><div><strong>Argumento del inquilino</strong>La pintura ya estaba así cuando entré.</div></div>
+                  <p class="m-sub">HISTORIAL</p>
+                  <div class="m-hist"><i></i>Propuesta inicial<b>₡30.000</b><small>03/12/2027</small></div>
+                  <div class="m-hist s1"><i></i>Contrapropuesta<b>₡12.000</b><small>04/12/2027</small></div>
+                  <div class="m-hist s2" style="--c:#2ECC71"><i></i>Aceptada<b>₡12.000</b><small>04/12/2027</small></div>
+                  <div class="m-done s2"><span class="ic"><svg class="ln" viewBox="0 0 24 24"><use href="#i-checkc"/></svg></span><div><b>Acuerdo alcanzado</b><small>Devolución: ₡228.000</small></div></div>
+                </div>
+              </div>
+              <div class="m-bact"><div class="m-pair s0"><span class="m-btn2 scd tap" style="--t:2100">Contraproponer</span><span class="m-btn2 pri">Aceptar</span></div><p class="m-wait s1 s1x">Esperando la respuesta de la otra parte.</p><div class="m-pair s2"><span class="m-btn2 pri"><svg class="ln" viewBox="0 0 24 24"><use href="#i-star"/></svg>Calificar a Ana</span></div></div>
+              <i class="m-touch" style="left:103px;top:791px;--t:2100"></i>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div class="phones-showcase fade-in fade-in-d4">
-        <div class="phone-glow"></div>
-        <div class="phone phone--tertiary">
-          <div class="phone-screen">
-            <img src="assets/images/screen-register.webp" alt="Pantalla de registro de ImHomi" width="440" height="957" loading="lazy" decoding="async">
-          </div>
+      <ol class="steps" id="steps" aria-label="Momentos del alquiler">
+        <li><button type="button"><span class="bar"></span>Buscar</button></li>
+        <li><button type="button"><span class="bar"></span>Conversar</button></li>
+        <li><button type="button"><span class="bar"></span>Visitar</button></li>
+        <li><button type="button"><span class="bar"></span>Acordar</button></li>
+        <li><button type="button"><span class="bar"></span>Convivir</button></li>
+        <li><button type="button"><span class="bar"></span>Salir</button></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 02 · CINTAS ==================== -->
+<div class="bands" aria-hidden="true">
+  <div class="band band--b"><div class="track" id="trackB"></div></div>
+  <div class="band band--a"><div class="track" id="trackA"></div></div>
+</div>
+
+<!-- ==================== 03 · LA DIFERENCIA ==================== -->
+<section class="gap" id="diferencia">
+  <div class="gap-pin">
+    <div class="wrap">
+      <span class="eyebrow">La diferencia</span>
+      <h2 class="h2 gap-title" id="gapTitle">Todos te ayudan a encontrar. <span class="serif">Después te sueltan.</span></h2>
+
+      <div class="race" id="race">
+        <div class="st"><b>Buscar</b><small>Alertas guardadas</small></div>
+        <div class="st"><b>Conversar</b><small>Chat con el anuncio</small></div>
+        <div class="st"><b>Visitar</b><small>Visita confirmada</small></div>
+        <div class="st"><b>Acordar</b><small>Términos aceptados</small></div>
+        <div class="st"><b>Convivir</b><small>Convivencia registrada</small></div>
+        <div class="st"><b>Salir</b><small>Depósito liquidado</small></div>
+
+        <span class="lname ln-them">Un clasificado</span>
+        <div class="lane lane--them" id="laneThem">
+          <div class="fill"><span class="lane-label">Anuncio<span class="lx">&nbsp;y contacto</span></span></div>
+          <div class="void"><em>Desde acá, arreglate</em></div>
+          <div class="shards"><i></i><i></i><i></i><i></i></div>
         </div>
-        <div class="phone phone--main">
-          <div class="phone-screen">
-            <img src="assets/images/screen-main.webp" alt="Pantalla de búsqueda de ImHomi" width="500" height="1087" loading="eager" fetchpriority="high" decoding="async">
-          </div>
+
+        <span class="lname lname--us ln-us">ImHom<span>i</span></span>
+        <div class="lane lane--us" id="laneUs">
+          <div class="fill"><span class="lane-label">Todo el trato, y todo queda registrado</span>
+            <span class="head"><svg viewBox="0 0 24 24" fill="none" stroke="#2B1D15" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-house"/></svg></span></div>
         </div>
-        <div class="phone phone--secondary">
-          <div class="phone-screen">
-            <img src="assets/images/screen-login.webp" alt="Pantalla de inicio de sesión de ImHomi" width="440" height="957" loading="lazy" decoding="async">
-          </div>
-        </div>
+      </div>
+
+      <p class="gap-foot" id="gapFoot">Lo que nadie cubre es justo donde se pierde la plata: <strong class="mark">el acuerdo que nadie recuerda, el daño que apareció de la nada y el depósito que no volvió.</strong></p>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 04 · QUÉ PODÉS HACER ==================== -->
+<section class="sec" id="capacidades">
+  <div class="wrap">
+    <div class="caps-head">
+      <div>
+        <span class="eyebrow" data-reveal>Qué podés hacer</span>
+        <h2 class="h2" data-split>Alquilar no es <span class="serif">una sola cosa</span></h2>
+      </div>
+      <p class="lead" data-reveal style="--d:2">Son cuatro situaciones distintas, y podés estar en más de una a la vez. Esto es lo que ImHomi resuelve en cada una.</p>
+    </div>
+
+    <div class="tabs" role="tablist" aria-label="Situaciones" id="tabs" data-reveal style="--d:3">
+      <span class="tab-ind" aria-hidden="true"></span>
+      <button class="tab" role="tab" id="t-buscar" aria-controls="p-buscar" aria-selected="true"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-search"/></svg>Busco dónde vivir</button>
+      <button class="tab" role="tab" id="t-cuarto" aria-controls="p-cuarto" aria-selected="false" tabindex="-1"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-door"/></svg>Comparto un cuarto</button>
+      <button class="tab" role="tab" id="t-ya" aria-controls="p-ya" aria-selected="false" tabindex="-1"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-ticket"/></svg>Ya estoy alquilando</button>
+      <button class="tab" role="tab" id="t-dueno" aria-controls="p-dueno" aria-selected="false" tabindex="-1"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-pin"/></svg>Alquilo mi propiedad</button>
+    </div>
+
+    <div id="panels">
+      <div class="panel" role="tabpanel" id="p-buscar" aria-labelledby="t-buscar">
+        <div class="panel-h"><h3>Busco dónde vivir</h3><span>casa, apartamento o cuarto</span></div>
+        <ul class="bento">
+          <li class="cap cap--wide" style="--i:0"><span class="ico ico--t"><svg viewBox="0 0 24 24"><use href="#i-search"/></svg></span><h4>Filtros que sí importan</h4><p>Mascotas, precio en colones o dólares, provincia, cantón y distrito, amueblado, cuántas personas pueden vivir. Y si querés un cuarto o la propiedad entera.</p></li>
+          <li class="cap" style="--i:1"><span class="ico ico--g"><svg viewBox="0 0 24 24"><use href="#i-bell"/></svg></span><h4>Alertas de búsqueda</h4><p>Guardás lo que buscás y te avisamos cuando aparece algo que calza.</p></li>
+          <li class="cap" style="--i:2"><span class="ico ico--c"><svg viewBox="0 0 24 24"><use href="#i-chat"/></svg></span><h4>Chat con quien publica</h4><p>Sin grupos de WhatsApp ni números sueltos. La conversación queda con el anuncio.</p></li>
+          <li class="cap" style="--i:3"><span class="ico ico--t"><svg viewBox="0 0 24 24"><use href="#i-calendar"/></svg></span><h4>Visitas agendadas</h4><p>Proponés día y hora, la otra parte confirma. Queda registrado quién dijo qué y cuándo.</p></li>
+          <li class="cap" style="--i:4"><span class="ico ico--g"><svg viewBox="0 0 24 24"><use href="#i-star"/></svg></span><h4>Reputación antes de escribir</h4><p>Ves cómo califican a quien publica antes del primer mensaje.</p></li>
+          <li class="cap cap--wide" style="--i:5"><span class="ico ico--c"><svg viewBox="0 0 24 24"><use href="#i-heart"/></svg></span><h4>Favoritos</h4><p>Guardás los que te gustan y los comparás sin volver a buscarlos.</p></li>
+        </ul>
+      </div>
+      <div class="panel" role="tabpanel" id="p-cuarto" aria-labelledby="t-cuarto" hidden>
+        <div class="panel-h"><h3>Comparto un cuarto</h3><span>busco roomie o busco cuarto</span></div>
+        <ul class="bento">
+          <li class="cap" style="--i:0"><span class="ico ico--t"><svg viewBox="0 0 24 24"><use href="#i-door"/></svg></span><h4>Cuartos, no solo propiedades</h4><p>Una categoría propia. El precio y el depósito que ves son <strong>por cuarto</strong>, no por la casa entera.</p></li>
+          <li class="cap cap--wide" style="--i:1"><span class="ico ico--c"><svg viewBox="0 0 24 24"><use href="#i-doc"/></svg></span><h4>Publicá tu cuarto, con permiso del dueño</h4><p>Pedís la autorización a tu arrendador desde la app. Cuando la da, el anuncio sale de tu contrato activo y hereda ubicación y servicios del anuncio del dueño. Vos ponés tu precio y tu depósito. Nada de subarriendo a escondidas.</p></li>
+          <li class="cap" style="--i:2"><span class="ico ico--g"><svg viewBox="0 0 24 24"><use href="#i-users"/></svg></span><h4>Cuántos lugares quedan</h4><p>El anuncio dice cuántos cupos tiene y cuántos siguen libres.</p></li>
+          <li class="cap" style="--i:3"><span class="ico ico--t"><svg viewBox="0 0 24 24"><use href="#i-split"/></svg></span><h4>Acuerdo de convivencia</h4><p>Cuánto pagás por mes, el depósito y desde cuándo, con su propio estado, aparte del contrato del dueño.</p></li>
+          <li class="cap" style="--i:4"><span class="ico ico--g"><svg viewBox="0 0 24 24"><use href="#i-star"/></svg></span><h4>Calificá a tu roomie</h4><p>La convivencia también deja reputación.</p></li>
+        </ul>
+      </div>
+      <div class="panel" role="tabpanel" id="p-ya" aria-labelledby="t-ya" hidden>
+        <div class="panel-h"><h3>Ya estoy alquilando</h3><span>quiero traerlo a ImHomi</span></div>
+        <ul class="bento">
+          <li class="cap cap--wide" style="--i:0"><span class="ico ico--c"><svg viewBox="0 0 24 24"><use href="#i-ticket"/></svg></span><h4>Traé tu alquiler con un código</h4><p>No hace falta que empiece en ImHomi. Generás un código, se lo pasás a la otra parte y se une a la propiedad. Funciona en las dos direcciones: quien llegó primero trae al otro.</p></li>
+          <li class="cap" style="--i:1"><span class="ico ico--t"><svg viewBox="0 0 24 24"><use href="#i-swap"/></svg></span><h4>Cuatro maneras de sumarse</h4><p>Tu arrendador, tu inquilino, un roomie, o quien te sucede en el contrato.</p></li>
+          <li class="cap" style="--i:2"><span class="ico ico--g"><svg viewBox="0 0 24 24"><use href="#i-clipboard"/></svg></span><h4>Inventario del inmueble</h4><p>Cómo estaba todo al entrar, ítem por ítem. Sin esa línea base, cualquier daño se te puede atribuir.</p></li>
+          <li class="cap cap--wide" style="--i:3"><span class="ico ico--c"><svg viewBox="0 0 24 24"><use href="#i-coins"/></svg></span><h4>Liquidación del depósito</h4><p>Una parte propone el desglose contra el inventario y la otra acepta o contrapropone, dentro de la app, hasta que queda cerrado.</p></li>
+        </ul>
+      </div>
+      <div class="panel" role="tabpanel" id="p-dueno" aria-labelledby="t-dueno" hidden>
+        <div class="panel-h"><h3>Alquilo mi propiedad</h3><span>soy el arrendador</span></div>
+        <ul class="bento">
+          <li class="cap" style="--i:0"><span class="ico ico--t"><svg viewBox="0 0 24 24"><use href="#i-tag"/></svg></span><h4>Publicar es gratis</h4><p>Sin comisión y sin pagar para que tu anuncio se vea.</p></li>
+          <li class="cap" style="--i:1"><span class="ico ico--g"><svg viewBox="0 0 24 24"><use href="#i-shield"/></svg></span><h4>Anuncio verificado</h4><p>Pasás la verificación una vez y tu anuncio lo muestra.</p></li>
+          <li class="cap" style="--i:2"><span class="ico ico--c"><svg viewBox="0 0 24 24"><use href="#i-doc"/></svg></span><h4>Términos que las dos partes aceptan</h4><p>Cada parte los acepta desde su cuenta. Las enmiendas y las renovaciones también se proponen y se aceptan en la app.</p></li>
+          <li class="cap" style="--i:3"><span class="ico ico--t"><svg viewBox="0 0 24 24"><use href="#i-clock"/></svg></span><h4>Aviso antes del vencimiento</h4><p>Recordatorios conforme se acerca la fecha, para que renovar no sea una carrera.</p></li>
+          <li class="cap" style="--i:4"><span class="ico ico--g"><svg viewBox="0 0 24 24"><use href="#i-calendar"/></svg></span><h4>Visitas ordenadas</h4><p>Las solicitudes llegan a un solo lugar, con día y hora.</p></li>
+          <li class="cap" style="--i:5"><span class="ico ico--c"><svg viewBox="0 0 24 24"><use href="#i-star"/></svg></span><h4>Reputación de los dos lados</h4><p>Calificás al inquilino y el inquilino te califica a vos.</p></li>
+        </ul>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- ==================== LA DIFERENCIA ==================== -->
-  <section class="gap" id="diferencia">
-    <div class="container">
-      <div class="gap-head">
-        <div class="section-label fade-in">La diferencia</div>
-        <h2 class="section-title fade-in">Todos te ayudan a encontrar. Después te sueltan.</h2>
-        <p class="section-subtitle fade-in">
-          Un clasificado termina su trabajo el día que conseguís el lugar. El problema es que
-          ahí apenas empieza todo lo que puede salir mal.
-        </p>
-      </div>
+<!-- ==================== 05 · SOLO ACÁ ==================== -->
+<section class="sec solo" id="solo-aca">
+  <div class="wrap">
+    <span class="eyebrow" data-reveal>Lo que nadie más hace</span>
+    <h2 class="h2" data-split>Tres cosas que <span class="serif">solo pasan acá</span></h2>
 
-      <!-- Pista comparativa. En pantallas angostas hace scroll horizontal
-           dentro de su propio contenedor: la página nunca se mueve de lado. -->
-      <div class="gap-scroll fade-in">
-        <div class="gap-track">
-          <span class="gap-corner" aria-hidden="true"></span>
-          <!-- role explícito: display:contents descarta la semántica de lista
-               en algunos lectores de pantalla. -->
-          <ol class="gap-stages" role="list">
-            <li>Buscar</li>
-            <li>Conversar</li>
-            <li>Visitar</li>
-            <li>Acordar</li>
-            <li>Convivir</li>
-            <li>Salir</li>
+    <div class="stack" id="stack">
+      <!-- A · Cuartos -->
+      <article class="sc sc--1" style="--k:0">
+        <div>
+          <span class="ktag">Cuartos</span>
+          <h3>Tu cuarto sale <span class="serif">de tu contrato</span></h3>
+          <p>Cerca de las universidades, lo normal es alquilar una casa entera y buscar con quién compartirla. Hoy eso se resuelve en Facebook.</p>
+          <p>Acá el anuncio del cuarto lo publica <strong>quien ya vive ahí</strong>, después de que <strong class="mark">el arrendador autoriza</strong>. Hereda la ubicación y los servicios, y el precio es por cuarto.</p>
+          <button class="replay" data-replay="cuarto" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-replay"/></svg>Ver otra vez</button>
+        </div>
+        <div class="demo" id="demo-cuarto" aria-hidden="true">
+          <div class="plan">
+            <div class="room r-sala"><b>Sala y cocina</b><small>Compartidas</small></div>
+            <div class="room"><b>Vos</b><small>Cuarto 1</small></div>
+            <div class="room"><b>Dani</b><small>Cuarto 2</small></div>
+            <div class="room r-3"><b>Libre</b><small>Cuarto 3</small></div>
+            <div class="room"><b>Baño</b><small>Compartido</small></div>
+          </div>
+          <ol class="flow">
+            <li><span>1</span>Tu contrato con Ana, la dueña</li>
+            <li><span>2</span>Ana autoriza buscar roomie</li>
+            <li><span>3</span>Sale el anuncio del cuarto</li>
           </ol>
-
-          <span class="gap-name">Un clasificado</span>
-          <div class="gap-bar gap-bar--them">
-            <span>Te muestra el anuncio y un contacto</span>
-          </div>
-          <div class="gap-void">
-            <span class="gap-cut">Desde acá, arreglate</span>
-          </div>
-
-          <span class="gap-name gap-name--us">ImHomi</span>
-          <div class="gap-bar gap-bar--us">
-            <span>Todo el trato, y todo queda registrado</span>
-          </div>
-
-          <!-- Rieles verticales: solo en móvil, donde las barras horizontales
-               no caben. Son la comparación por longitud, que es el argumento. -->
-          <span class="gap-rail gap-rail--them" aria-hidden="true"></span>
-          <span class="gap-rail gap-rail--us" aria-hidden="true"></span>
+          <div class="mini-ad"><span class="ktag">Cuarto · verificado</span><b>Cuarto en San Pedro</b><small>Hereda la ubicación, internet, agua y luz del anuncio de Ana</small><strong>₡160.000 <small style="display:inline">/mes</small></strong></div>
         </div>
-      </div>
+      </article>
 
-      <p class="gap-foot fade-in">
-        Lo que nadie cubre es justo donde se pierde la plata: el acuerdo que nadie recuerda,
-        el daño que apareció de la nada y el depósito que no volvió.
-      </p>
+      <!-- B · Código -->
+      <article class="sc sc--2" style="--k:1">
+        <div>
+          <span class="ktag">Invitaciones</span>
+          <h3>Un código <span class="serif">y ya están adentro</span></h3>
+          <p>Tu alquiler no tiene que haber nacido en la app. Generás un código, se lo pasás a la otra parte y quedan vinculados a la propiedad.</p>
+          <p>Sirve para traer a tu arrendador, a tu inquilino, sumar un roomie o pasarle el contrato a quien te sucede. <strong class="mark">Quien llegó primero trae al otro.</strong></p>
+          <button class="replay" data-replay="codigo" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-replay"/></svg>Generar otro código</button>
+        </div>
+        <div class="demo" id="demo-codigo" aria-hidden="true">
+          <div class="code" id="code"></div>
+          <p class="code-note">Seis dígitos. Vence en 72 horas y sirve una sola vez.</p>
+          <div class="link">
+            <div class="person"><span class="av av--t">V</span><b>Vos</b><small>generás el código</small></div>
+            <div class="wire"></div>
+            <div class="person"><span class="av">?</span><b id="whoName">Ana</b><small class="role" id="role">tu arrendadora</small></div>
+          </div>
+          <p class="ok"><svg viewBox="0 0 24 24" width="18" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><use href="#i-check"/></svg>Vinculados a la propiedad</p>
+        </div>
+      </article>
 
-      <!-- Prueba de profundidad: lo que ya existe construido, sin adjetivos. -->
-      <ul class="gap-proof fade-in">
-        <li>Contratos con enmiendas y renovaciones</li>
-        <li>Inventario con disputas y plazos</li>
-        <li>Calificación doble-ciega</li>
-        <li>Liquidación con contrapropuesta</li>
-        <li>Incidencias con seguimiento y reapertura</li>
-        <li>Acuerdos de convivencia</li>
-        <li>Vinculación por código de invitación</li>
-        <li>Alertas de búsqueda guardadas</li>
-        <li>Tipo de cambio oficial diario</li>
-      </ul>
+      <!-- C · Depósito -->
+      <article class="sc sc--3" style="--k:2">
+        <div>
+          <span class="ktag">Depósito</span>
+          <h3>El depósito deja de ser <span class="serif">una discusión</span></h3>
+          <p>El inventario documenta cómo estaba todo al entrar, ítem por ítem: la puerta del baño, la llave del lavatorio, la refrigeradora.</p>
+          <p>Al salir, la liquidación se negocia contra esa línea base: uno propone el desglose y el otro acepta o contrapropone. <strong class="mark">Sin línea base, cualquier daño se le puede atribuir a quien se va.</strong></p>
+          <button class="replay" data-replay="deposito" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-replay"/></svg>Ver otra vez</button>
+        </div>
+        <div class="demo" id="demo-deposito" aria-hidden="true">
+          <ul class="inv">
+            <li><i></i>Puerta del baño<em>Igual que al entrar</em></li>
+            <li class="dmg"><i></i>Llave del lavatorio<em>Gotea · −₡12.000</em></li>
+            <li><i></i>Refrigeradora<em>Igual que al entrar</em></li>
+          </ul>
+          <div class="tug" id="tug">
+            <div class="zone" id="zone"></div>
+            <div class="mk mk--a" id="mkA"><span>Ana propone ₡210.000</span><i></i></div>
+            <div class="mk mk--b" id="mkB"><i></i><span>Vos: ₡228.000</span></div>
+          </div>
+          <div class="tug-scale"><span>₡0</span><span>Depósito: ₡240.000</span></div>
+          <div class="deal" id="deal"><span class="ck" style="width:32px;height:32px;border-radius:50%;background:var(--teal-l);display:grid;place-items:center;flex:none"><svg viewBox="0 0 24 24" width="16" fill="none" stroke="#08161B" stroke-width="3" stroke-linecap="round"><use href="#i-check"/></svg></span><div><strong>Cerrado en ₡228.000</strong><small>Solo se descuenta la llave: el inventario de entrada lo respalda.</small></div></div>
+        </div>
+      </article>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- ==================== QUÉ PODÉS HACER ==================== -->
-  <section class="caps" id="capacidades">
-    <div class="container">
-      <div class="caps-head">
-        <div class="section-label fade-in">Qué podés hacer</div>
-        <h2 class="section-title fade-in">Alquilar no es una sola cosa</h2>
-        <p class="section-subtitle fade-in">
-          Son cuatro situaciones distintas, y podés estar en más de una a la vez.
-          Esto es lo que ImHomi resuelve en cada una.
-        </p>
-      </div>
+<!-- ==================== 06 · CONFIANZA ==================== -->
+<section class="sec" id="confianza">
+  <div class="wrap">
+    <span class="eyebrow" data-reveal>Confianza</span>
+    <h2 class="h2" data-split>Reputación que va <span class="serif">en los dos sentidos</span></h2>
+    <p class="lead" data-reveal style="--d:2">Quien alquila califica y también es calificado. Nadie construye reputación a costa del otro.</p>
 
-      <div class="caps-tabs fade-in" role="tablist" aria-label="Situaciones de uso">
-        <button class="caps-tab is-active" role="tab" id="tab-buscar" aria-controls="panel-buscar" aria-selected="true">
-          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-search"/></svg>
-          <span><strong>Busco dónde vivir</strong><small>Casa, apartamento o cuarto</small></span>
-        </button>
-        <button class="caps-tab" role="tab" id="tab-cuarto" aria-controls="panel-cuarto" aria-selected="false" tabindex="-1">
-          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-door"/></svg>
-          <span><strong>Comparto un cuarto</strong><small>Busco roomie o busco cuarto</small></span>
-        </button>
-        <button class="caps-tab" role="tab" id="tab-yaalquilo" aria-controls="panel-yaalquilo" aria-selected="false" tabindex="-1">
-          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-ticket"/></svg>
-          <span><strong>Ya estoy alquilando</strong><small>Quiero traerlo a ImHomi</small></span>
-        </button>
-        <button class="caps-tab" role="tab" id="tab-propietario" aria-controls="panel-propietario" aria-selected="false" tabindex="-1">
-          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-pin"/></svg>
-          <span><strong>Alquilo mi propiedad</strong><small>Soy el arrendador</small></span>
-        </button>
-      </div>
-
-      <div class="caps-stage">
-        <!-- 1 · Busco dónde vivir -->
-        <div class="caps-panel is-active" role="tabpanel" id="panel-buscar" aria-labelledby="tab-buscar">
-          <h3 class="caps-panel-title">Busco dónde vivir<span>Casa, apartamento o cuarto</span></h3>
-          <ul class="caps-grid">
-            <li class="cap">
-              <span class="cap-ico cap-ico--teal"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-search"/></svg></span>
-              <h3>Filtros que sí importan</h3>
-              <p>Mascotas, precio en colones o dólares, provincia, cantón y distrito, amueblado, cuántas personas pueden vivir. Y si querés un cuarto o la propiedad entera.</p>
-            </li>
-            <li class="cap">
-              <span class="cap-ico cap-ico--gold"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-bell"/></svg></span>
-              <h3>Alertas de búsqueda</h3>
-              <p>Guardás lo que buscás y te avisamos cuando aparece algo que calza. No hay que estar refrescando.</p>
-            </li>
-            <li class="cap">
-              <span class="cap-ico cap-ico--coral"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chat"/></svg></span>
-              <h3>Chat con quien publica</h3>
-              <p>Preguntás todo desde la app, sin grupos de WhatsApp ni números sueltos. La conversación queda con el anuncio.</p>
-            </li>
-            <li class="cap">
-              <span class="cap-ico cap-ico--teal"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-calendar"/></svg></span>
-              <h3>Visitas agendadas</h3>
-              <p>Proponés día y hora, la otra parte confirma. Queda registrado quién dijo qué y cuándo.</p>
-            </li>
-            <li class="cap">
-              <span class="cap-ico cap-ico--gold"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-star"/></svg></span>
-              <h3>Reputación antes de escribir</h3>
-              <p>Ves cómo califican a quien publica antes de mandar el primer mensaje.</p>
-            </li>
-            <li class="cap">
-              <span class="cap-ico cap-ico--coral"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-heart"/></svg></span>
-              <h3>Favoritos</h3>
-              <p>Guardás los que te gustan y los comparás sin volver a buscarlos.</p>
-            </li>
-          </ul>
-        </div>
-
-        <!-- 2 · Comparto un cuarto -->
-        <div class="caps-panel" role="tabpanel" id="panel-cuarto" aria-labelledby="tab-cuarto" hidden>
-          <h3 class="caps-panel-title">Comparto un cuarto<span>Busco roomie o busco cuarto</span></h3>
-          <ul class="caps-grid">
-            <li class="cap">
-              <span class="cap-ico cap-ico--teal"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-door"/></svg></span>
-              <h3>Cuartos, no solo propiedades</h3>
-              <p>Buscás cuartos como una categoría propia. El precio y el depósito que ves son <strong>por cuarto</strong>, no por la casa entera.</p>
-            </li>
-            <li class="cap cap--wide">
-              <span class="cap-ico cap-ico--coral"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-doc"/></svg></span>
-              <h3>Publicá tu cuarto, con permiso del dueño</h3>
-              <p>Si ya vivís ahí y te sobra un cuarto, pedís la autorización a tu arrendador desde la app. Cuando la da, el anuncio sale de tu contrato activo y hereda ubicación y servicios del anuncio del dueño. Vos ponés tu precio y tu depósito. Nada de subarriendo a escondidas.</p>
-            </li>
-            <li class="cap">
-              <span class="cap-ico cap-ico--gold"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-users"/></svg></span>
-              <h3>Cuántos lugares quedan</h3>
-              <p>El anuncio dice cuántos cupos tiene y cuántos siguen libres. Nadie escribe por un cuarto que ya se ocupó.</p>
-            </li>
-            <li class="cap">
-              <span class="cap-ico cap-ico--teal"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-split"/></svg></span>
-              <h3>Acuerdo de convivencia</h3>
-              <p>Quién paga qué, desde cuándo y hasta cuándo. Con su propio estado, aparte del contrato del dueño.</p>
-            </li>
-            <li class="cap">
-              <span class="cap-ico cap-ico--gold"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-star"/></svg></span>
-              <h3>Calificá a tu roomie</h3>
-              <p>La convivencia también deja reputación, no solo el trato con el arrendador.</p>
-            </li>
-          </ul>
-        </div>
-
-        <!-- 3 · Ya estoy alquilando -->
-        <div class="caps-panel" role="tabpanel" id="panel-yaalquilo" aria-labelledby="tab-yaalquilo" hidden>
-          <h3 class="caps-panel-title">Ya estoy alquilando<span>Quiero traerlo a ImHomi</span></h3>
-          <ul class="caps-grid">
-            <li class="cap cap--wide">
-              <span class="cap-ico cap-ico--coral"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-ticket"/></svg></span>
-              <h3>Traé tu alquiler con un código</h3>
-              <p>No hace falta que empiece en ImHomi. Generás un código, se lo pasás a la otra parte y se une a la propiedad. Si todavía no tiene cuenta, se registra y acepta. Funciona en las dos direcciones: quien llegó primero trae al otro.</p>
-            </li>
-            <li class="cap">
-              <span class="cap-ico cap-ico--teal"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-swap"/></svg></span>
-              <h3>Cuatro maneras de sumarse</h3>
-              <p>Tu arrendador, tu inquilino, un roomie, o quien te sucede en el contrato cuando te vas.</p>
-            </li>
-            <li class="cap">
-              <span class="cap-ico cap-ico--gold"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-clipboard"/></svg></span>
-              <h3>Inventario del inmueble</h3>
-              <p>Registrás cómo estaba todo al entrar, ítem por ítem. Sin esa línea base, cualquier daño al salir se te puede atribuir a vos.</p>
-            </li>
-            <li class="cap">
-              <span class="cap-ico cap-ico--coral"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-coins"/></svg></span>
-              <h3>Liquidación del depósito</h3>
-              <p>Al salir, una parte propone el desglose contra el inventario y la otra acepta o contrapropone. Se negocia dentro de la app, con todo a la vista, hasta que queda cerrado.</p>
-            </li>
-          </ul>
-        </div>
-
-        <!-- 4 · Alquilo mi propiedad -->
-        <div class="caps-panel" role="tabpanel" id="panel-propietario" aria-labelledby="tab-propietario" hidden>
-          <h3 class="caps-panel-title">Alquilo mi propiedad<span>Soy el arrendador</span></h3>
-          <ul class="caps-grid">
-            <li class="cap">
-              <span class="cap-ico cap-ico--teal"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-tag"/></svg></span>
-              <h3>Publicar es gratis</h3>
-              <p>Sin comisión y sin pagar para que tu anuncio se vea. Publicás las veces que necesités.</p>
-            </li>
-            <li class="cap">
-              <span class="cap-ico cap-ico--gold"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-shield"/></svg></span>
-              <h3>Anuncio verificado</h3>
-              <p>Pasás la verificación una vez y tu anuncio lo muestra. Quien busca sabe cuál mirar primero.</p>
-            </li>
-            <li class="cap">
-              <span class="cap-ico cap-ico--coral"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-doc"/></svg></span>
-              <h3>Términos que las dos partes aceptan</h3>
-              <p>Nadie firma nada: cada parte acepta los términos en la app y quedan registrados. Las enmiendas y renovaciones también se aceptan una por una, así que siempre hay una sola versión vigente.</p>
-            </li>
-            <li class="cap">
-              <span class="cap-ico cap-ico--teal"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-clock"/></svg></span>
-              <h3>Te avisamos antes del vencimiento</h3>
-              <p>Recordatorios automáticos conforme se acerca la fecha, para que renovar no se convierta en una carrera.</p>
-            </li>
-            <li class="cap">
-              <span class="cap-ico cap-ico--gold"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-calendar"/></svg></span>
-              <h3>Visitas ordenadas</h3>
-              <p>Las solicitudes llegan a un solo lugar, con día y hora. Se acabó el hilo de mensajes cruzados.</p>
-            </li>
-            <li class="cap">
-              <span class="cap-ico cap-ico--coral"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-star"/></svg></span>
-              <h3>Reputación de los dos lados</h3>
-              <p>Calificás al inquilino y el inquilino te califica a vos. La buena conducta se acumula.</p>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ==================== DESTACADOS ==================== -->
-  <section class="hi" id="destacados">
-    <div class="container">
-      <div class="hi-head">
-        <div class="section-label fade-in">Lo que nadie más hace</div>
-        <h2 class="section-title fade-in">Tres cosas que solo pasan acá</h2>
-        <p class="section-subtitle fade-in">
-          Los clasificados terminan cuando conseguís el lugar. Ahí es justo donde empieza lo difícil.
-        </p>
-      </div>
-
-      <div class="hi-grid">
-        <article class="hi-card fade-in">
-          <span class="hi-tag">Cuartos</span>
-          <h3>Tu cuarto sale de tu contrato</h3>
-          <p>
-            En Costa Rica lo normal cerca de las universidades es alquilar una casa entera y buscar
-            con quién compartirla. Hoy eso se resuelve en Facebook.
-          </p>
-          <p>
-            En ImHomi el anuncio del cuarto lo publica <strong>el inquilino que ya vive ahí</strong>,
-            pero solo después de que <strong>el arrendador autoriza</strong> la búsqueda desde la app.
-            Sale de su contrato activo, hereda la ubicación y los servicios del anuncio del dueño, y
-            el precio es por cuarto. El anuncio del dueño no se toca.
-          </p>
-        </article>
-
-        <article class="hi-card fade-in fade-in-d1">
-          <span class="hi-tag">Invitaciones</span>
-          <h3>Un código y ya están adentro</h3>
-          <p>
-            Tu alquiler no tiene que haber nacido en la app. Generás un código, se lo pasás a la otra
-            parte y quedan vinculados a la propiedad.
-          </p>
-          <p>
-            Sirve para traer a tu arrendador, a tu inquilino, sumar un roomie o pasarle el contrato a
-            quien te sucede. <strong>Quien llegó primero trae al otro.</strong>
-          </p>
-        </article>
-
-        <article class="hi-card fade-in fade-in-d2">
-          <span class="hi-tag">Depósito</span>
-          <h3>El depósito deja de ser una discusión</h3>
-          <p>
-            El inventario documenta cómo estaba la propiedad al entrar, ítem por ítem: la puerta del
-            baño, la llave del lavatorio, la refrigeradora.
-          </p>
-          <p>
-            Al salir, la liquidación se negocia contra esa línea base: uno propone el desglose y el
-            otro acepta o contrapropone. <strong>Sin línea base, cualquier daño se le puede atribuir
-            a quien se va</strong> — y esa es exactamente la conversación que nadie quiere tener.
-          </p>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- ==================== CONFIANZA ==================== -->
-  <section class="trust" id="confianza">
-    <div class="container">
-      <div class="section-label fade-in">Confianza</div>
-      <h2 class="section-title fade-in">Reputación que va en los dos sentidos</h2>
-      <p class="section-subtitle fade-in">
-        Quien alquila califica y también es calificado. Nadie construye reputación a costa del otro.
-      </p>
-
-      <div class="trust-grid">
-        <div class="trust-card trust-card--wide fade-in">
-          <div class="trust-icon fi-teal">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-star"/></svg>
-          </div>
-          <h3>Calificaciones doble-ciegas</h3>
-          <p>
-            Ninguna de las dos partes ve la calificación de la otra hasta que las dos calificaron o
-            se vence el plazo. Así nadie responde por represalia ni negocia la nota.
-          </p>
-          <div class="trust-demo" aria-hidden="true">
-            <div class="trust-demo-row">
-              <span class="trust-demo-label">Vos calificaste</span>
-              <span class="trust-demo-stars">★★★★★</span>
-              <span class="trust-demo-state trust-demo-state--sent">Enviada</span>
+    <div class="trust-grid">
+      <div class="tcard tcard--big" data-reveal>
+        <h3>Calificaciones doble ciegas</h3>
+        <p>Ninguna parte ve la nota de la otra hasta que las dos calificaron o vence el plazo. Así nadie responde por represalia ni negocia la nota.</p>
+        <div class="blind">
+          <div class="flip" id="flipYou">
+            <div class="face front">
+              <header><span class="av av--t">V</span><div><b>Vos calificás a Ana</b><small>Tu arrendadora</small></div></header>
+              <div class="stars" id="stars" role="radiogroup" aria-label="Tu calificación para Ana">
+                <button type="button" role="radio" aria-checked="false" aria-label="1 estrella"><svg viewBox="0 0 24 24"><use href="#i-star"/></svg></button>
+                <button type="button" role="radio" aria-checked="false" aria-label="2 estrellas"><svg viewBox="0 0 24 24"><use href="#i-star"/></svg></button>
+                <button type="button" role="radio" aria-checked="false" aria-label="3 estrellas"><svg viewBox="0 0 24 24"><use href="#i-star"/></svg></button>
+                <button type="button" role="radio" aria-checked="false" aria-label="4 estrellas"><svg viewBox="0 0 24 24"><use href="#i-star"/></svg></button>
+                <button type="button" role="radio" aria-checked="false" aria-label="5 estrellas"><svg viewBox="0 0 24 24"><use href="#i-star"/></svg></button>
+              </div>
+              <span class="st8" id="youState"><i></i>Todavía no calificaste</span>
             </div>
-            <div class="trust-demo-row">
-              <span class="trust-demo-label">Te calificaron</span>
-              <span class="trust-demo-stars trust-demo-stars--hidden">? ? ? ? ?</span>
-              <span class="trust-demo-state">Se revela al cerrar</span>
+            <div class="face back">
+              <header><span class="av av--t">V</span><div><b>Le diste a Ana</b><small>Visible para las dos</small></div></header>
+              <span class="shown-stars" id="youShown">★★★★★</span>
+              <span class="quote">“Respondió rápido y devolvió el depósito como acordamos.”</span>
+            </div>
+          </div>
+          <div class="flip" id="flipHer">
+            <div class="face front">
+              <header><span class="av">A</span><div><b>Ana te califica</b><small>Tu arrendadora</small></div></header>
+              <span class="hidden-stars" aria-hidden="true">★★★★★</span>
+              <span class="st8 wait" id="herState"><i></i>Calificando…</span>
+            </div>
+            <div class="face back">
+              <header><span class="av">A</span><div><b>Ana te dio</b><small>Visible para las dos</small></div></header>
+              <span class="shown-stars">★★★★★</span>
+              <span class="quote">“Dejó todo como lo recibió. Lo recomiendo.”</span>
             </div>
           </div>
         </div>
-
-        <div class="trust-card fade-in fade-in-d1">
-          <div class="trust-icon fi-gold">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-shield"/></svg>
-          </div>
-          <h3>Anuncios verificados</h3>
-          <p>Los anuncios pasan por verificación y el estado se muestra en el anuncio, no en letra chica.</p>
-        </div>
-
-        <div class="trust-card fade-in fade-in-d2">
-          <div class="trust-icon fi-coral">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-doc"/></svg>
-          </div>
-          <h3>Todo queda registrado</h3>
-          <p>Términos, inventario, acuerdos de convivencia y liquidación. Cada parte acepta desde su cuenta y queda la fecha, así que lo que se acordó no depende de la memoria de nadie.</p>
-        </div>
+        <p class="blind-msg" id="blindMsg" aria-live="polite">Tocá una estrella para calificar a Ana.</p>
+        <button class="replay again" id="blindAgain" type="button" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-replay"/></svg>Probar otra vez</button>
       </div>
-    </div>
-  </section>
 
-  <!-- ==================== CTA ==================== -->
-  <section class="cta" id="cta">
-    <div class="container">
-      <div class="cta-box fade-in">
-        <div class="orb orb--teal" style="width:300px;height:300px;top:-40%;right:-5%;"></div>
-
-        <!-- La ilustracion de la app, animada: la cinta se traza, caen los pines
-             con sus ondas, se enciende la casa y llega la familia -->
-        <div class="ruta fade-in" aria-hidden="true">
-          <svg viewBox="0 0 900 560" fill="none">
-            <defs>
-              <radialGradient id="rutaGlow">
-                <stop offset="0%" stop-color="#FFC24D" stop-opacity="0.75"/>
-                <stop offset="100%" stop-color="#FFC24D" stop-opacity="0"/>
-              </radialGradient>
-            </defs>
-
-            <!-- Cinta de atras, la ruta que no se tomo -->
-            <path class="ruta-fantasma" d="M100 184 H660 A45 45 0 0 1 660 274 H360 A45 45 0 0 0 360 406 H820"/>
-
-            <!-- Cinta principal, plegada sobre si misma -->
-            <g class="ruta-camino">
-              <path class="asfalto" d="M70 230 H640 A45 45 0 0 1 640 320 H330 A45 45 0 0 0 330 452 H850"/>
-              <path class="linea" d="M70 230 H640 A45 45 0 0 1 640 320 H330 A45 45 0 0 0 330 452 H850"/>
-            </g>
-
-            <!-- Pin grande con sus ondas, como en la ilustracion -->
-            <g class="pin pin-1">
-              <g class="ondas">
-                <circle cx="262" cy="150" r="72"/>
-                <circle cx="262" cy="150" r="72"/>
-                <circle cx="262" cy="150" r="72"/>
-              </g>
-              <path class="gota gota--teal" d="M262 56 c 30 0 54 24 54 54 c 0 38 -54 92 -54 92 c 0 0 -54 -54 -54 -92 c 0 -30 24 -54 54 -54 Z"/>
-              <circle class="ojo" cx="262" cy="110" r="21"/>
-            </g>
-
-            <g class="pin pin-2">
-              <path class="gota gota--coral" d="M614 40 c 23 0 42 19 42 42 c 0 29 -42 72 -42 72 c 0 0 -42 -43 -42 -72 c 0 -23 19 -42 42 -42 Z"/>
-              <circle class="ojo" cx="614" cy="82" r="16"/>
-            </g>
-
-            <g class="pin pin-3">
-              <path class="gota gota--teal" d="M752 118 c 27 0 48 21 48 48 c 0 33 -48 82 -48 82 c 0 0 -48 -49 -48 -82 c 0 -27 21 -48 48 -48 Z"/>
-              <circle class="ojo" cx="752" cy="166" r="19"/>
-            </g>
-
-            <!-- Casa, abajo a la izquierda -->
-            <g class="casa">
-              <circle class="luz" cx="176" cy="476" r="86" fill="url(#rutaGlow)"/>
-              <ellipse class="sombra" cx="196" cy="536" rx="96" ry="11"/>
-              <g class="arbusto">
-                <ellipse cx="86" cy="528" rx="17" ry="14"/>
-                <ellipse cx="108" cy="518" rx="26" ry="22"/>
-                <ellipse cx="130" cy="528" rx="18" ry="15"/>
-              </g>
-              <g class="arbusto">
-                <ellipse cx="280" cy="524" rx="21" ry="18"/>
-                <ellipse cx="300" cy="530" rx="15" ry="13"/>
-              </g>
-              <rect class="chimenea" x="224" y="376" width="17" height="38" rx="4"/>
-              <rect class="cuerpo" x="130" y="442" width="124" height="94" rx="5"/>
-              <path class="techo" d="M112 448 L192 382 L272 448 Z"/>
-              <rect class="ventana" x="152" y="460" width="40" height="36" rx="4"/>
-              <path class="ventana-cruz" d="M172 460 V496 M152 478 H192"/>
-              <rect class="puerta" x="214" y="486" width="26" height="50" rx="4"/>
-            </g>
-
-            <!-- Huellitas -->
-            <g class="huellas">
-              <g class="huella huella-1"><g transform="translate(558 534) rotate(14)"><circle cx="0" cy="0" r="5.4"/><circle cx="-9" cy="-7.5" r="2.8"/><circle cx="-1.5" cy="-11.4" r="2.8"/><circle cx="6.9" cy="-9.6" r="2.8"/></g></g>
-              <g class="huella huella-2"><g transform="translate(598 522) rotate(14)"><circle cx="0" cy="0" r="5.4"/><circle cx="-9" cy="-7.5" r="2.8"/><circle cx="-1.5" cy="-11.4" r="2.8"/><circle cx="6.9" cy="-9.6" r="2.8"/></g></g>
-              <g class="huella huella-3"><g transform="translate(638 534) rotate(14)"><circle cx="0" cy="0" r="5.4"/><circle cx="-9" cy="-7.5" r="2.8"/><circle cx="-1.5" cy="-11.4" r="2.8"/><circle cx="6.9" cy="-9.6" r="2.8"/></g></g>
-            </g>
-
-            <!-- La pareja con el perro -->
-            <g class="familia">
-              <ellipse class="sombra-chica" cx="748" cy="540" rx="86" ry="9"/>
-
-              <g class="persona">
-                <circle class="cabeza" cx="690" cy="426" r="15"/>
-                <path class="cuerpo-p" d="M673 466 c 0 -13 7.6 -23 17 -23 c 9.4 0 17 10 17 23 v 38 h -34 Z"/>
-                <rect class="pierna" x="675" y="502" width="12" height="34" rx="3"/>
-                <rect class="pierna" x="693" y="502" width="12" height="34" rx="3"/>
-              </g>
-
-              <g class="persona">
-                <circle class="cabeza" cx="732" cy="420" r="15"/>
-                <path class="cuerpo-p" d="M715 460 c 0 -13 7.6 -23 17 -23 c 9.4 0 17 10 17 23 v 42 h -34 Z"/>
-                <rect class="pierna" x="717" y="500" width="12" height="36" rx="3"/>
-                <rect class="pierna" x="735" y="500" width="12" height="36" rx="3"/>
-              </g>
-
-              <!-- El perro, de perfil, en el mismo idioma pictografico que la gente -->
-              <g class="perro">
-                <path class="trazo-cola" d="M782 502 c -10 -4 -13 -13 -8 -21"/>
-                <rect x="780" y="498" width="64" height="28" rx="13"/>
-                <path d="M830 510 L840 488 L854 494 L845 514 Z"/>
-                <circle cx="851" cy="489" r="12"/>
-                <rect x="859" y="488" width="16" height="11" rx="5"/>
-                <path d="M845 476 c -7 -1 -11 5 -9 12 c 2 6 7 8 11 5 Z"/>
-                <rect x="786" y="522" width="9" height="16" rx="4"/>
-                <rect x="799" y="522" width="9" height="16" rx="4"/>
-                <rect x="822" y="522" width="9" height="16" rx="4"/>
-                <rect x="834" y="522" width="9" height="16" rx="4"/>
-              </g>
-            </g>
+      <div class="tcard" data-reveal style="--d:1">
+        <div class="seal" aria-hidden="true">
+          <svg viewBox="0 0 110 110">
+            <defs><path id="circ" d="M55 55 m-42 0 a42 42 0 1 1 84 0 a42 42 0 1 1 -84 0"/></defs>
+            <g class="ring"><text font-size="9.5" font-weight="800" letter-spacing="3.2" fill="#E6B840"><textPath href="#circ">ANUNCIO VERIFICADO · IMHOMI · </textPath></text></g>
+            <g class="core"><circle cx="55" cy="55" r="27" fill="#E6B840"/><path d="M44 56l7 7 15-16" fill="none" stroke="#1d1606" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></g>
           </svg>
         </div>
+        <h3>Anuncios verificados</h3>
+        <p>Pasan por verificación y el estado se muestra en el anuncio, no en letra chica.</p>
+      </div>
 
-        <h2>Próximamente en App Store y Google Play</h2>
-        <p>
-          Estamos terminando ImHomi en Costa Rica. Si querés probarla antes que nadie o publicar
-          tu propiedad desde el primer día, escribinos.
-        </p>
-        <div class="store-badges">
-          <div class="store-badge">
-            <span class="badge-soon">Pronto</span>
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.05 12.54c-.02-2.2 1.8-3.26 1.88-3.31-1.02-1.5-2.61-1.7-3.18-1.72-1.35-.14-2.64.8-3.33.8-.69 0-1.75-.78-2.87-.76-1.48.02-2.84.86-3.6 2.18-1.53 2.66-.39 6.6 1.1 8.76.73 1.06 1.6 2.25 2.74 2.2 1.1-.04 1.51-.71 2.84-.71 1.32 0 1.7.71 2.86.69 1.18-.02 1.93-1.08 2.65-2.14.84-1.23 1.18-2.42 1.2-2.48-.03-.01-2.29-.88-2.31-3.5zM14.9 5.6c.6-.74 1.01-1.76.9-2.78-.87.04-1.93.58-2.56 1.31-.56.65-1.05 1.69-.92 2.68.97.08 1.97-.49 2.58-1.21z"/></svg>
-            <div class="store-badge-text">
-              <small>Descargalo en</small>
-              <strong>App Store</strong>
-            </div>
-          </div>
-          <div class="store-badge">
-            <span class="badge-soon">Pronto</span>
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.6 2.2c-.3.3-.5.8-.5 1.4v16.8c0 .6.2 1.1.5 1.4l.1.1 9.4-9.4v-.2L3.7 2.1l-.1.1zm12.6 6.3L13.1 11l-9-9c.2-.1.5-.1.7 0l11.4 6.5zM17.9 9.6l2.4 1.4c.7.4.7 1.6 0 2l-2.4 1.4-2.7-2.4 2.7-2.4zM13.1 13l3.1 2.5-11.4 6.5c-.2.1-.5.1-.7 0l9-9z"/></svg>
-            <div class="store-badge-text">
-              <small>Disponible en</small>
-              <strong>Google Play</strong>
-            </div>
-          </div>
-        </div>
-        <p class="cta-contact">
-          ¿Consultas? Escribinos a <a href="mailto:hola@imhomi.com">hola@imhomi.com</a>
-        </p>
+      <div class="tcard" data-reveal style="--d:2">
+        <h3>Todo queda registrado</h3>
+        <p>Cada parte acepta desde su cuenta y queda la fecha. Lo que se acordó no depende de la memoria de nadie.</p>
+        <ol class="tl">
+          <li style="--i:0"><time>14 nov · 14:02</time>Ana propuso el contrato</li>
+          <li style="--i:1"><time>14 nov · 14:10</time>Aceptaste el contrato</li>
+          <li style="--i:2"><time>5 dic · 19:20</time>Mari se sumó como roomie con un código</li>
+          <li style="--i:3"><time>3 mar · 18:45</time>Aceptaste la propuesta de incremento</li>
+        </ol>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- ==================== FOOTER ==================== -->
-  <footer class="footer">
-    <div class="container">
-      <a href="#hero" class="imhomi-logo">ImHom<span class="i-teal">i</span></a>
-      <nav class="footer-links">
-        <a href="#diferencia">La diferencia</a>
-        <a href="#capacidades">Qué podés hacer</a>
-        <a href="#destacados">Destacados</a>
-        <a href="#confianza">Confianza</a>
-        <a href="privacy.html">Privacidad</a>
-        <a href="terms.html">Términos</a>
-        <a href="mailto:hola@imhomi.com" class="footer-email">hola@imhomi.com</a>
-      </nav>
-      <p class="footer-copy">© <span id="year">2026</span> ImHomi. Hecho en Costa Rica.</p>
-      <a href="https://www.dimonkey.com" target="_blank" rel="noopener" class="footer-brand">
-        Un producto de <span class="dm-logo">DiMonkey</span>
-      </a>
+<!-- ==================== 07 · DESCARGAR ==================== -->
+<section class="sec" id="descargar" style="padding-bottom:0">
+  <div class="wrap">
+    <div class="cta-box">
+      <div>
+        <span class="eyebrow" data-reveal>Pronto</span>
+        <h2 data-split style="margin-top:14px">Tu próximo alquiler, <span class="serif">de principio a fin</span></h2>
+        <p data-reveal style="--d:3">Estamos terminando ImHomi en Costa Rica. Si querés probarla antes que nadie o publicar tu propiedad desde el primer día, escribinos.</p>
+        <div class="badges" data-reveal style="--d:4">
+          <span class="badge magnet"><span class="soon">Pronto</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.05 12.54c-.02-2.2 1.8-3.26 1.88-3.31-1.02-1.5-2.61-1.7-3.18-1.72-1.35-.14-2.64.8-3.33.8-.69 0-1.75-.78-2.87-.76-1.48.02-2.84.86-3.6 2.18-1.53 2.66-.39 6.6 1.1 8.76.73 1.06 1.6 2.25 2.74 2.2 1.1-.04 1.51-.71 2.84-.71 1.32 0 1.7.71 2.86.69 1.18-.02 1.93-1.08 2.65-2.14.84-1.23 1.18-2.42 1.2-2.48-.03-.01-2.29-.88-2.31-3.5zM14.9 5.6c.6-.74 1.01-1.76.9-2.78-.87.04-1.93.58-2.56 1.31-.56.65-1.05 1.69-.92 2.68.97.08 1.97-.49 2.58-1.21z"/></svg><span><small>Descargalo en</small><b>App Store</b></span></span>
+          <span class="badge magnet"><span class="soon">Pronto</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.6 2.2c-.3.3-.5.8-.5 1.4v16.8c0 .6.2 1.1.5 1.4l.1.1 9.4-9.4v-.2L3.7 2.1l-.1.1zm12.6 6.3L13.1 11l-9-9c.2-.1.5-.1.7 0l11.4 6.5zM17.9 9.6l2.4 1.4c.7.4.7 1.6 0 2l-2.4 1.4-2.7-2.4 2.7-2.4zM13.1 13l3.1 2.5-11.4 6.5c-.2.1-.5.1-.7 0l9-9z"/></svg><span><small>Disponible en</small><b>Google Play</b></span></span>
+        </div>
+        <p class="mail" data-reveal style="--d:5">¿Consultas? <a href="mailto:hola@imhomi.com">hola@imhomi.com</a></p>
+      </div>
+
+      <div class="ruta" id="ruta" aria-hidden="true">
+        <svg viewBox="0 0 900 560" fill="none">
+          <defs><radialGradient id="rutaGlow"><stop offset="0%" stop-color="#FFC24D" stop-opacity=".75"/><stop offset="100%" stop-color="#FFC24D" stop-opacity="0"/></radialGradient></defs>
+          <path class="ruta-fantasma" d="M100 184 H660 A45 45 0 0 1 660 274 H360 A45 45 0 0 0 360 406 H820"/>
+          <path class="asfalto" d="M70 230 H640 A45 45 0 0 1 640 320 H330 A45 45 0 0 0 330 452 H850"/>
+          <path class="linea" d="M70 230 H640 A45 45 0 0 1 640 320 H330 A45 45 0 0 0 330 452 H850"/>
+          <g class="pin pin-1"><g class="ondas"><circle cx="262" cy="150" r="72"/><circle cx="262" cy="150" r="72"/><circle cx="262" cy="150" r="72"/></g>
+            <path class="gota--teal" d="M262 56 c 30 0 54 24 54 54 c 0 38 -54 92 -54 92 c 0 0 -54 -54 -54 -92 c 0 -30 24 -54 54 -54 Z"/><circle class="ojo" cx="262" cy="110" r="21"/></g>
+          <g class="pin pin-2"><path class="gota--coral" d="M614 40 c 23 0 42 19 42 42 c 0 29 -42 72 -42 72 c 0 0 -42 -43 -42 -72 c 0 -23 19 -42 42 -42 Z"/><circle class="ojo" cx="614" cy="82" r="16"/></g>
+          <g class="pin pin-3"><path class="gota--teal" d="M752 118 c 27 0 48 21 48 48 c 0 33 -48 82 -48 82 c 0 0 -48 -49 -48 -82 c 0 -27 21 -48 48 -48 Z"/><circle class="ojo" cx="752" cy="166" r="19"/></g>
+          <g class="casa">
+            <circle class="luz" cx="176" cy="476" r="86" fill="url(#rutaGlow)"/>
+            <ellipse class="sombra" cx="196" cy="536" rx="96" ry="11"/>
+            <g class="arbusto"><ellipse cx="86" cy="528" rx="17" ry="14"/><ellipse cx="108" cy="518" rx="26" ry="22"/><ellipse cx="130" cy="528" rx="18" ry="15"/></g>
+            <g class="arbusto"><ellipse cx="280" cy="524" rx="21" ry="18"/><ellipse cx="300" cy="530" rx="15" ry="13"/></g>
+            <rect class="chimenea" x="224" y="376" width="17" height="38" rx="4"/>
+            <rect class="cuerpo" x="130" y="442" width="124" height="94" rx="5"/>
+            <path class="techo" d="M112 448 L192 382 L272 448 Z"/>
+            <rect class="ventana" x="152" y="460" width="40" height="36" rx="4"/>
+            <path class="ventana-cruz" d="M172 460 V496 M152 478 H192"/>
+            <rect class="puerta" x="214" y="486" width="26" height="50" rx="4"/>
+          </g>
+          <g class="huella huella-1"><g transform="translate(558 534) rotate(14)"><circle r="5.4"/><circle cx="-9" cy="-7.5" r="2.8"/><circle cx="-1.5" cy="-11.4" r="2.8"/><circle cx="6.9" cy="-9.6" r="2.8"/></g></g>
+          <g class="huella huella-2"><g transform="translate(598 522) rotate(14)"><circle r="5.4"/><circle cx="-9" cy="-7.5" r="2.8"/><circle cx="-1.5" cy="-11.4" r="2.8"/><circle cx="6.9" cy="-9.6" r="2.8"/></g></g>
+          <g class="huella huella-3"><g transform="translate(638 534) rotate(14)"><circle r="5.4"/><circle cx="-9" cy="-7.5" r="2.8"/><circle cx="-1.5" cy="-11.4" r="2.8"/><circle cx="6.9" cy="-9.6" r="2.8"/></g></g>
+          <g class="familia">
+            <ellipse class="sombra-chica" cx="748" cy="540" rx="86" ry="9"/>
+            <g><circle class="cabeza" cx="690" cy="426" r="15"/><path class="cuerpo-p" d="M673 466 c 0 -13 7.6 -23 17 -23 c 9.4 0 17 10 17 23 v 38 h -34 Z"/><rect class="pierna" x="675" y="502" width="12" height="34" rx="3"/><rect class="pierna" x="693" y="502" width="12" height="34" rx="3"/></g>
+            <g><circle class="cabeza" cx="732" cy="420" r="15"/><path class="cuerpo-p" d="M715 460 c 0 -13 7.6 -23 17 -23 c 9.4 0 17 10 17 23 v 42 h -34 Z"/><rect class="pierna" x="717" y="500" width="12" height="36" rx="3"/><rect class="pierna" x="735" y="500" width="12" height="36" rx="3"/></g>
+            <g class="perro">
+              <path class="trazo-cola" d="M782 502 c -10 -4 -13 -13 -8 -21"/>
+              <rect x="780" y="498" width="64" height="28" rx="13"/>
+              <path d="M830 510 L840 488 L854 494 L845 514 Z"/>
+              <circle cx="851" cy="489" r="12"/>
+              <rect x="859" y="488" width="16" height="11" rx="5"/>
+              <path d="M845 476 c -7 -1 -11 5 -9 12 c 2 6 7 8 11 5 Z"/>
+              <rect x="786" y="522" width="9" height="16" rx="4"/><rect x="799" y="522" width="9" height="16" rx="4"/><rect x="822" y="522" width="9" height="16" rx="4"/><rect x="834" y="522" width="9" height="16" rx="4"/>
+            </g>
+          </g>
+        </svg>
+      </div>
     </div>
-  </footer>
+  </div>
+</section>
+</main>
 
-  <script src="js/main.js"></script>
+<!-- ==================== 08 · PIE ==================== -->
+<footer class="foot" id="foot">
+  <div class="wrap">
+    <div class="foot-top">
+      <a href="#inicio" class="logo" aria-label="ImHomi, inicio">ImHom<span class="idot">ı</span></a>
+      <nav aria-label="Pie de página">
+        <a href="#diferencia">La diferencia</a><a href="#capacidades">Qué podés hacer</a><a href="#solo-aca">Solo acá</a><a href="#confianza">Confianza</a><a href="privacy.html">Privacidad</a><a href="terms.html">Términos</a><a href="mailto:hola@imhomi.com" class="mail-l">hola@imhomi.com</a>
+      </nav>
+    </div>
+    <div class="giant" id="giant" aria-hidden="true"><span class="g-out">ImHom<span>i</span></span><span class="g-fill" id="gFill">ImHom<span>i</span></span></div>
+    <div class="foot-bot"><span>© 2026 ImHomi. Hecho en Costa Rica.</span><a href="https://www.dimonkey.com" target="_blank" rel="noopener">Un producto de <span class="dm">DiMonkey</span></a></div>
+  </div>
+</footer>
+
+<script src="js/site.js"></script>
+<script src="js/home.js"></script>
 </body>
 </html>

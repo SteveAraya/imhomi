@@ -10,27 +10,31 @@
   <link rel="icon" href="/favicon-96.png" type="image/png" sizes="96x96">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#0F2329">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400..900&family=Instrument+Serif:ital@1&display=swap">
+  <link rel="stylesheet" href="css/site.css">
 </head>
 <body class="legal-page">
 
-  <header class="header scrolled">
-    <div class="container">
-      <a href="index.html" class="imhomi-logo">ImHom<span class="i-teal">i</span></a>
-      <nav class="nav-links" id="nav">
-        <a href="index.html">Inicio</a>
-      </nav>
-      <button class="hamburger" id="hamburger" aria-label="Menú" aria-expanded="false">
-        <span></span><span></span><span></span>
-      </button>
-    </div>
+  <a class="skip" href="#main">Saltar al contenido</a>
+
+  <header class="hdr hdr--solid" id="hdr">
+    <a href="./" class="logo" aria-label="ImHomi, inicio">ImHom<span class="idot">ı</span></a>
+    <nav class="nav" id="nav" aria-label="Secciones">
+      <span class="nav-ind" aria-hidden="true"></span>
+      <a href="./">Inicio</a>
+      <a href="privacy.html">Privacidad</a>
+      <a href="terms.html" aria-current="page">Términos</a>
+    </nav>
+    <a href="./#descargar" class="btn btn--coral btn--sm">Descargar</a>
   </header>
 
-  <main class="legal-content">
-    <h1>Términos y Condiciones</h1>
+  <main id="main" class="legal">
+    <div class="legal-in">
+    <span class="eyebrow">Legal</span>
+    <h1>Términos y <span class="serif">condiciones</span></h1>
     <p class="date">Versión 2026-09-04 &middot; Vigente desde el 4 de setiembre de 2026</p>
 
     <p>Estos términos regulan el uso de ImHomi. Al crear una cuenta los aceptás. Te pedimos leerlos: varias funciones de la plataforma tienen <strong>plazos que corren solos</strong> y consecuencias sobre tu dinero, y están descritas acá.</p>
@@ -141,23 +145,22 @@
 
     <h2>19. Contacto</h2>
     <p>Escribinos a <a href="mailto:hola@imhomi.com">hola@imhomi.com</a>.</p>
+    </div>
   </main>
 
-  <footer class="footer">
-    <div class="container">
-      <div class="footer-links">
-        <a href="index.html">Inicio</a>
-        <a href="privacy.html">Política de Privacidad</a>
-        <a href="mailto:hola@imhomi.com" class="footer-email">hola@imhomi.com</a>
+  <footer class="foot">
+    <div class="wrap">
+      <div class="foot-top">
+        <a href="./" class="logo" aria-label="ImHomi, inicio">ImHom<span class="idot">ı</span></a>
+        <nav aria-label="Pie de página">
+          <a href="./#diferencia">La diferencia</a><a href="./#capacidades">Qué podés hacer</a><a href="./#solo-aca">Solo acá</a><a href="./#confianza">Confianza</a><a href="privacy.html">Privacidad</a><a href="terms.html" aria-current="page">Términos</a><a href="mailto:hola@imhomi.com" class="mail-l">hola@imhomi.com</a>
+        </nav>
       </div>
-      <p class="footer-copy">&copy; <span id="year">2025</span> ImHomi. Todos los derechos reservados.</p>
-      <a href="https://dimonkey.com" target="_blank" rel="noopener" class="footer-brand">
-        <span>Desarrollado por</span>
-        <span class="dm-logo">DiMonkey</span>
-      </a>
+      <div class="giant giant--full" aria-hidden="true"><span class="g-out">ImHom<span>i</span></span><span class="g-fill">ImHom<span>i</span></span></div>
+      <div class="foot-bot"><span>© 2026 ImHomi. Hecho en Costa Rica.</span><a href="https://www.dimonkey.com" target="_blank" rel="noopener">Un producto de <span class="dm">DiMonkey</span></a></div>
     </div>
   </footer>
 
-  <script src="js/main.js"></script>
+  <script src="js/site.js"></script>
 </body>
 </html>

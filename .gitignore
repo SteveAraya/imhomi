@@ -1,3 +1,6 @@
 __pycache__/
 *.pyc
 .DS_Store
+
+# Lienzos y propuestas de diseño: se revisan en local, no van al sitio
+conceptos/
