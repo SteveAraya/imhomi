@@ -173,3 +173,32 @@ svg{display:block}
   .js [data-reveal],.js .wi{opacity:1;transform:none;filter:none}
   .pause{display:none}
 }
+
+/* =====================================================================
+   Deshacer un cambio de correo (revert-email.html)
+   Usa la hoja de las páginas legales; esto es lo único propio.
+   ===================================================================== */
+.revert-actions{margin:28px 0 8px;display:flex;flex-wrap:wrap;gap:12px}
+.revert-actions .btn{width:100%}
+@media (min-width:560px){.revert-actions .btn{width:auto}}
+.revert .btn:disabled{opacity:.6;cursor:progress}
+.revert .btn:disabled::after{animation:none}
+.revert-msg{margin-top:14px;padding:14px 18px;border-radius:14px;background:rgba(231,111,81,.1);border:1px solid rgba(231,111,81,.4);color:var(--ink)}
+.revert-ok{margin:8px 0 12px;padding:22px 22px 10px;border-radius:18px;background:rgba(42,157,143,.1);border:1px solid rgba(78,205,196,.4)}
+.revert-ok h2{margin-top:0;color:var(--teal-l)}
+.legal .notice span{display:block}
+
+/* =====================================================================
+   Elegir una contraseña nueva (reset-password.html)
+   Usa lo de la página de deshacer; esto es el formulario.
+   ===================================================================== */
+.reset-form{margin:24px 0 8px;max-width:440px}
+.reset-field{margin-bottom:18px}
+.reset-field label{display:block;margin-bottom:8px;color:var(--ink);font-weight:600;font-size:.95rem}
+.reset-field input{width:100%;min-height:52px;padding:0 16px;border-radius:14px;background:var(--card);border:1px solid var(--line-2);color:var(--ink);font:inherit;font-size:1rem}
+.reset-field input:focus-visible{outline:2px solid var(--teal-l);outline-offset:2px;border-color:transparent}
+.reset-field input[aria-invalid="true"]{border-color:rgba(231,111,81,.8)}
+.legal .reset-hint{margin:8px 0 0;color:var(--muted);font-size:.88rem;line-height:1.5}
+.legal .reset-error{margin:8px 0 0;color:#F4A28C;font-size:.9rem;line-height:1.5}
+.reset-show{display:inline-flex;align-items:center;gap:10px;min-height:44px;margin-bottom:8px;color:var(--ink-2);font-size:.95rem;cursor:pointer}
+.reset-show input{width:20px;height:20px;accent-color:var(--teal-l)}
