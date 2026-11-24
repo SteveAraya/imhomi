@@ -48,7 +48,7 @@ svg{display:block}
 .logo{display:inline-flex;align-items:center;min-height:44px;padding-inline:8px;font-weight:900;font-size:1.45rem;letter-spacing:-.04em;line-height:1}
 .logo span{color:var(--teal-l)}
 /* La i sin punto y el punto aparte: cae como el pin de la ilustración y deja una onda. */
-.idot{position:relative;display:inline-block}
+.idot{position:relative;display:inline-block;letter-spacing:0} /* sin el espaciado negativo de la marca: achicaba la caja y el punto, centrado en ella, quedaba corrido del palo */
 .idot::before{content:"";position:absolute;left:50%;top:var(--dt,.032em);width:var(--ds,.19em);height:var(--ds,.19em);margin-left:calc(var(--ds,.19em) / -2);border-radius:50%;background:currentColor}
 .idot::after{content:"";position:absolute;left:50%;top:calc(var(--dt,.032em) + var(--ds,.19em) / 2);width:.7em;height:.7em;margin:-.35em 0 0 -.35em;border-radius:50%;border:2px solid currentColor;opacity:0;pointer-events:none}
 .js .hdr .idot::before{animation:dotDrop .95s cubic-bezier(.3,1.6,.55,1) .45s both}
