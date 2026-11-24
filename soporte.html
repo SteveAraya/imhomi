@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Panel de soporte — ImHomi</title>
   <!-- Es una herramienta interna: no va en buscadores ni en el sitemap. -->
   <meta name="robots" content="noindex, nofollow">
@@ -17,117 +17,346 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400..900&family=Instrument+Serif:ital@1&display=swap">
   <link rel="stylesheet" href="css/site.css">
+  <link rel="stylesheet" href="css/soporte.css">
 </head>
 <!-- data-api: la misma API que usa la app. El origen de esta web tiene que
      estar en CORS_ORIGINS del backend. Solo entran cuentas con
      users.role = 'support' (ver imhomi_db/SETUP.md). -->
-<body class="legal-page sop-page" data-api="https://imhomibackend-production.up.railway.app/api">
+<body class="sop" data-api="https://imhomibackend-production.up.railway.app/api">
+
+  <!-- Los dibujos que se repiten: la casa del login de la app (HouseIconPainter)
+       y los íconos, con el trazo de 2 px de la app. -->
+  <svg class="sprite" aria-hidden="true" focusable="false">
+    <defs>
+      <linearGradient id="g-house" x1="0" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse">
+        <stop offset="0" stop-color="#4ECDC4"/><stop offset="1" stop-color="#2A9D8F"/>
+      </linearGradient>
+    </defs>
+    <symbol id="house" viewBox="0 0 100 100">
+      <circle cx="50" cy="48.08" r="48.64" fill="none" stroke="#4ECDC4" stroke-opacity=".3" stroke-width="1.2" stroke-dasharray="5 4"/>
+      <g fill="none" stroke="url(#g-house)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M28.24 48.72V74.32H71.76V48.72"/>
+        <path d="M21.84 48.72 50 21.84 78.16 48.72"/>
+        <path d="M43.28 74.32V63.76A6.72 6.72 0 0 1 56.72 63.76V74.32" stroke-width="1.5"/>
+      </g>
+      <circle cx="50" cy="21.84" r="3" fill="#4ECDC4"/>
+      <circle cx="50" cy="62.35" r="2" fill="#4ECDC4" fill-opacity=".8"/>
+      <path d="M45.93 58.28A5.76 5.76 0 0 1 54.07 58.28" fill="none" stroke="#4ECDC4" stroke-opacity=".55" stroke-width="1.3" stroke-linecap="round"/>
+      <path d="M41.97 56.52A9.92 9.92 0 0 1 58.03 56.52" fill="none" stroke="#4ECDC4" stroke-opacity=".3" stroke-width="1.3" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="i-inbox" viewBox="0 0 24 24"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></symbol>
+    <symbol id="i-answered" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="m9 10 2 2 4-4"/></symbol>
+    <symbol id="i-archive" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="5" rx="1"/><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8M10 12h4"/></symbol>
+    <symbol id="i-layers" viewBox="0 0 24 24"><path d="m12 2 10 5-10 5L2 7z"/><path d="m2 17 10 5 10-5M2 12l10 5 10-5"/></symbol>
+    <symbol id="i-logout" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 16h5v5"/></symbol>
+    <symbol id="i-back" viewBox="0 0 24 24"><path d="m12 19-7-7 7-7M19 12H5"/></symbol>
+    <symbol id="i-send" viewBox="0 0 24 24"><path d="M14.54 21.69a.5.5 0 0 0 .94-.03l6.5-19a.5.5 0 0 0-.64-.64l-19 6.5a.5.5 0 0 0-.03.94l7.93 3.18a2 2 0 0 1 1.11 1.11z"/><path d="m21.85 2.15-10.94 10.94"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></symbol>
+    <symbol id="i-keys" viewBox="0 0 24 24"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01M8 12h.01M12 12h.01M16 12h.01M7 16h10"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24"><rect width="14" height="20" x="5" y="2" rx="2"/><path d="M12 18h.01"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2.06 12.35a1 1 0 0 1 0-.7 10.75 10.75 0 0 1 19.88 0 1 1 0 0 1 0 .7 10.75 10.75 0 0 1-19.88 0"/><circle cx="12" cy="12" r="3"/></symbol>
+    <symbol id="i-eye-off" viewBox="0 0 24 24"><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68M6.61 6.61A13.53 13.53 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61M14.12 14.12a3 3 0 1 1-4.24-4.24M2 2l20 20"/></symbol>
+    <symbol id="i-caps" viewBox="0 0 24 24"><path d="M9 18v-6H5l7-7 7 7h-4v6z"/><path d="M9 21h6"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+    <symbol id="i-ext" viewBox="0 0 24 24"><path d="M15 3h6v6M10 14 21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></symbol>
+    <symbol id="i-at" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-4 8"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+    <symbol id="i-login" viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/></symbol>
+    <symbol id="i-box" viewBox="0 0 24 24"><path d="M21 8 12 3 3 8v8l9 5 9-5z"/><path d="m3 8 9 5 9-5M12 13v8"/></symbol>
+    <symbol id="i-cal" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></symbol>
+    <symbol id="i-chev" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+    <symbol id="i-image" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="3" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.1-3.1a2 2 0 0 0-2.8 0L6 21"/></symbol>
+    <symbol id="i-tag" viewBox="0 0 24 24"><path d="M12.59 2.59A2 2 0 0 0 11.17 2H4a2 2 0 0 0-2 2v7.17a2 2 0 0 0 .59 1.42l8.7 8.7a2.43 2.43 0 0 0 3.42 0l6.58-6.58a2.43 2.43 0 0 0 0-3.42z"/><circle cx="7.5" cy="7.5" r="1.5"/></symbol>
+  </svg>
+
+  <!-- El fondo del login de la app: grilla que se desvanece y brillos difusos
+       (AppGridOverlay y AppGlowOrb). -->
+  <div class="bg" aria-hidden="true">
+    <span class="bg-grid"></span>
+    <span class="orb orb--teal"></span>
+    <span class="orb orb--coral"></span>
+    <span class="orb orb--mid"></span>
+  </div>
 
   <a class="skip" href="#main">Saltar al contenido</a>
 
-  <header class="hdr hdr--solid" id="hdr">
-    <a href="./" class="logo" aria-label="ImHomi, inicio">ImHom<span class="idot">ı</span></a>
-    <span class="sop-who" id="sop-who" hidden></span>
-    <button type="button" class="btn btn--glass btn--sm" id="sop-logout" hidden>Salir</button>
-  </header>
+  <noscript>
+    <p class="nojs"><strong>Hace falta JavaScript.</strong> El panel necesita JavaScript para hablar con la API.</p>
+  </noscript>
 
-  <main id="main" class="legal">
-    <div class="legal-in sop-in">
-      <span class="eyebrow">Soporte</span>
-      <h1>Panel de <span class="serif">soporte</span></h1>
+  <!-- ===================== Entrar ===================== -->
+  <main id="main" class="auth" tabindex="-1">
 
-      <noscript>
-        <div class="notice">
-          <strong>Hace falta JavaScript</strong>
-          El panel necesita JavaScript para hablar con la API.
-        </div>
-      </noscript>
+    <!-- La escena de marca: la casa recibe consultas y las contesta. Decorativa. -->
+    <section class="scene" aria-hidden="true">
+      <div class="stage">
+        <div class="stage-glow"></div>
+        <svg class="stage-house" viewBox="0 0 100 100">
+          <circle class="stage-ring" cx="50" cy="48.08" r="48.64" fill="none" stroke="#4ECDC4" stroke-opacity=".3" stroke-width="1" stroke-dasharray="4 4"/>
+          <g fill="none" stroke="url(#g-house)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M28.24 48.72V74.32H71.76V48.72"/>
+            <path d="M21.84 48.72 50 21.84 78.16 48.72"/>
+            <path d="M43.28 74.32V63.76A6.72 6.72 0 0 1 56.72 63.76V74.32" stroke-width="1.4"/>
+          </g>
+          <circle class="stage-ping" cx="50" cy="21.84" r="3" fill="none" stroke="#4ECDC4" stroke-width=".8"/>
+          <circle cx="50" cy="21.84" r="2.6" fill="#4ECDC4"/>
+          <circle cx="50" cy="62.35" r="1.7" fill="#4ECDC4" fill-opacity=".8"/>
+          <path class="stage-wifi stage-wifi--1" d="M45.93 58.28A5.76 5.76 0 0 1 54.07 58.28" fill="none" stroke="#4ECDC4" stroke-width="1.2" stroke-linecap="round"/>
+          <path class="stage-wifi stage-wifi--2" d="M41.97 56.52A9.92 9.92 0 0 1 58.03 56.52" fill="none" stroke="#4ECDC4" stroke-width="1.2" stroke-linecap="round"/>
+        </svg>
 
-      <!-- Entrar: el mismo ingreso que la app, con el código si la cuenta
-           tiene verificación en dos pasos. La sesión vive en la memoria de
-           esta pestaña y se pierde al cerrarla. -->
-      <section id="sop-login" class="revert" hidden>
-        <p class="date">Entrá con tu cuenta de ImHomi. Solo abre el panel una cuenta con el rol de soporte.</p>
-        <form id="sop-login-form" class="reset-form" novalidate>
-          <div class="reset-field">
-            <label for="sop-email">Correo</label>
-            <input type="email" id="sop-email" autocomplete="username" required maxlength="100">
-          </div>
-          <div class="reset-field">
-            <label for="sop-password">Contraseña</label>
-            <input type="password" id="sop-password" autocomplete="current-password" required maxlength="255">
-          </div>
-          <div class="revert-actions">
-            <button type="submit" class="btn btn--coral" id="sop-login-go">Entrar</button>
-          </div>
-          <p class="revert-msg" id="sop-login-error" role="alert" hidden></p>
-        </form>
-      </section>
+        <div class="bub bub--in bub--a"><span class="bub-av av av--2">VJ</span><span class="bub-lines"><i></i><i></i></span></div>
+        <div class="bub bub--out bub--a2"><span class="bub-typing"><i></i><i></i><i></i></span><span class="bub-lines"><i></i><i></i></span><svg class="bub-ok"><use href="#i-check"/></svg></div>
+        <div class="bub bub--in bub--b"><span class="bub-av av av--4">LC</span><span class="bub-lines"><i></i><i></i><i></i></span></div>
+        <div class="bub bub--out bub--b2"><span class="bub-typing"><i></i><i></i><i></i></span><span class="bub-lines"><i></i><i></i></span><svg class="bub-ok"><use href="#i-check"/></svg></div>
+      </div>
 
-      <section id="sop-otp" class="revert" hidden>
-        <p>Te mandamos un código a <strong id="sop-otp-email">tu correo</strong>. Vale 10 minutos.</p>
-        <form id="sop-otp-form" class="reset-form" novalidate>
-          <div class="reset-field">
-            <label for="sop-code">Código de 6 dígitos</label>
-            <input type="text" id="sop-code" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" required>
-          </div>
-          <div class="revert-actions">
-            <button type="submit" class="btn btn--coral" id="sop-otp-go">Confirmar</button>
-            <button type="button" class="btn btn--glass" id="sop-otp-resend">Reenviar el código</button>
-          </div>
-          <p class="revert-msg" id="sop-otp-error" role="alert" hidden></p>
-        </form>
-      </section>
+      <div class="pins"><span class="pins-line"></span><span class="pin pin--coral"></span><span class="pin pin--teal"></span><span class="pin pin--white"></span><span class="pin pin--teal"></span><span class="pin pin--coral"></span><span class="pins-line pins-line--r"></span></div>
 
-      <section id="sop-denied" class="revert" hidden>
-        <div class="notice" role="status">
-          <strong id="sop-denied-title" tabindex="-1">Esta cuenta no tiene acceso al panel</strong>
-          <span>Entraste bien, pero tu cuenta no tiene el rol de soporte. Cerramos la sesión.</span>
-        </div>
-        <div class="revert-actions">
-          <button type="button" class="btn btn--glass" id="sop-denied-back">Entrar con otra cuenta</button>
-        </div>
-      </section>
+      <p class="scene-eyebrow">Soporte</p>
+      <p class="scene-title">Cada consulta,<br>con <span class="serif">respuesta</span>.</p>
+      <p class="scene-sub">Lo que escriben desde “Ayuda y soporte” en la app llega acá, y lo que contestás les llega al teléfono.</p>
+    </section>
 
-      <!-- El panel: la lista a un lado y el caso al otro. -->
-      <section id="sop-panel" class="sop-panel" hidden>
-        <div class="sop-list">
-          <div class="sop-filters" role="tablist" aria-label="Estado de los casos">
-            <button type="button" role="tab" class="sop-tab" data-status="open" aria-selected="true">Abiertas</button>
-            <button type="button" role="tab" class="sop-tab" data-status="answered" aria-selected="false">Respondidas</button>
-            <button type="button" role="tab" class="sop-tab" data-status="closed" aria-selected="false">Cerradas</button>
-            <button type="button" role="tab" class="sop-tab" data-status="" aria-selected="false">Todas</button>
-          </div>
-          <p class="sop-state" id="sop-list-state" role="status"></p>
-          <ul class="sop-cases" id="sop-cases"></ul>
-          <button type="button" class="btn btn--glass btn--sm sop-more" id="sop-more" hidden>Ver más</button>
-        </div>
+    <!-- WCAG 2.2.2: la escena se mueve sola, así que se puede pausar. -->
+    <button class="pause scene-pause" id="sop-pause" type="button"><svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5v14M15 5v14"/></svg><svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5l12 7-12 7z"/></svg><span class="pause-t">Pausar la animación</span></button>
 
-        <article class="sop-case" id="sop-case" aria-live="polite">
-          <p class="sop-state" id="sop-case-empty">Elegí un caso de la lista.</p>
-          <div id="sop-case-body" hidden>
-            <header class="sop-case-head">
-              <h2 id="sop-case-title" tabindex="-1"></h2>
-              <span class="sop-badge" id="sop-case-status"></span>
-            </header>
-            <dl class="sop-meta" id="sop-case-meta"></dl>
-            <ol class="sop-thread" id="sop-thread"></ol>
-            <form id="sop-reply-form" class="sop-reply" novalidate>
-              <label for="sop-reply">Respuesta</label>
-              <textarea id="sop-reply" rows="5" maxlength="2000" required placeholder="Lo que le llega a la persona en la app y por correo."></textarea>
-              <p class="reset-hint"><span id="sop-reply-count">0</span>/2000 · Le llega un aviso en la app y un correo.</p>
-              <div class="revert-actions">
-                <button type="submit" class="btn btn--coral" id="sop-reply-go">Responder</button>
-                <button type="button" class="btn btn--glass" id="sop-close">Cerrar el caso</button>
-              </div>
-              <p class="revert-msg" id="sop-case-error" role="alert" hidden></p>
-            </form>
-            <p class="sop-closed" id="sop-closed" hidden>El caso está cerrado: no recibe más mensajes.</p>
-          </div>
-        </article>
-      </section>
+    <div class="auth-side">
+      <!-- La marca arriba de la tarjeta, como en el login de la app. -->
+      <div class="brand">
+        <span class="brand-mark"><svg><use href="#house"/></svg></span>
+        <span class="wordmark">ImHom<span class="idot">ı</span></span>
+        <span class="brand-sub">Panel de soporte</span>
+      </div>
+      <div class="pins pins--brand" aria-hidden="true"><span class="pins-line"></span><span class="pin pin--coral"></span><span class="pin pin--teal"></span><span class="pin pin--white"></span><span class="pin pin--teal"></span><span class="pin pin--coral"></span><span class="pins-line pins-line--r"></span></div>
+
+      <div class="card">
+        <!-- Entrar: el mismo ingreso que la app. La sesión vive en la memoria
+             de esta pestaña y se pierde al cerrarla. -->
+        <section id="sop-login" class="step" aria-labelledby="sop-login-h" hidden>
+          <h1 class="card-h" id="sop-login-h">Iniciar sesión</h1>
+          <p class="card-sub">Entrá con tu cuenta de ImHomi.</p>
+          <form id="sop-login-form" class="form" novalidate>
+            <div class="field">
+              <svg class="field-i"><use href="#i-at"/></svg>
+              <input type="email" id="sop-email" autocomplete="username" required maxlength="100" placeholder=" " spellcheck="false" autocapitalize="off">
+              <label for="sop-email">Correo electrónico</label>
+            </div>
+            <div class="field field--pass">
+              <svg class="field-i"><use href="#i-lock"/></svg>
+              <input type="password" id="sop-password" autocomplete="current-password" required maxlength="255" placeholder=" " aria-describedby="sop-caps">
+              <label for="sop-password">Contraseña</label>
+              <button type="button" class="field-eye" id="sop-eye" aria-label="Mostrar la contraseña" aria-pressed="false" aria-controls="sop-password">
+                <svg class="eye-on"><use href="#i-eye"/></svg><svg class="eye-off"><use href="#i-eye-off"/></svg>
+              </button>
+            </div>
+            <p class="caps" id="sop-caps" aria-live="polite"></p>
+            <p class="form-error" id="sop-login-error" role="alert" hidden></p>
+            <button type="submit" class="go" id="sop-login-go"><span class="go-spin" aria-hidden="true"></span><span class="go-t">Entrar</span><svg class="go-i" aria-hidden="true"><use href="#i-login"/></svg></button>
+          </form>
+        </section>
+
+        <!-- El código de la verificación en dos pasos: seis casillas que son un
+             solo campo, así pegar y el autocompletado del teléfono andan solos. -->
+        <section id="sop-otp" class="step" aria-labelledby="sop-otp-h" hidden>
+          <span class="step-badge"><svg><use href="#i-shield"/></svg></span>
+          <h2 class="card-h" id="sop-otp-h">Verificación en dos pasos</h2>
+          <p class="card-sub">Ingresá el código de 6 dígitos que mandamos a <strong id="sop-otp-email">tu correo</strong>. Vale 10 minutos.</p>
+          <form id="sop-otp-form" class="form" novalidate>
+            <div class="otp" id="sop-otp-box">
+              <label for="sop-code" class="sr">Código de 6 dígitos</label>
+              <input type="text" id="sop-code" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" required>
+              <span class="otp-cell" aria-hidden="true"></span><span class="otp-cell" aria-hidden="true"></span><span class="otp-cell" aria-hidden="true"></span><span class="otp-gap" aria-hidden="true"></span><span class="otp-cell" aria-hidden="true"></span><span class="otp-cell" aria-hidden="true"></span><span class="otp-cell" aria-hidden="true"></span>
+            </div>
+            <p class="form-error" id="sop-otp-error" role="alert" hidden></p>
+            <p class="form-ok" id="sop-otp-ok" role="status"></p>
+            <button type="submit" class="go" id="sop-otp-go"><span class="go-spin" aria-hidden="true"></span><span class="go-t">Confirmar</span></button>
+            <div class="step-links">
+              <button type="button" class="link" id="sop-otp-back"><svg><use href="#i-back"/></svg>Otra cuenta</button>
+              <button type="button" class="link" id="sop-otp-resend">Reenviar el código</button>
+            </div>
+          </form>
+        </section>
+
+        <section id="sop-denied" class="step step--msg" aria-labelledby="sop-denied-title" hidden>
+          <span class="step-badge step-badge--warn"><svg><use href="#i-lock"/></svg></span>
+          <h2 class="card-h" id="sop-denied-title" tabindex="-1">Esta cuenta no tiene acceso al panel</h2>
+          <p class="card-sub">Entraste bien, pero tu cuenta no tiene el rol de soporte. Cerramos la sesión.</p>
+          <button type="button" class="go go--ghost" id="sop-denied-back">Entrar con otra cuenta</button>
+        </section>
+
+        <!-- Decisión 66: el panel solo abre con la verificación en dos pasos. -->
+        <section id="sop-need2fa" class="step step--msg" aria-labelledby="sop-need2fa-title" hidden>
+          <span class="step-badge step-badge--warn"><svg><use href="#i-shield"/></svg></span>
+          <h2 class="card-h" id="sop-need2fa-title" tabindex="-1">Activá la verificación en dos pasos</h2>
+          <p class="card-sub">El panel solo abre con el código que llega a tu correo. Prendela desde la app y volvé a entrar:</p>
+          <ol class="crumbs" aria-label="Dónde tocar en la app"><li>Mi cuenta</li><li>Seguridad y 2FA</li></ol>
+          <button type="button" class="go go--ghost" id="sop-need2fa-back">Volver a entrar</button>
+        </section>
+
+        <section id="sop-expired" class="step step--msg" aria-labelledby="sop-expired-title" hidden>
+          <span class="step-badge"><svg><use href="#i-clock"/></svg></span>
+          <h2 class="card-h" id="sop-expired-title" tabindex="-1">Tu sesión terminó</h2>
+          <p class="card-sub" id="sop-expired-text">Por seguridad, el panel pide entrar de nuevo cada tanto. Lo que no llegaste a enviar no salió.</p>
+          <button type="button" class="go" id="sop-expired-back"><span class="go-t">Volver a entrar</span><svg class="go-i" aria-hidden="true"><use href="#i-login"/></svg></button>
+        </section>
+
+        <p class="card-foot"><svg aria-hidden="true"><use href="#i-shield"/></svg>Solo cuentas con rol de soporte. La sesión vive en esta pestaña: al cerrarla o recargar, se pide entrar de nuevo.</p>
+      </div>
     </div>
   </main>
+
+  <!-- ===================== El panel ===================== -->
+  <div id="sop-panel" class="app" data-view="list" hidden>
+
+    <aside class="side" aria-label="Bandeja de soporte">
+      <div class="side-brand">
+        <span class="side-mark" aria-hidden="true"><svg><use href="#house"/></svg></span>
+        <span class="wordmark wordmark--sm">ImHom<span class="idot">ı</span></span>
+        <span class="tag">Soporte</span>
+      </div>
+
+      <nav class="side-nav" aria-label="Estado de los casos">
+        <p class="side-h">Bandeja</p>
+        <div class="tabs" role="tablist" aria-label="Estado de los casos">
+          <button type="button" role="tab" class="sop-tab" data-status="open" aria-selected="true" aria-controls="sop-list"><svg aria-hidden="true"><use href="#i-inbox"/></svg><span class="tab-t">Abiertas</span><span class="count count--open" data-count="open"></span></button>
+          <button type="button" role="tab" class="sop-tab" data-status="answered" aria-selected="false" aria-controls="sop-list"><svg aria-hidden="true"><use href="#i-answered"/></svg><span class="tab-t">Respondidas</span><span class="count" data-count="answered"></span></button>
+          <button type="button" role="tab" class="sop-tab" data-status="closed" aria-selected="false" aria-controls="sop-list"><svg aria-hidden="true"><use href="#i-archive"/></svg><span class="tab-t">Cerradas</span><span class="count" data-count="closed"></span></button>
+          <button type="button" role="tab" class="sop-tab" data-status="" aria-selected="false" aria-controls="sop-list"><svg aria-hidden="true"><use href="#i-layers"/></svg><span class="tab-t">Todas</span><span class="count" data-count="all"></span></button>
+        </div>
+      </nav>
+
+      <div class="side-topics">
+        <p class="side-h" id="sop-topics-h">Temas</p>
+        <ul class="topics" id="sop-topics" aria-labelledby="sop-topics-h"></ul>
+      </div>
+
+      <div class="side-foot">
+        <span class="av av--me" id="sop-me" aria-hidden="true"></span>
+        <span class="me">
+          <span class="me-name" id="sop-who" hidden></span>
+          <span class="me-role">Equipo de soporte</span>
+        </span>
+        <button type="button" class="ibtn" id="sop-logout" aria-label="Salir del panel" hidden><svg aria-hidden="true"><use href="#i-logout"/></svg></button>
+      </div>
+    </aside>
+
+    <section class="list" id="sop-list" aria-labelledby="sop-list-title">
+      <header class="list-head">
+        <h1 class="list-title"><span id="sop-list-title">Abiertas</span> <span class="list-n" id="sop-list-n"></span></h1>
+        <span class="list-tools">
+          <button type="button" class="ibtn" id="sop-keys-open" aria-label="Atajos de teclado"><svg aria-hidden="true"><use href="#i-keys"/></svg></button>
+          <button type="button" class="ibtn" id="sop-refresh" aria-label="Actualizar la bandeja"><svg aria-hidden="true"><use href="#i-refresh"/></svg></button>
+        </span>
+      </header>
+      <p class="list-hint" id="sop-list-hint" hidden></p>
+      <p class="sr" id="sop-list-state" role="status"></p>
+      <div class="list-scroll" id="sop-list-scroll">
+        <ul class="sop-cases" id="sop-cases"></ul>
+        <div class="list-msg" id="sop-list-msg" hidden></div>
+        <button type="button" class="more" id="sop-more" hidden>Ver más</button>
+      </div>
+    </section>
+
+    <section class="case" id="sop-case" aria-label="Caso">
+      <!-- Sin caso elegido. -->
+      <div class="case-empty" id="sop-case-empty">
+        <div class="illo illo--duo" aria-hidden="true">
+          <svg class="illo-house"><use href="#house"/></svg>
+          <span class="illo-bub illo-bub--in"><i></i><i></i></span>
+          <span class="illo-bub illo-bub--out"><i></i></span>
+        </div>
+        <p class="empty-h" id="sop-case-empty-h">Elegí un caso de la lista</p>
+        <p class="empty-t" id="sop-case-empty-t">El hilo se abre acá, con los datos del teléfono de la persona.</p>
+        <p class="empty-keys"><kbd>j</kbd> <kbd>k</kbd> para moverte · <kbd>r</kbd> para responder · <kbd>?</kbd> atajos</p>
+        <button type="button" class="go go--ghost go--sm" id="sop-case-retry" hidden>Reintentar</button>
+      </div>
+
+      <!-- Mientras llega el caso. -->
+      <div class="case-skel" id="sop-case-skel" aria-hidden="true" hidden>
+        <div class="case-head"><span class="sk sk-av"></span><span class="sk-col"><span class="sk sk-l1"></span><span class="sk sk-l2"></span></span></div>
+        <div class="thread"><span class="sk sk-bub"></span><span class="sk sk-bub sk-bub--out"></span><span class="sk sk-bub sk-bub--tall"></span></div>
+      </div>
+
+      <div class="case-body" id="sop-case-body" hidden>
+        <header class="case-head">
+          <button type="button" class="ibtn case-back" id="sop-back" aria-label="Volver a la bandeja"><svg aria-hidden="true"><use href="#i-back"/></svg></button>
+          <span class="av av--lg" id="sop-case-av" aria-hidden="true"></span>
+          <h2 class="case-title" id="sop-case-title" tabindex="-1"></h2>
+          <span class="badge" id="sop-case-status"></span>
+          <button type="button" class="close-btn" id="sop-close"><svg aria-hidden="true"><use href="#i-check"/></svg><span>Cerrar caso</span></button>
+        </header>
+
+        <div class="thread-wrap" id="sop-thread-wrap">
+          <ol class="thread" id="sop-thread" aria-label="Mensajes del caso"></ol>
+        </div>
+
+        <aside class="facts" id="sop-facts" aria-label="Datos del caso">
+          <button type="button" class="facts-toggle" id="sop-facts-toggle" aria-expanded="false" aria-controls="sop-case-meta">
+            <svg class="facts-ti" aria-hidden="true"><use href="#i-phone"/></svg>
+            <span class="facts-sum" id="sop-facts-sum">Datos del caso</span>
+            <svg class="facts-chev" aria-hidden="true"><use href="#i-chev"/></svg>
+          </button>
+          <p class="facts-h">Datos del caso</p>
+          <dl class="facts-dl" id="sop-case-meta"></dl>
+        </aside>
+
+        <form id="sop-reply-form" class="composer" novalidate>
+          <p class="form-error form-error--compose" id="sop-case-error" role="alert" hidden></p>
+          <div class="composer-box">
+            <label for="sop-reply" class="sr">Respuesta</label>
+            <textarea id="sop-reply" rows="1" maxlength="2000" required placeholder="Escribí la respuesta…" aria-describedby="sop-reply-hint"></textarea>
+            <button type="submit" class="send" id="sop-reply-go" aria-label="Responder"><span class="go-spin" aria-hidden="true"></span><svg aria-hidden="true"><use href="#i-send"/></svg></button>
+          </div>
+          <p class="composer-hint" id="sop-reply-hint"><span><kbd id="sop-mod">Ctrl</kbd> <kbd>Enter</kbd> envía · le llega un aviso en la app y un correo.</span><span class="counter"><span id="sop-reply-count">0</span>/2000</span></p>
+        </form>
+        <p class="closed-bar" id="sop-closed" hidden><svg aria-hidden="true"><use href="#i-archive"/></svg><span id="sop-closed-t">El caso está cerrado: no recibe más mensajes.</span></p>
+      </div>
+    </section>
+
+    <p class="toast" id="sop-toast" role="status" aria-live="polite"></p>
+  </div>
+
+  <!-- Cerrar un caso: la confirmación. -->
+  <dialog class="dlg" id="sop-confirm" aria-labelledby="sop-confirm-h">
+    <span class="step-badge step-badge--warn"><svg aria-hidden="true"><use href="#i-archive"/></svg></span>
+    <h2 class="dlg-h" id="sop-confirm-h">¿Cerrar el caso?</h2>
+    <p class="dlg-t">Ya no va a recibir mensajes, ni de la persona ni de soporte. A la persona le llega un aviso, y si necesita algo más abre una consulta nueva.</p>
+    <div class="dlg-actions">
+      <button type="button" class="go go--ghost go--sm" id="sop-confirm-cancel">Cancelar</button>
+      <button type="button" class="go go--sm" id="sop-confirm-ok"><span class="go-spin" aria-hidden="true"></span><span class="go-t">Cerrar el caso</span></button>
+    </div>
+  </dialog>
+
+  <!-- La captura, grande. -->
+  <dialog class="dlg dlg--shot" id="sop-lightbox" aria-label="Captura adjunta">
+    <img id="sop-lightbox-img" alt="" referrerpolicy="no-referrer">
+    <div class="shot-bar">
+      <a id="sop-lightbox-open" class="link" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true"><use href="#i-ext"/></svg>Abrir en otra pestaña</a>
+      <button type="button" class="ibtn" id="sop-lightbox-close" aria-label="Cerrar la captura"><svg aria-hidden="true"><use href="#i-x"/></svg></button>
+    </div>
+  </dialog>
+
+  <!-- Atajos opcionales. -->
+  <dialog class="dlg" id="sop-keys" aria-labelledby="sop-keys-h">
+    <h2 class="dlg-h" id="sop-keys-h">Atajos de teclado</h2>
+    <dl class="keys">
+      <dt><kbd>j</kbd> <kbd>k</kbd></dt><dd>Caso siguiente y anterior</dd>
+      <dt><kbd>r</kbd></dt><dd>Escribir la respuesta</dd>
+      <dt><kbd>Ctrl</kbd>/<kbd>⌘</kbd> <kbd>Enter</kbd></dt><dd>Enviar la respuesta</dd>
+      <dt><kbd>1</kbd>–<kbd>4</kbd></dt><dd>Abiertas, respondidas, cerradas, todas</dd>
+      <dt><kbd>u</kbd></dt><dd>Actualizar la bandeja</dd>
+      <dt><kbd>Esc</kbd></dt><dd>Salir del campo o volver a la lista</dd>
+    </dl>
+    <p class="dlg-t">No se activan mientras escribís en un campo.</p>
+    <div class="dlg-actions"><button type="button" class="go go--sm" id="sop-keys-close">Entendido</button></div>
+  </dialog>
 
   <script src="js/soporte.js"></script>
 </body>
