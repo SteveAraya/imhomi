@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel de soporte — ImHomi</title>
+  <!-- Es una herramienta interna: no va en buscadores ni en el sitemap. -->
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="referrer" content="no-referrer">
+  <!-- Solo lo propio, la API y las capturas de Cloudinary. Lo que escriben
+       las personas entra con textContent, nunca como HTML. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://res.cloudinary.com; connect-src https://imhomibackend-production.up.railway.app; form-action 'none'; base-uri 'none'; object-src 'none'">
+  <link rel="icon" href="/favicon.ico" sizes="32x32">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <meta name="theme-color" content="#0F2329">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400..900&family=Instrument+Serif:ital@1&display=swap">
+  <link rel="stylesheet" href="css/site.css">
+</head>
+<!-- data-api: la misma API que usa la app. El origen de esta web tiene que
+     estar en CORS_ORIGINS del backend. Solo entran cuentas con
+     users.role = 'support' (ver imhomi_db/SETUP.md). -->
+<body class="legal-page sop-page" data-api="https://imhomibackend-production.up.railway.app/api">
+
+  <a class="skip" href="#main">Saltar al contenido</a>
+
+  <header class="hdr hdr--solid" id="hdr">
+    <a href="./" class="logo" aria-label="ImHomi, inicio">ImHom<span class="idot">ı</span></a>
+    <span class="sop-who" id="sop-who" hidden></span>
+    <button type="button" class="btn btn--glass btn--sm" id="sop-logout" hidden>Salir</button>
+  </header>
+
+  <main id="main" class="legal">
+    <div class="legal-in sop-in">
+      <span class="eyebrow">Soporte</span>
+      <h1>Panel de <span class="serif">soporte</span></h1>
+
+      <noscript>
+        <div class="notice">
+          <strong>Hace falta JavaScript</strong>
+          El panel necesita JavaScript para hablar con la API.
+        </div>
+      </noscript>
+
+      <!-- Entrar: el mismo ingreso que la app, con el código si la cuenta
+           tiene verificación en dos pasos. La sesión vive en la memoria de
+           esta pestaña y se pierde al cerrarla. -->
+      <section id="sop-login" class="revert" hidden>
+        <p class="date">Entrá con tu cuenta de ImHomi. Solo abre el panel una cuenta con el rol de soporte.</p>
+        <form id="sop-login-form" class="reset-form" novalidate>
+          <div class="reset-field">
+            <label for="sop-email">Correo</label>
+            <input type="email" id="sop-email" autocomplete="username" required maxlength="100">
+          </div>
+          <div class="reset-field">
+            <label for="sop-password">Contraseña</label>
+            <input type="password" id="sop-password" autocomplete="current-password" required maxlength="255">
+          </div>
+          <div class="revert-actions">
+            <button type="submit" class="btn btn--coral" id="sop-login-go">Entrar</button>
+          </div>
+          <p class="revert-msg" id="sop-login-error" role="alert" hidden></p>
+        </form>
+      </section>
+
+      <section id="sop-otp" class="revert" hidden>
+        <p>Te mandamos un código a <strong id="sop-otp-email">tu correo</strong>. Vale 10 minutos.</p>
+        <form id="sop-otp-form" class="reset-form" novalidate>
+          <div class="reset-field">
+            <label for="sop-code">Código de 6 dígitos</label>
+            <input type="text" id="sop-code" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" required>
+          </div>
+          <div class="revert-actions">
+            <button type="submit" class="btn btn--coral" id="sop-otp-go">Confirmar</button>
+            <button type="button" class="btn btn--glass" id="sop-otp-resend">Reenviar el código</button>
+          </div>
+          <p class="revert-msg" id="sop-otp-error" role="alert" hidden></p>
+        </form>
+      </section>
+
+      <section id="sop-denied" class="revert" hidden>
+        <div class="notice" role="status">
+          <strong id="sop-denied-title" tabindex="-1">Esta cuenta no tiene acceso al panel</strong>
+          <span>Entraste bien, pero tu cuenta no tiene el rol de soporte. Cerramos la sesión.</span>
+        </div>
+        <div class="revert-actions">
+          <button type="button" class="btn btn--glass" id="sop-denied-back">Entrar con otra cuenta</button>
+        </div>
+      </section>
+
+      <!-- El panel: la lista a un lado y el caso al otro. -->
+      <section id="sop-panel" class="sop-panel" hidden>
+        <div class="sop-list">
+          <div class="sop-filters" role="tablist" aria-label="Estado de los casos">
+            <button type="button" role="tab" class="sop-tab" data-status="open" aria-selected="true">Abiertas</button>
+            <button type="button" role="tab" class="sop-tab" data-status="answered" aria-selected="false">Respondidas</button>
+            <button type="button" role="tab" class="sop-tab" data-status="closed" aria-selected="false">Cerradas</button>
+            <button type="button" role="tab" class="sop-tab" data-status="" aria-selected="false">Todas</button>
+          </div>
+          <p class="sop-state" id="sop-list-state" role="status"></p>
+          <ul class="sop-cases" id="sop-cases"></ul>
+          <button type="button" class="btn btn--glass btn--sm sop-more" id="sop-more" hidden>Ver más</button>
+        </div>
+
+        <article class="sop-case" id="sop-case" aria-live="polite">
+          <p class="sop-state" id="sop-case-empty">Elegí un caso de la lista.</p>
+          <div id="sop-case-body" hidden>
+            <header class="sop-case-head">
+              <h2 id="sop-case-title" tabindex="-1"></h2>
+              <span class="sop-badge" id="sop-case-status"></span>
+            </header>
+            <dl class="sop-meta" id="sop-case-meta"></dl>
+            <ol class="sop-thread" id="sop-thread"></ol>
+            <form id="sop-reply-form" class="sop-reply" novalidate>
+              <label for="sop-reply">Respuesta</label>
+              <textarea id="sop-reply" rows="5" maxlength="2000" required placeholder="Lo que le llega a la persona en la app y por correo."></textarea>
+              <p class="reset-hint"><span id="sop-reply-count">0</span>/2000 · Le llega un aviso en la app y un correo.</p>
+              <div class="revert-actions">
+                <button type="submit" class="btn btn--coral" id="sop-reply-go">Responder</button>
+                <button type="button" class="btn btn--glass" id="sop-close">Cerrar el caso</button>
+              </div>
+              <p class="revert-msg" id="sop-case-error" role="alert" hidden></p>
+            </form>
+            <p class="sop-closed" id="sop-closed" hidden>El caso está cerrado: no recibe más mensajes.</p>
+          </div>
+        </article>
+      </section>
+    </div>
+  </main>
+
+  <script src="js/soporte.js"></script>
+</body>
+</html>
