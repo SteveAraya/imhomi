@@ -886,6 +886,34 @@
     return row;
   }
   const PLATFORM = { ios: 'iOS', android: 'Android' };
+  // iOS no da el nombre del teléfono sino su código ("iPhone16,1"): acá se
+  // traduce, en la web y no en la app, para que un iPhone nuevo se sume sin
+  // publicar otra versión. Fuentes: AppleDB, DeviceAtlas y la lista de
+  // adamawolf, donde coinciden. El código va siempre al lado del nombre.
+  const IPHONE = {
+    '10,1': '8', '10,4': '8', '10,2': '8 Plus', '10,5': '8 Plus', '10,3': 'X', '10,6': 'X',
+    '11,2': 'XS', '11,4': 'XS Max', '11,6': 'XS Max', '11,8': 'XR',
+    '12,1': '11', '12,3': '11 Pro', '12,5': '11 Pro Max', '12,8': 'SE (2.ª generación)',
+    '13,1': '12 mini', '13,2': '12', '13,3': '12 Pro', '13,4': '12 Pro Max',
+    '14,4': '13 mini', '14,5': '13', '14,2': '13 Pro', '14,3': '13 Pro Max', '14,6': 'SE (3.ª generación)',
+    '14,7': '14', '14,8': '14 Plus', '15,2': '14 Pro', '15,3': '14 Pro Max',
+    '15,4': '15', '15,5': '15 Plus', '16,1': '15 Pro', '16,2': '15 Pro Max',
+    '17,3': '16', '17,4': '16 Plus', '17,1': '16 Pro', '17,2': '16 Pro Max', '17,5': '16e',
+    '18,3': '17', '18,4': 'Air', '18,1': '17 Pro', '18,2': '17 Pro Max', '18,5': '17e',
+    '19,2': '18 Pro', '19,3': '18 Pro Max', '19,7': '18 Pro Max', '19,4': 'Duo',
+  };
+  /** El teléfono para leer: [nombre, código]. Sin nombre conocido, el código solo. */
+  function deviceLines(model) {
+    if (!model) return ['No lo mandó'];
+    const sim = / \(simulador\)$/.test(model);
+    const code = model.replace(/ \(simulador\)$/, '');
+    // Las versiones anteriores mandaban la arquitectura de la Mac.
+    if (code === 'arm64' || code === 'x86_64') return ['Simulador', 'Sin el modelo que simula'];
+    const m = /^iPhone(\d+,\d+)$/.exec(code);
+    const name = m && IPHONE[m[1]] ? 'iPhone ' + IPHONE[m[1]] : null;
+    if (!name) return [model];
+    return [sim ? name + ' (simulador)' : name, code];
+  }
   /** El correo, que en un renglón angosto se corta después de un punto o la arroba. */
   function mailDd(email) {
     const dd = el('dd', 'mail');
@@ -919,7 +947,7 @@
       fact('i-user', 'Cuenta', [name, c.person.email ? mailDd(c.person.email) : (c.person.name ? '' : 'La persona cerró su cuenta')], copy),
       fact('i-box', 'Versión de la app', [c.app_version || 'No la mandó']),
       fact('i-phone', 'Plataforma', [osLine || 'No la mandó']),
-      fact('i-phone', 'Teléfono', [c.device_model || 'No lo mandó']),
+      fact('i-phone', 'Teléfono', deviceLines(c.device_model)),
       fact('i-cal', 'Abierta', [fmt(c.created_at), agoLong(c.created_at)]),
       fact('i-clock', 'Última actividad', [fmt(c.last_message_at)]),
     );
@@ -944,7 +972,7 @@
       });
       meta.append(fact('i-alert', 'Pedidos que fallaron', [list], copyIds));
     }
-    $('#sop-facts-sum').textContent = [c.device_model || plat, c.app_version ? 'App ' + c.app_version : '']
+    $('#sop-facts-sum').textContent = [c.device_model ? deviceLines(c.device_model)[0] : plat, c.app_version ? 'App ' + c.app_version : '']
       .filter(Boolean).join(' · ') || 'Datos del caso';
   }
 
