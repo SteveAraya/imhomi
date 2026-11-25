@@ -73,6 +73,11 @@
     <symbol id="i-cal" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></symbol>
     <symbol id="i-chev" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
     <symbol id="i-image" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="3" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.1-3.1a2 2 0 0 0-2.8 0L6 21"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24"><path d="M20 10c0 4.99-5.54 10.19-7.4 11.8a1 1 0 0 1-1.2 0C9.54 20.19 4 14.99 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></symbol>
+    <symbol id="i-verify" viewBox="0 0 24 24"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m9 12 2 2 4-4"/></symbol>
+    <symbol id="i-xc" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6M9 9l6 6"/></symbol>
+    <symbol id="i-ban" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></symbol>
+    <symbol id="i-history" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5M12 7v5l4 2"/></symbol>
     <symbol id="i-tag" viewBox="0 0 24 24"><path d="M12.59 2.59A2 2 0 0 0 11.17 2H4a2 2 0 0 0-2 2v7.17a2 2 0 0 0 .59 1.42l8.7 8.7a2.43 2.43 0 0 0 3.42 0l6.58-6.58a2.43 2.43 0 0 0 0-3.42z"/><circle cx="7.5" cy="7.5" r="1.5"/></symbol>
   </svg>
 
@@ -223,7 +228,14 @@
         <span class="tag">Soporte</span>
       </div>
 
-      <nav class="side-nav" aria-label="Estado de los casos">
+      <!-- Las dos cosas que atiende el panel: las consultas de "Escribinos"
+           (decisión 51) y las verificaciones de anuncios (decisión 54). -->
+      <nav class="sect" aria-label="Secciones del panel">
+        <button type="button" class="sect-b" data-section="cases" aria-current="page"><svg aria-hidden="true"><use href="#i-inbox"/></svg><span class="sect-t">Consultas</span><span class="count count--open" data-sect-count="cases"></span></button>
+        <button type="button" class="sect-b" data-section="verifs"><svg aria-hidden="true"><use href="#i-verify"/></svg><span class="sect-t">Verificaciones</span><span class="count count--open" data-sect-count="verifs"></span></button>
+      </nav>
+
+      <nav class="side-nav" id="sop-nav-cases" aria-label="Estado de los casos">
         <p class="side-h">Bandeja</p>
         <div class="tabs" role="tablist" aria-label="Estado de los casos">
           <button type="button" role="tab" class="sop-tab" data-status="open" aria-selected="true" aria-controls="sop-list"><svg aria-hidden="true"><use href="#i-inbox"/></svg><span class="tab-t">Abiertas</span><span class="count count--open" data-count="open"></span></button>
@@ -233,9 +245,24 @@
         </div>
       </nav>
 
-      <div class="side-topics">
+      <div class="side-topics" id="sop-side-topics">
         <p class="side-h" id="sop-topics-h">Temas</p>
         <ul class="topics" id="sop-topics" aria-labelledby="sop-topics-h"></ul>
+      </div>
+
+      <nav class="side-nav" id="ver-nav" aria-label="Estado de las verificaciones" hidden>
+        <p class="side-h">Verificaciones</p>
+        <div class="tabs" id="ver-tabs" role="tablist" aria-label="Estado de las verificaciones">
+          <button type="button" role="tab" class="ver-tab" data-status="pending" aria-selected="true" aria-controls="ver-list"><svg aria-hidden="true"><use href="#i-clock"/></svg><span class="tab-t">Pendientes</span><span class="count count--open" data-vcount="pending"></span></button>
+          <button type="button" role="tab" class="ver-tab" data-status="approved" aria-selected="false" aria-controls="ver-list"><svg aria-hidden="true"><use href="#i-verify"/></svg><span class="tab-t">Aprobadas</span></button>
+          <button type="button" role="tab" class="ver-tab" data-status="rejected" aria-selected="false" aria-controls="ver-list"><svg aria-hidden="true"><use href="#i-xc"/></svg><span class="tab-t">Rechazadas</span></button>
+          <button type="button" role="tab" class="ver-tab" data-status="cancelled" aria-selected="false" aria-controls="ver-list"><svg aria-hidden="true"><use href="#i-ban"/></svg><span class="tab-t">Canceladas</span></button>
+        </div>
+      </nav>
+
+      <div class="side-note" id="ver-note" hidden>
+        <svg aria-hidden="true"><use href="#i-clock"/></svg>
+        <p>Cada una se revisa en <strong>24 horas</strong>. Compará las fotos y el punto con lo que dice el anuncio; mientras tanto se publica sin la insignia.</p>
       </div>
 
       <div class="side-foot">
@@ -321,6 +348,58 @@
       </div>
     </section>
 
+    <!-- ===== Verificaciones de anuncios (decisión 54) ===== -->
+    <section class="list" id="ver-list" aria-labelledby="ver-list-title" hidden>
+      <header class="list-head">
+        <h1 class="list-title"><span id="ver-list-title">Pendientes</span> <span class="list-n" id="ver-list-n"></span></h1>
+        <span class="list-tools">
+          <button type="button" class="ibtn" id="ver-keys-open" aria-label="Atajos de teclado"><svg aria-hidden="true"><use href="#i-keys"/></svg></button>
+          <button type="button" class="ibtn" id="ver-refresh" aria-label="Actualizar las verificaciones"><svg aria-hidden="true"><use href="#i-refresh"/></svg></button>
+        </span>
+      </header>
+      <p class="sr" id="ver-list-state" role="status"></p>
+      <div class="list-scroll" id="ver-list-scroll">
+        <ul class="sop-cases" id="ver-items"></ul>
+        <div class="list-msg" id="ver-list-msg" hidden></div>
+        <button type="button" class="more" id="ver-more" hidden>Ver más</button>
+      </div>
+    </section>
+
+    <section class="case" id="ver-case" aria-label="Verificación" hidden>
+      <div class="case-empty" id="ver-empty">
+        <div class="illo" aria-hidden="true"></div>
+        <p class="empty-h" id="ver-empty-h">Elegí una verificación de la lista</p>
+        <p class="empty-t" id="ver-empty-t">Se abre acá con las fotos, el punto del teléfono y lo que dice el anuncio para comparar.</p>
+        <button type="button" class="go go--ghost go--sm" id="ver-retry" hidden>Reintentar</button>
+      </div>
+
+      <div class="case-skel" id="ver-skel" aria-hidden="true" hidden>
+        <div class="case-head"><span class="sk sk-av"></span><span class="sk-col"><span class="sk sk-l1"></span><span class="sk sk-l2"></span></span></div>
+        <div class="ver-skel-photos"><span class="sk"></span><span class="sk"></span><span class="sk"></span></div>
+      </div>
+
+      <div class="ver-body" id="ver-body" hidden>
+        <header class="case-head">
+          <button type="button" class="ibtn case-back" id="ver-back" aria-label="Volver a las verificaciones"><svg aria-hidden="true"><use href="#i-back"/></svg></button>
+          <span class="av av--lg" id="ver-av" aria-hidden="true"></span>
+          <h2 class="case-title" id="ver-title" tabindex="-1"></h2>
+          <span class="badge" id="ver-status"></span>
+        </header>
+
+        <div class="ver-scroll" id="ver-scroll"></div>
+
+        <div class="ver-actions" id="ver-actions">
+          <p class="form-error form-error--compose" id="ver-error" role="alert" hidden></p>
+          <div class="ver-actions-row">
+            <p class="ver-actions-t" id="ver-actions-t">Si la aprobás, el anuncio queda verificado con este punto y al dueño le llega el aviso.</p>
+            <button type="button" class="go go--ghost go--sm ver-reject-b" id="ver-reject-open"><svg aria-hidden="true"><use href="#i-xc"/></svg><span class="go-t">Rechazar</span></button>
+            <button type="button" class="go go--sm" id="ver-approve"><span class="go-spin" aria-hidden="true"></span><svg class="go-i" aria-hidden="true"><use href="#i-check"/></svg><span class="go-t">Aprobar</span></button>
+          </div>
+        </div>
+        <p class="closed-bar" id="ver-closed" hidden><svg aria-hidden="true"><use href="#i-archive"/></svg><span id="ver-closed-t"></span></p>
+      </div>
+    </section>
+
     <p class="toast" id="sop-toast" role="status" aria-live="polite"></p>
   </div>
 
@@ -333,6 +412,29 @@
       <button type="button" class="go go--ghost go--sm" id="sop-confirm-cancel">Cancelar</button>
       <button type="button" class="go go--sm" id="sop-confirm-ok"><span class="go-spin" aria-hidden="true"></span><span class="go-t">Cerrar el caso</span></button>
     </div>
+  </dialog>
+
+  <!-- Rechazar una verificación: el motivo lo lee el dueño. -->
+  <dialog class="dlg dlg--form" id="ver-reject" aria-labelledby="ver-reject-h" aria-describedby="ver-reject-t">
+    <form id="ver-reject-form" novalidate>
+      <h2 class="dlg-h" id="ver-reject-h">Rechazar la verificación</h2>
+      <p class="dlg-t" id="ver-reject-t">El dueño lee el motivo en su anuncio y en el aviso: escribilo para que sepa qué corregir.</p>
+      <p class="ver-quick-h" id="ver-quick-h">Motivos frecuentes</p>
+      <div class="ver-quick" id="ver-quick" role="group" aria-labelledby="ver-quick-h">
+        <button type="button" class="chip">Las fotos no muestran la propiedad del anuncio.</button>
+        <button type="button" class="chip">El punto queda lejos de la dirección del anuncio.</button>
+        <button type="button" class="chip">Las fotos están borrosas o muy oscuras.</button>
+        <button type="button" class="chip">Falta una de las tres fotos: exterior, interior y detalle.</button>
+      </div>
+      <label class="ver-reason-l" for="ver-reason">Motivo</label>
+      <textarea id="ver-reason" rows="3" maxlength="300" required aria-describedby="ver-reason-hint" placeholder="Por ejemplo: la foto del exterior es de otra casa."></textarea>
+      <p class="ver-reason-hint" id="ver-reason-hint"><span>Entre 10 y 300 caracteres.</span><span class="counter"><span id="ver-reason-count">0</span>/300</span></p>
+      <p class="form-error" id="ver-reject-error" role="alert" hidden></p>
+      <div class="dlg-actions">
+        <button type="button" class="go go--ghost go--sm" id="ver-reject-cancel">Cancelar</button>
+        <button type="submit" class="go go--sm go--danger" id="ver-reject-go"><span class="go-spin" aria-hidden="true"></span><span class="go-t">Rechazar</span></button>
+      </div>
+    </form>
   </dialog>
 
   <!-- La captura, grande. -->
@@ -348,11 +450,12 @@
   <dialog class="dlg" id="sop-keys" aria-labelledby="sop-keys-h">
     <h2 class="dlg-h" id="sop-keys-h">Atajos de teclado</h2>
     <dl class="keys">
-      <dt><kbd>j</kbd> <kbd>k</kbd></dt><dd>Caso siguiente y anterior</dd>
+      <dt><kbd>j</kbd> <kbd>k</kbd></dt><dd>Siguiente y anterior de la lista</dd>
       <dt><kbd>r</kbd></dt><dd>Escribir la respuesta</dd>
       <dt><kbd>Ctrl</kbd>/<kbd>⌘</kbd> <kbd>Enter</kbd></dt><dd>Enviar la respuesta</dd>
-      <dt><kbd>1</kbd>–<kbd>4</kbd></dt><dd>Abiertas, respondidas, cerradas, todas</dd>
-      <dt><kbd>u</kbd></dt><dd>Actualizar la bandeja</dd>
+      <dt><kbd>c</kbd> <kbd>v</kbd></dt><dd>Consultas y verificaciones</dd>
+      <dt><kbd>1</kbd>–<kbd>4</kbd></dt><dd>Las pestañas de la sección</dd>
+      <dt><kbd>u</kbd></dt><dd>Actualizar la lista</dd>
       <dt><kbd>Esc</kbd></dt><dd>Salir del campo o volver a la lista</dd>
     </dl>
     <p class="dlg-t">No se activan mientras escribís en un campo.</p>

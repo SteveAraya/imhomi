@@ -2,7 +2,9 @@
    ImHomi · panel de soporte (decisión 51)
    Entra con el ingreso de la API (con el código si la cuenta tiene
    verificación en dos pasos), lista los casos por estado, muestra el hilo,
-   responde y cierra. Solo lo abre una cuenta con users.role = 'support':
+   responde y cierra. Y revisa las verificaciones de anuncios (decisión 54):
+   compara las fotos y el punto con lo que dice el anuncio, y aprueba o
+   rechaza con el motivo. Solo lo abre una cuenta con users.role = 'support':
    la API contesta 403 SIN_PERMISO a cualquier otra.
 
    La sesión vive solo en la memoria de esta pestaña: nada en localStorage
@@ -158,6 +160,8 @@
     $('#sop-cases').replaceChildren();
     $('#sop-case-body').hidden = true;
     showCaseEmpty();
+    resetVerifs();
+    paintSection('cases');
     panel.dataset.view = 'list';
   }
 
@@ -543,13 +547,18 @@
       if (me.data.expires_at) session.expiresAt = me.data.expires_at;
     }
     armExpiry();
-    const r = await loadList(true);
+    // El enlace del correo a soporte: `#caso-<id>` o `#verificacion-<id>`.
+    const m = /^#caso-(\d{1,10})$/.exec(location.hash);
+    const v = /^#verificacion-(\d{1,10})$/.exec(location.hash);
+    if (v) paintSection('verifs');
+    const r = v ? await loadVerList(true) : await loadList(true);
     if (r === 'ended' || !session) return;
     paintMe();
     show('panel');
     refreshCounts();
-    const m = /^#caso-(\d{1,10})$/.exec(location.hash);
-    if (m) openCase(Number(m[1]));
+    refreshVerCounts();
+    if (v) openVer(Number(v[1]));
+    else if (m) openCase(Number(m[1]));
   }
 
   /** La sesión abrió, pero la cuenta no es de soporte: se cierra. */
@@ -629,6 +638,10 @@
       } else n.textContent = label(counts[k]);
       if (k === 'open') n.classList.toggle('has', !!(counts.open && counts.open.n));
     });
+    // En el selector de sección, las que esperan respuesta.
+    const sect = $('[data-sect-count="cases"]');
+    sect.textContent = counts.open && counts.open.n ? label(counts.open) : '';
+    sect.classList.toggle('has', !!(counts.open && counts.open.n));
   }
 
   function illo(kind) {
@@ -643,6 +656,10 @@
     } else if (kind === 'done') {
       const c = el('span', 'illo-check');
       c.append(icon('i-check'));
+      box.append(c);
+    } else if (kind === 'pin') {
+      const c = el('span', 'illo-pin');
+      c.append(icon('i-pin'));
       box.append(c);
     } else {
       const a = el('span', 'illo-bub illo-bub--in');
@@ -830,7 +847,7 @@
   });
 
   function markCurrent() {
-    $$('.sop-item').forEach((b) => {
+    $$('#sop-cases .sop-item').forEach((b) => {
       const on = !!current && Number(b.dataset.id) === current.id_support_case;
       b.classList.toggle('is-current', on);
       if (on) b.setAttribute('aria-current', 'true'); else b.removeAttribute('aria-current');
@@ -1205,38 +1222,54 @@
     refreshCounts();
   });
 
-  /* ---------- La captura, grande ---------- */
+  /* ---------- La captura (o la foto), grande ---------- */
+  // Un solo visor para las capturas de los casos y las fotos de las
+  // verificaciones. `fresh` pide de nuevo lo que está abierto (el enlace
+  // firmado venció) y devuelve la dirección nueva, o null.
   const lightbox = $('#sop-lightbox');
-  let shotOpen = null; // el mensaje cuya captura está abierta
+  let shotOpen = null; // { key, fresh }
+  function showLightbox(url, alt, { label, closeLabel, key, fresh }) {
+    shotOpen = { key, fresh };
+    const img = $('#sop-lightbox-img');
+    img.src = url;
+    img.alt = alt;
+    lightbox.setAttribute('aria-label', label);
+    $('#sop-lightbox-close').setAttribute('aria-label', closeLabel);
+    $('#sop-lightbox-open').href = url;
+    lightbox.showModal();
+    $('#sop-lightbox-close').focus();
+  }
   async function openShot(id, alt) {
     let m = findMsg(id);
     if (shotExpired(m)) { await refreshCase(); m = findMsg(id); }
     const url = m && m.attachment_url;
     if (!validShot(url)) return toast('No pudimos abrir la captura. Probá de nuevo.', true);
-    shotOpen = id;
-    const img = $('#sop-lightbox-img');
-    img.src = url;
-    img.alt = alt;
-    $('#sop-lightbox-open').href = url;
-    lightbox.showModal();
-    $('#sop-lightbox-close').focus();
+    showLightbox(url, alt, {
+      label: 'Captura adjunta',
+      closeLabel: 'Cerrar la captura',
+      key: 'big-' + id,
+      fresh: async () => {
+        await refreshCase();
+        const n = findMsg(id);
+        return n && validShot(n.attachment_url) ? n.attachment_url : null;
+      },
+    });
   }
   $('#sop-lightbox-close').addEventListener('click', () => lightbox.close());
   lightbox.addEventListener('click', (e) => { if (e.target === lightbox) lightbox.close(); });
   lightbox.addEventListener('close', () => { shotOpen = null; $('#sop-lightbox-img').removeAttribute('src'); });
-  // El enlace venció con la captura abierta, o falló: se pide uno nuevo una vez.
+  // El enlace venció con la imagen abierta, o falló: se pide uno nuevo una vez.
   $('#sop-lightbox-img').addEventListener('error', async () => {
-    const id = shotOpen;
-    if (id === null || !lightbox.open || !$('#sop-lightbox-img').getAttribute('src')) return;
-    if (!mayRetry('big-' + id)) {
+    const open = shotOpen;
+    if (!open || !lightbox.open || !$('#sop-lightbox-img').getAttribute('src')) return;
+    if (!mayRetry(open.key)) {
       lightbox.close();
-      return toast('No pudimos cargar la captura.', true);
+      return toast('No pudimos cargar la imagen.', true);
     }
-    await refreshCase();
-    const m = findMsg(id);
-    if (lightbox.open && shotOpen === id && m && validShot(m.attachment_url)) {
-      $('#sop-lightbox-img').src = m.attachment_url;
-      $('#sop-lightbox-open').href = m.attachment_url;
+    const url = await open.fresh();
+    if (lightbox.open && shotOpen === open && url) {
+      $('#sop-lightbox-img').src = url;
+      $('#sop-lightbox-open').href = url;
     }
   });
 
@@ -1244,10 +1277,820 @@
   function backToList() {
     saveDraft();
     panel.dataset.view = 'list';
-    const item = current && $(`.sop-item[data-id="${current.id_support_case}"]`);
+    const item = current && $(`#sop-cases .sop-item[data-id="${current.id_support_case}"]`);
     if (item) item.focus(); else $('#sop-refresh').focus();
   }
   $('#sop-back').addEventListener('click', backToList);
+
+  /* =====================================================================
+     VERIFICACIONES DE ANUNCIOS (decisión 54)
+     El dueño manda tres fotos tomadas en la propiedad y el punto del
+     teléfono; queda pendiente y el anuncio se publica sin la insignia hasta
+     que alguien del equipo la aprueba o la rechaza con el motivo. El pin
+     cambia recién al aprobarse (decisión 74). Las fotos son privadas: llegan
+     con un enlace firmado que vence a los 10 minutos, como las capturas.
+     ===================================================================== */
+  const VSTATUS = { pending: 'Pendiente', approved: 'Aprobada', rejected: 'Rechazada', cancelled: 'Cancelada' };
+  const VTITLES = { pending: 'Pendientes', approved: 'Aprobadas', rejected: 'Rechazadas', cancelled: 'Canceladas' };
+  const VBADGE = { pending: 'open', approved: 'answered', rejected: 'rejected', cancelled: 'closed' };
+  const VEMPTY = {
+    pending: ['Nada para revisar', 'No hay verificaciones esperando. Cuando un dueño mande la suya, aparece acá y te llega un correo.'],
+    approved: ['Ninguna aprobada todavía', 'Las que apruebes quedan acá, con quién y cuándo.'],
+    rejected: ['Ninguna rechazada', 'Las que rechaces quedan acá, con el motivo que leyó el dueño.'],
+    cancelled: ['Ninguna cancelada', 'Una pendiente se cancela sola cuando el dueño cambia la ubicación del anuncio o lo elimina.'],
+  };
+  const LISTING = { entire: 'Propiedad completa', room: 'Cuarto' };
+  const AD_STATUS = { published: 'Publicado', paused: 'Pausado', rented: 'Alquilado', full: 'Lleno', deleted: 'Eliminado' };
+  const PHOTO = { exterior: 'Exterior', interior: 'Interior', detail: 'Detalle' };
+  const PHOTO_ALT = { exterior: 'del exterior', interior: 'del interior', detail: 'de un detalle' };
+  const REVIEW_HOURS = 24; // el compromiso (VERIFICATION_REVIEW_HOURS en la API)
+  const CODE_VER_RESOLVED = 'VERIFICACION_RESUELTA';
+  const CODE_VER_OWN = 'VERIFICACION_PROPIA';
+  const CODE_VER_NOT_FOUND = 'VERIFICACION_NO_ENCONTRADA';
+  const OWN_VER = 'Este anuncio es tuyo: lo revisa otra persona del equipo.';
+
+  let section = 'cases';
+  let verFilter = 'pending';
+  let verItems = [];
+  let verCursor = null;
+  let verCurrent = null;
+  let verCounts = {}; // { pending: { n, more } }
+  let verSeq = 0;
+  let verListSeq = 0;
+  let verPhotoTimer = null;
+  const verDrafts = new Map(); // el motivo a medio escribir de cada una
+
+  const verEmpty = $('#ver-empty');
+  const verBody = $('#ver-body');
+  const verSkel = $('#ver-skel');
+  const verErr = $('#ver-error');
+  const verApprove = $('#ver-approve');
+  const verRejectOpen = $('#ver-reject-open');
+
+  /* ---------- Cuánto falta para las 24 horas ---------- */
+  function dueOf(createdIso) {
+    return new Date(new Date(createdIso).getTime() + REVIEW_HOURS * 3600e3);
+  }
+  /** [texto, 'late' | 'soon' | ''] */
+  function dueText(due) {
+    const left = due.getTime() - Date.now();
+    const span = (ms) => {
+      const mins = Math.max(1, Math.round(ms / 60000));
+      if (mins < 60) return `${mins} min`;
+      const hours = Math.floor(mins / 60);
+      if (hours < 48) return `${hours} h`;
+      return `${Math.floor(hours / 24)} días`;
+    };
+    if (left > 0) return [`Quedan ${span(left)}`, left < 4 * 3600e3 ? 'soon' : ''];
+    return [`Vencida hace ${span(-left)}`, 'late'];
+  }
+  function dueChip(createdIso) {
+    const due = dueOf(createdIso);
+    const [text, tone] = dueText(due);
+    const t = el('time', 'due' + (tone ? ' due--' + tone : ''), text);
+    t.dateTime = due.toISOString();
+    t.title = 'Plazo: ' + fmt(due.toISOString());
+    t.dataset.due = '1';
+    return t;
+  }
+  // Se refresca solo, como el "hace cuánto".
+  setInterval(() => {
+    $$('[data-due]').forEach((t) => {
+      const [text, tone] = dueText(new Date(t.dateTime));
+      t.textContent = t.dataset.due === 'long' ? dueLong(new Date(t.dateTime)) : text;
+      t.classList.toggle('due--late', tone === 'late');
+      t.classList.toggle('due--soon', tone === 'soon');
+    });
+  }, 60000);
+  const dueLong = (due) => {
+    const [text, tone] = dueText(due);
+    return tone === 'late'
+      ? `El plazo de ${REVIEW_HOURS} horas venció el ${fmt(due.toISOString())} · ${text.toLowerCase()}`
+      : `Revisala antes del ${fmt(due.toISOString())} · ${text.toLowerCase()}`;
+  };
+
+  /** Metros o kilómetros, como se leen. */
+  function distText(m) {
+    const n = Number(m) || 0;
+    if (n < 1000) return `${Math.round(n)} m`;
+    return `${(n / 1000).toLocaleString('es-CR', { maximumFractionDigits: n < 10000 ? 1 : 0 })} km`;
+  }
+  const coord = (n) => Number(n).toFixed(6);
+  const mapsUrl = (lat, lng) => `https://www.google.com/maps?q=${coord(lat)},${coord(lng)}`;
+  /** Un enlace que se abre en otra pestaña, y lo dice. */
+  function extLink(href, text, cls) {
+    const a = el('a', cls || 'link');
+    a.href = href;
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    a.append(icon('i-ext'), document.createTextNode(text), el('span', 'sr', ' (se abre en otra pestaña)'));
+    return a;
+  }
+
+  /* ---------- La sección ---------- */
+  /** Muestra una sección u otra, sin pedir nada. */
+  function paintSection(name) {
+    section = name;
+    const verifs = name === 'verifs';
+    $$('.sect-b').forEach((b) => {
+      if (b.dataset.section === name) b.setAttribute('aria-current', 'page');
+      else b.removeAttribute('aria-current');
+    });
+    $('#sop-nav-cases').hidden = verifs;
+    $('#sop-side-topics').hidden = verifs;
+    $('#sop-list').hidden = verifs;
+    $('#sop-case').hidden = verifs;
+    $('#ver-nav').hidden = !verifs;
+    $('#ver-note').hidden = !verifs;
+    $('#ver-list').hidden = !verifs;
+    $('#ver-case').hidden = !verifs;
+    panel.dataset.section = name;
+    panel.dataset.view = 'list';
+  }
+
+  /** Pasa a la otra sección y la pone al día. */
+  function setSection(name) {
+    if (section === name) return;
+    if (name === 'verifs') saveDraft();
+    paintSection(name);
+    if (history.replaceState) {
+      const hash = name === 'verifs'
+        ? (verCurrent ? '#verificacion-' + verCurrent.id_verification : '')
+        : (current ? '#caso-' + current.id_support_case : '');
+      history.replaceState(null, '', location.pathname + location.search + hash);
+    }
+    if (name === 'verifs') { loadVerList(true); refreshVerCounts(); } else { loadList(true); refreshCounts(); }
+    $(`.sect-b[data-section="${name}"]`).focus();
+  }
+  $$('.sect-b').forEach((b) => b.addEventListener('click', () => setSection(b.dataset.section)));
+
+  function resetVerifs() {
+    verItems = [];
+    verCursor = null;
+    verCurrent = null;
+    verCounts = {};
+    verDrafts.clear();
+    clearTimeout(verPhotoTimer);
+    $('#ver-items').replaceChildren();
+    verBody.hidden = true;
+    showVerEmpty();
+    paintVerCounts();
+  }
+
+  /* ---------- La lista ---------- */
+  function skeletonVerList() {
+    const list = $('#ver-items');
+    list.replaceChildren();
+    for (let i = 0; i < 6; i++) {
+      const li = el('li', 'skel');
+      li.setAttribute('aria-hidden', 'true');
+      li.append(el('span', 'sk'), el('span', 'sk'), el('span', 'sk'), el('span', 'sk'));
+      list.append(li);
+    }
+    $('#ver-list-msg').hidden = true;
+    $('#ver-more').hidden = true;
+  }
+
+  async function loadVerList(reset) {
+    const seq = ++verListSeq;
+    const state = $('#ver-list-state');
+    const more = $('#ver-more');
+    if (reset) {
+      verItems = [];
+      verCursor = null;
+      skeletonVerList();
+    } else busy(more, true);
+    state.textContent = 'Cargando verificaciones…';
+    const q = new URLSearchParams({ status: verFilter });
+    if (verCursor) q.set('cursor', verCursor);
+    const r = await call('GET', '/support/admin/verifications?' + q);
+    busy(more, false);
+    if (!session) return 'ended';
+    if (seq !== verListSeq) return 'stale';
+    if (noRole(r)) { deny(); return 'ended'; }
+    if (!r.ok) {
+      verListMessage('error', r.message || 'No pudimos cargar las verificaciones.');
+      state.textContent = r.message || 'No pudimos cargar las verificaciones.';
+      return 'error';
+    }
+    verItems = verItems.concat((r.data && r.data.data) || []);
+    verCursor = (r.data && r.data.next_cursor) || null;
+    if (verFilter === 'pending' && !verCursor) { verCounts.pending = { n: verItems.length, more: false }; paintVerCounts(); }
+    renderVerList();
+    return 'ok';
+  }
+
+  /** Cuántas esperan: la primera tanda (de a 20). */
+  async function refreshVerCounts() {
+    const r = await call('GET', '/support/admin/verifications?status=pending');
+    if (!session) return;
+    if (r.ok && r.data && Array.isArray(r.data.data)) {
+      verCounts.pending = { n: r.data.data.length, more: !!r.data.next_cursor };
+    }
+    paintVerCounts();
+  }
+  function paintVerCounts() {
+    const c = verCounts.pending;
+    const text = c && c.n ? c.n + (c.more ? '+' : '') : '';
+    [$('[data-vcount="pending"]'), $('[data-sect-count="verifs"]')].forEach((n) => {
+      n.textContent = text;
+      n.classList.toggle('has', !!text);
+    });
+  }
+
+  function verListMessage(kind, text, title) {
+    const box = $('#ver-list-msg');
+    box.replaceChildren();
+    $('#ver-items').replaceChildren();
+    box.append(illo(kind === 'error' ? 'error' : (verFilter === 'pending' ? 'done' : 'pin')));
+    box.append(el('p', 'empty-h', title || (kind === 'error' ? 'No pudimos cargar las verificaciones' : '')));
+    box.append(el('p', 'empty-t', text));
+    if (kind === 'error') {
+      $('#ver-list-n').textContent = '';
+      const retry = el('button', 'go go--ghost go--sm', 'Reintentar');
+      retry.type = 'button';
+      retry.addEventListener('click', () => { loadVerList(true); refreshVerCounts(); });
+      box.append(retry);
+    }
+    box.hidden = false;
+    $('#ver-more').hidden = kind === 'error' || !verCursor;
+  }
+
+  function verItemFor(v) {
+    const li = el('li');
+    const b = el('button', 'sop-item ver-item');
+    b.type = 'button';
+    b.dataset.id = String(v.id_verification);
+    if (verCurrent && verCurrent.id_verification === v.id_verification) {
+      b.classList.add('is-current');
+      b.setAttribute('aria-current', 'true');
+    }
+    const owner = v.owner.name || 'Cuenta eliminada';
+
+    const top = el('span', 'item-top');
+    top.append(el('span', 'item-name', v.ad.title));
+    if (v.status === 'pending') {
+      top.append(dueChip(v.created_at));
+    } else if (v.reviewed_at) {
+      const when = timeEl(v.reviewed_at, 'item-when', ago(v.reviewed_at));
+      when.dataset.ago = 'short';
+      top.append(when);
+    }
+
+    const meta = el('span', 'item-meta');
+    meta.append(el('span', '', '#' + v.id_verification + ' · ' + owner));
+
+    const tags = el('span', 'item-tags');
+    tags.append(el('span', 'tagc', LISTING[v.ad.listing_type] || v.ad.listing_type));
+    if (v.reverification) {
+      const t = el('span', 'tagc tagc--pin');
+      t.append(icon('i-pin'), document.createTextNode('Corrección del pin'));
+      tags.append(t);
+    }
+    if (v.status !== 'pending' && v.reviewer) {
+      tags.append(el('span', 'tagc tagc--who', (v.status === 'approved' ? 'Aprobó ' : 'Rechazó ') + v.reviewer.name));
+    }
+
+    b.append(avatar(owner, v.owner.id_user), top, meta, tags);
+    if (v.reason && v.status !== 'pending') b.append(el('span', 'item-prev', v.reason));
+    b.addEventListener('click', () => openVer(v.id_verification));
+    li.append(b);
+    return li;
+  }
+
+  function renderVerList() {
+    const list = $('#ver-items');
+    list.replaceChildren(...verItems.map(verItemFor));
+    $('#ver-list-msg').hidden = true;
+    $('#ver-more').hidden = !verCursor;
+    $('#ver-list-title').textContent = VTITLES[verFilter];
+    $('#ver-list-n').textContent = verItems.length ? verItems.length + (verCursor ? '+' : '') : '';
+    $('#ver-list-state').textContent = verItems.length
+      ? `${verItems.length} ${verItems.length === 1 ? 'verificación' : 'verificaciones'} ${VTITLES[verFilter].toLowerCase()}`
+      : 'No hay verificaciones en este estado.';
+    if (!verItems.length) verListMessage('empty', VEMPTY[verFilter][1], VEMPTY[verFilter][0]);
+  }
+
+  function selectVerTab(tab) {
+    verFilter = tab.dataset.status;
+    $$('.ver-tab').forEach((t) => t.setAttribute('aria-selected', t === tab ? 'true' : 'false'));
+    $('#ver-list-title').textContent = VTITLES[verFilter];
+    $('#ver-list-scroll').scrollTop = 0;
+    loadVerList(true);
+  }
+  $$('.ver-tab').forEach((tab) => tab.addEventListener('click', () => selectVerTab(tab)));
+  $('#ver-tabs').addEventListener('keydown', (e) => {
+    const keys = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 };
+    if (!(e.key in keys)) return;
+    const tabs = $$('.ver-tab');
+    const i = tabs.indexOf(document.activeElement);
+    if (i === -1) return;
+    e.preventDefault();
+    const next = tabs[(i + keys[e.key] + tabs.length) % tabs.length];
+    next.focus();
+    selectVerTab(next);
+  });
+  $('#ver-more').addEventListener('click', () => loadVerList(false));
+
+  const verRefreshBtn = $('#ver-refresh');
+  async function refreshVerifs() {
+    verRefreshBtn.classList.add('is-spin');
+    const jobs = [loadVerList(true), refreshVerCounts()];
+    if (verCurrent) jobs.push(openVer(verCurrent.id_verification, { focus: false, quiet: true }));
+    await Promise.all(jobs);
+    verRefreshBtn.classList.remove('is-spin');
+  }
+  verRefreshBtn.addEventListener('click', refreshVerifs);
+  $('#ver-keys-open').addEventListener('click', () => keysDlg.showModal());
+
+  /* ---------- Una verificación ---------- */
+  function showVerEmpty(title, text, retryId) {
+    verEmpty.hidden = false;
+    verEmpty.classList.toggle('is-error', !!title);
+    verSkel.hidden = true;
+    $('#ver-empty-h').textContent = title || 'Elegí una verificación de la lista';
+    $('#ver-empty-t').textContent = text || 'Se abre acá con las fotos, el punto del teléfono y lo que dice el anuncio para comparar.';
+    const retry = $('#ver-retry');
+    retry.hidden = !retryId;
+    retry.dataset.id = retryId ? String(retryId) : '';
+    $('.illo', verEmpty).replaceWith(illo(title ? 'error' : 'pin'));
+  }
+  $('#ver-retry').addEventListener('click', (e) => {
+    const id = Number(e.currentTarget.dataset.id);
+    if (id) openVer(id);
+  });
+
+  function markVerCurrent() {
+    $$('#ver-items .sop-item').forEach((b) => {
+      const on = !!verCurrent && Number(b.dataset.id) === verCurrent.id_verification;
+      b.classList.toggle('is-current', on);
+      if (on) b.setAttribute('aria-current', 'true'); else b.removeAttribute('aria-current');
+    });
+  }
+
+  async function openVer(id, { focus = true, quiet = false } = {}) {
+    const seq = ++verSeq;
+    if (section !== 'verifs') paintSection('verifs');
+    setError(verErr, '');
+    if (!quiet) panel.dataset.view = 'case';
+    const skelTimer = quiet ? null : setTimeout(() => {
+      if (seq !== verSeq) return;
+      verBody.hidden = true;
+      verEmpty.hidden = true;
+      verSkel.hidden = false;
+    }, 140);
+    const r = await call('GET', '/support/admin/verifications/' + id);
+    clearTimeout(skelTimer);
+    if (seq !== verSeq) return;
+    verSkel.hidden = true;
+    if (!r.ok) {
+      if (!session || quiet) return;
+      verBody.hidden = true;
+      verCurrent = null;
+      markVerCurrent();
+      const notFound = r.status === 404 || r.code === CODE_VER_NOT_FOUND;
+      showVerEmpty(notFound ? 'No encontramos esa verificación' : 'No pudimos abrir la verificación',
+        notFound ? 'Puede que el anuncio se haya borrado. Elegí otra de la lista.' : (r.message || 'Probá de nuevo en un momento.'),
+        notFound ? null : id);
+      return;
+    }
+    const same = verCurrent && verCurrent.id_verification === id;
+    verCurrent = r.data;
+    if (history.replaceState) history.replaceState(null, '', '#verificacion-' + id);
+    renderVer({ keepScroll: quiet && same });
+    markVerCurrent();
+    if (focus) $('#ver-title').focus({ preventScroll: true });
+  }
+  const refreshVer = () => (verCurrent ? openVer(verCurrent.id_verification, { focus: false, quiet: true }) : null);
+
+  /** Una sección del detalle, con su título. */
+  function verSection(id, title, iconId, sub) {
+    const sec = el('section', 'ver-sec');
+    sec.setAttribute('aria-labelledby', id);
+    const h = el('h3', 'ver-h');
+    h.id = id;
+    h.append(icon(iconId), document.createTextNode(title));
+    sec.append(h);
+    if (sub) sec.append(el('p', 'ver-sub', sub));
+    return sec;
+  }
+  function row(label, ...values) {
+    const wrap = el('div', 'ver-row');
+    wrap.append(el('dt', '', label));
+    values.filter((v) => v !== null && v !== undefined && v !== '').forEach((v) => {
+      wrap.append(typeof v === 'string' ? el('dd', '', v) : v);
+    });
+    return wrap;
+  }
+
+  const photoExpired = (p) => {
+    const at = p && p.expires_at ? new Date(p.expires_at).getTime() : NaN;
+    return Number.isFinite(at) && at - Date.now() < 15000;
+  };
+
+  function photoButton(p, owner, index) {
+    const label = PHOTO[p.photo_type] || p.photo_type;
+    const li = el('li');
+    const b = el('button', 'ver-photo');
+    b.type = 'button';
+    b.dataset.type = p.photo_type;
+    const alt = `Foto ${PHOTO_ALT[p.photo_type] || ''} que tomó ${owner}`.replace(/\s+/g, ' ');
+    b.setAttribute('aria-label', `Ver la foto ${PHOTO_ALT[p.photo_type] || ''} en grande`.replace(/\s+/g, ' '));
+    const cap = el('span', 'ver-photo-cap', label);
+    if (!validShot(p.url)) {
+      b.classList.add('is-broken');
+      b.disabled = true;
+      b.append(icon('i-image'), cap, el('span', 'ver-photo-miss', 'No se pudo cargar'));
+      li.append(b);
+      return li;
+    }
+    const img = document.createElement('img');
+    img.alt = alt;
+    img.decoding = 'async';
+    img.referrerPolicy = 'no-referrer';
+    img.addEventListener('error', () => {
+      if (mayRetry('ver-' + verCurrent.id_verification + '-' + index)) refreshVer();
+      else b.classList.add('is-broken');
+    });
+    img.src = p.url;
+    b.append(img, cap);
+    b.addEventListener('click', () => openVerPhoto(p.photo_type, alt));
+    li.append(b);
+    return li;
+  }
+
+  async function openVerPhoto(type, alt) {
+    const find = () => verCurrent && verCurrent.photos.find((p) => p.photo_type === type);
+    let p = find();
+    if (photoExpired(p)) { await refreshVer(); p = find(); }
+    if (!p || !validShot(p.url)) return toast('No pudimos abrir la foto. Probá de nuevo.', true);
+    showLightbox(p.url, alt, {
+      label: 'Foto de la verificación',
+      closeLabel: 'Cerrar la foto',
+      key: 'ver-big-' + (verCurrent && verCurrent.id_verification) + '-' + type,
+      fresh: async () => {
+        await refreshVer();
+        const n = find();
+        return n && validShot(n.url) ? n.url : null;
+      },
+    });
+  }
+
+  function openAdPhoto(url, index, title) {
+    showLightbox(url, `Foto ${index + 1} del anuncio «${title}»`, {
+      label: 'Foto del anuncio',
+      closeLabel: 'Cerrar la foto',
+      key: 'ad-' + url,
+      fresh: async () => null,
+    });
+  }
+
+  /** A los 10 minutos los enlaces de las fotos vencen: se dice y se ofrece pedirlos de nuevo. */
+  function armPhotoExpiry(v) {
+    clearTimeout(verPhotoTimer);
+    const times = v.photos.map((p) => (p.expires_at ? new Date(p.expires_at).getTime() : NaN)).filter(Number.isFinite);
+    if (!times.length) return;
+    const at = Math.min(...times);
+    verPhotoTimer = setTimeout(() => {
+      if (!verCurrent || verCurrent.id_verification !== v.id_verification) return;
+      const box = $('#ver-photos-expired');
+      if (box) box.hidden = false;
+      const grid = $('#ver-photos');
+      if (grid) grid.classList.add('is-expired');
+    }, Math.max(0, at - Date.now() - 15000));
+  }
+
+  function renderVer({ keepScroll = false } = {}) {
+    const v = verCurrent;
+    verEmpty.hidden = true;
+    verSkel.hidden = true;
+    verBody.hidden = false;
+    const owner = v.owner.name || 'Cuenta eliminada';
+
+    $('#ver-title').replaceChildren(
+      el('span', 'ct-id', `#${v.id_verification} · ${v.reverification ? 'Corrección del pin' : 'Verificación'}`),
+      el('span', 'sr', ' — '),
+      el('span', 'ct-name', v.ad.title),
+    );
+    $('#ver-av').replaceWith(Object.assign(avatar(owner, v.owner.id_user, 'av--lg'), { id: 'ver-av' }));
+    $('#ver-av').setAttribute('aria-hidden', 'true');
+    const badge = $('#ver-status');
+    badge.className = 'badge badge--' + VBADGE[v.status];
+    badge.textContent = VSTATUS[v.status] || v.status;
+
+    const scroll = $('#ver-scroll');
+    const keep = keepScroll ? scroll.scrollTop : 0;
+    const wrap = el('div', 'ver-wrap');
+
+    // Qué pasa con ella: el plazo, o cómo se resolvió.
+    if (v.status === 'pending') {
+      const due = v.due_at ? new Date(v.due_at) : dueOf(v.created_at);
+      const late = due.getTime() <= Date.now();
+      const box = el('div', 'ver-banner' + (late ? ' ver-banner--late' : ''));
+      box.append(icon('i-clock'));
+      const t = el('time', '', dueLong(due));
+      t.dateTime = due.toISOString();
+      t.dataset.due = 'long';
+      box.append(t);
+      wrap.append(box);
+      if (v.reverification) {
+        const note = el('div', 'ver-banner ver-banner--info');
+        note.append(icon('i-pin'), el('p', '', 'El anuncio ya está verificado. Si la aprobás, el pin pasa al punto nuevo; si la rechazás, sigue verificado con el de antes.'));
+        wrap.append(note);
+      }
+    } else {
+      const box = el('div', 'ver-banner ver-banner--' + v.status);
+      box.append(icon(v.status === 'approved' ? 'i-verify' : v.status === 'rejected' ? 'i-xc' : 'i-ban'));
+      const col = el('div', 'ver-banner-col');
+      const who = v.reviewer ? v.reviewer.name : null;
+      const when = v.reviewed_at ? fmt(v.reviewed_at) : '';
+      col.append(el('p', 'ver-banner-h',
+        v.status === 'approved' ? `Aprobada${who ? ' por ' + who : ''}${when ? ' el ' + when : ''}`
+          : v.status === 'rejected' ? `Rechazada${who ? ' por ' + who : ''}${when ? ' el ' + when : ''}`
+            : `Se canceló sola${when ? ' el ' + when : ''}`));
+      if (v.reason) col.append(el('p', 'ver-banner-t', (v.status === 'rejected' ? 'Motivo que leyó el dueño: ' : '') + v.reason));
+      box.append(col);
+      wrap.append(box);
+    }
+
+    // Las tres fotos.
+    const photos = verSection('ver-photos-h', 'Fotos de la verificación', 'i-image',
+      'Las tomó el dueño en la propiedad. Son privadas: el enlace vence a los 10 minutos.');
+    const grid = el('ul', 'ver-photos');
+    grid.id = 'ver-photos';
+    const order = ['exterior', 'interior', 'detail'];
+    const sorted = v.photos.slice().sort((a, b) => order.indexOf(a.photo_type) - order.indexOf(b.photo_type));
+    sorted.forEach((p, i) => grid.append(photoButton(p, owner, i)));
+    if (!sorted.length) grid.append(el('li', 'ver-none', 'Esta verificación no tiene fotos.'));
+    const expired = el('div', 'ver-expired');
+    expired.id = 'ver-photos-expired';
+    expired.hidden = true;
+    expired.setAttribute('role', 'status');
+    const reload = el('button', 'go go--ghost go--sm', 'Volver a cargar las fotos');
+    reload.type = 'button';
+    reload.addEventListener('click', async () => {
+      busy(reload, true);
+      await refreshVer();
+      busy(reload, false);
+    });
+    expired.append(el('p', '', 'Los enlaces de las fotos vencieron.'), reload);
+    photos.append(grid, expired);
+    wrap.append(photos);
+
+    // El punto del teléfono, y el pin de hoy.
+    const loc = verSection('ver-loc-h', 'Dónde estaba el teléfono', 'i-pin');
+    const point = el('div', 'ver-point');
+    const coords = el('p', 'ver-coords', `${coord(v.latitude)}, ${coord(v.longitude)}`);
+    point.append(coords, extLink(mapsUrl(v.latitude, v.longitude), 'Abrir en Google Maps'));
+    loc.append(point);
+    if (v.current_pin) {
+      const far = v.current_pin.distance_m >= 1000;
+      const d = el('div', 'ver-dist' + (far ? ' ver-dist--far' : ''));
+      d.append(el('p', '', `A ${distText(v.current_pin.distance_m)} del pin vigente del anuncio.`),
+        extLink(mapsUrl(v.current_pin.latitude, v.current_pin.longitude), 'Ver el pin vigente'));
+      loc.append(d);
+    } else {
+      loc.append(el('p', 'ver-sub', 'El anuncio todavía no tiene pin. Si la aprobás, este punto es adonde llega "Ir con Google Maps" para quien tiene una visita confirmada.'));
+    }
+    wrap.append(loc);
+
+    // Lo que dice el anuncio.
+    const decl = verSection('ver-decl-h', 'Lo que dice el anuncio', 'i-tag');
+    const dl = el('dl', 'ver-dl');
+    const d = v.declared || {};
+    dl.append(
+      row('Ubicación', [d.district, d.canton, d.province].filter(Boolean).join(', ') || 'Sin ubicación'),
+      row('Referencia del barrio', d.neighborhood_reference || 'No puso ninguna'),
+      row('Señas exactas', d.address_description || 'Sin señas', el('dd', 'ver-private', 'Privadas: en la app solo las ven el dueño y quien tiene una visita confirmada.')),
+    );
+    decl.append(dl);
+    const images = (d.images || []).filter(validShot);
+    if (images.length) {
+      decl.append(el('p', 'ver-subh', 'Fotos del anuncio'));
+      const thumbs = el('ul', 'ver-thumbs');
+      images.forEach((url, i) => {
+        const li = el('li');
+        const b = el('button', 'ver-thumb');
+        b.type = 'button';
+        b.setAttribute('aria-label', `Ver la foto ${i + 1} del anuncio en grande`);
+        const img = document.createElement('img');
+        img.alt = '';
+        img.loading = 'lazy';
+        img.decoding = 'async';
+        img.referrerPolicy = 'no-referrer';
+        img.addEventListener('error', () => b.classList.add('is-broken'));
+        img.src = url;
+        b.append(img);
+        b.addEventListener('click', () => openAdPhoto(url, i, v.ad.title));
+        li.append(b);
+        thumbs.append(li);
+      });
+      decl.append(thumbs);
+    } else decl.append(el('p', 'ver-sub', 'El anuncio no tiene fotos para comparar.'));
+    wrap.append(decl);
+
+    // Los datos.
+    const data = verSection('ver-data-h', 'Datos', 'i-user');
+    const dl2 = el('dl', 'ver-dl');
+    dl2.append(
+      row('Dueño', owner),
+      row('Anuncio', `#${v.ad.id_ad} · ${LISTING[v.ad.listing_type] || v.ad.listing_type} · ${AD_STATUS[v.ad.status] || v.ad.status}`),
+      row('Recibida', fmt(v.created_at), agoLong(v.created_at)),
+    );
+    data.append(dl2);
+    wrap.append(data);
+
+    // Las demás verificaciones del anuncio.
+    const hist = verSection('ver-hist-h', 'Historial del anuncio', 'i-history');
+    if (v.history && v.history.length) {
+      const ol = el('ol', 'ver-hist');
+      v.history.forEach((h) => {
+        const li = el('li', 'ver-hist-i');
+        const top = el('p', 'ver-hist-top');
+        top.append(el('span', 'item-st item-st--' + VBADGE[h.status], VSTATUS[h.status] || h.status),
+          el('span', '', ` #${h.id_verification} · `), timeEl(h.created_at, '', fmt(h.created_at)));
+        li.append(top);
+        if (h.reason) li.append(el('p', 'ver-hist-t', h.reason));
+        ol.append(li);
+      });
+      hist.append(ol);
+    } else hist.append(el('p', 'ver-sub', 'Es la primera verificación de este anuncio.'));
+    wrap.append(hist);
+
+    scroll.replaceChildren(wrap);
+    scroll.scrollTop = keep;
+    armPhotoExpiry(v);
+
+    // Las acciones: solo en una pendiente, y no la del anuncio propio.
+    const pending = v.status === 'pending';
+    const own = !!(v._own || (session && session.agentId && v.owner.id_user === session.agentId));
+    $('#ver-actions').hidden = !pending || own;
+    $('#ver-actions-t').textContent = v.reverification
+      ? 'Si la aprobás, el pin del anuncio pasa a este punto y al dueño le llega el aviso.'
+      : 'Si la aprobás, el anuncio queda verificado con este punto y al dueño le llega el aviso.';
+    const closed = $('#ver-closed');
+    closed.hidden = pending && !own;
+    closed.classList.toggle('is-own', pending && own);
+    $('#ver-closed-t').textContent = pending && own ? OWN_VER
+      : v.status === 'approved' ? 'Aprobada: el anuncio muestra la insignia con este punto.'
+        : v.status === 'rejected' ? 'Rechazada: el dueño puede mandar otra cuando corrija lo que le dijiste.'
+          : 'Cancelada: el dueño tiene que volver a mandarla desde la propiedad.';
+  }
+
+  /* ---------- Aprobar y rechazar ---------- */
+  function verBusy(on, which) {
+    busy(verApprove, on && which === 'approve', on && which === 'approve' ? 'Aprobando…' : 'Aprobar');
+    verApprove.disabled = on;
+    verRejectOpen.disabled = on;
+  }
+
+  /** Lo que pasa cuando aprobar o rechazar no sale. */
+  async function verFailed(r, id) {
+    if (!session) return; // la sesión terminó: call() ya lo mostró
+    if (r.code === CODE_VER_RESOLVED) {
+      // El panel la pide de nuevo solo: el "Actualizá la lista" de la API sobra.
+      const now = r.data && r.data.status;
+      toast(now === 'cancelled'
+        ? 'Se canceló mientras la mirabas: el dueño cambió la ubicación o eliminó el anuncio.'
+        : `Otra persona del equipo ya la ${now === 'rejected' ? 'rechazó' : 'aprobó'}: te mostramos cómo quedó.`);
+      if (verCurrent && verCurrent.id_verification === id) await refreshVer();
+      loadVerList(true);
+      refreshVerCounts();
+      return;
+    }
+    if (r.code === CODE_VER_OWN) {
+      if (verCurrent && verCurrent.id_verification === id) { verCurrent._own = true; renderVer({ keepScroll: true }); }
+      return toast(r.message || OWN_VER, true);
+    }
+    if (r.status === 404 || r.code === CODE_VER_NOT_FOUND) {
+      verBody.hidden = true;
+      verCurrent = null;
+      showVerEmpty('No encontramos esa verificación', 'Puede que el anuncio se haya borrado. Elegí otra de la lista.');
+      loadVerList(true);
+      refreshVerCounts();
+      return;
+    }
+    setError(verErr, r.message || 'No pudimos resolverla. Probá de nuevo.');
+  }
+
+  verApprove.addEventListener('click', async () => {
+    if (!verCurrent || verApprove.disabled) return;
+    const id = verCurrent.id_verification;
+    const moved = verCurrent.reverification;
+    setError(verErr, '');
+    verBusy(true, 'approve');
+    const r = await call('POST', `/support/admin/verifications/${id}/approve`);
+    verBusy(false);
+    if (!r.ok) return verFailed(r, id);
+    if (verCurrent && verCurrent.id_verification === id) {
+      verCurrent = r.data;
+      renderVer();
+      $('#ver-title').focus({ preventScroll: true });
+    }
+    toast(moved ? 'Aprobada: el pin del anuncio pasó al punto nuevo.' : 'Aprobada: el anuncio ya muestra la insignia de verificado.');
+    loadVerList(true);
+    refreshVerCounts();
+  });
+
+  const rejectDlg = $('#ver-reject');
+  const reason = $('#ver-reason');
+  const rejectErr = $('#ver-reject-error');
+  const rejectGo = $('#ver-reject-go');
+  const cleanReason = (t) => t.trim().replace(/\s+/g, ' ');
+  function paintReason() {
+    const n = reason.value.length;
+    $('#ver-reason-count').textContent = String(n);
+    $('.counter', rejectDlg).classList.toggle('is-near', n > 270);
+  }
+  verRejectOpen.addEventListener('click', () => {
+    if (!verCurrent || verRejectOpen.disabled) return;
+    $('#ver-reject-h').textContent = `Rechazar la verificación #${verCurrent.id_verification}`;
+    $('#ver-reject-t').textContent = verCurrent.reverification
+      ? 'El anuncio sigue verificado con el pin de antes. El dueño lee el motivo en su anuncio y en el aviso: escribilo para que sepa qué corregir.'
+      : 'El dueño lee el motivo en su anuncio y en el aviso: escribilo para que sepa qué corregir.';
+    reason.value = verDrafts.get(verCurrent.id_verification) || '';
+    paintReason();
+    setError(rejectErr, '');
+    reason.closest('form').classList.remove('is-bad');
+    rejectDlg.showModal();
+    reason.focus();
+  });
+  $$('#ver-quick .chip').forEach((chip) => chip.addEventListener('click', () => {
+    reason.value = chip.textContent;
+    paintReason();
+    setError(rejectErr, '');
+    if (verCurrent) verDrafts.set(verCurrent.id_verification, reason.value);
+    reason.focus();
+    reason.setSelectionRange(reason.value.length, reason.value.length);
+  }));
+  reason.addEventListener('input', () => {
+    paintReason();
+    setError(rejectErr, '');
+    if (verCurrent) verDrafts.set(verCurrent.id_verification, reason.value);
+  });
+  reason.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+      e.preventDefault();
+      $('#ver-reject-form').requestSubmit();
+    }
+  });
+  $('#ver-reject-cancel').addEventListener('click', () => rejectDlg.close());
+  $('#ver-reject-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!verCurrent || rejectGo.disabled) return;
+    const text = cleanReason(reason.value);
+    if (text.length < 10) {
+      reason.focus();
+      return setError(rejectErr, text ? 'Escribí el motivo con un poco más de detalle: el dueño lo va a leer.'
+        : 'Escribí el motivo: el dueño lo va a leer.');
+    }
+    const id = verCurrent.id_verification;
+    setError(rejectErr, '');
+    busy(rejectGo, true, 'Rechazando…');
+    $('#ver-reject-cancel').disabled = true;
+    const r = await call('POST', `/support/admin/verifications/${id}/reject`, { reason: text });
+    busy(rejectGo, false, 'Rechazar');
+    $('#ver-reject-cancel').disabled = false;
+    if (!r.ok) {
+      // Lo que no le gustó del motivo se dice en el diálogo; lo demás, afuera.
+      if (r.status === 400 && !r.code) return setError(rejectErr, r.message || 'Revisá el motivo.');
+      if (!session) return;
+      rejectDlg.close();
+      return verFailed(r, id);
+    }
+    verDrafts.delete(id);
+    rejectDlg.close();
+    if (verCurrent && verCurrent.id_verification === id) {
+      verCurrent = r.data;
+      renderVer();
+      $('#ver-title').focus({ preventScroll: true });
+    }
+    toast('Rechazada: al dueño le llega el aviso con el motivo.');
+    loadVerList(true);
+    refreshVerCounts();
+  });
+
+  /* ---------- Volver a la lista (teléfono) ---------- */
+  function backToVerList() {
+    panel.dataset.view = 'list';
+    const item = verCurrent && $(`#ver-items .sop-item[data-id="${verCurrent.id_verification}"]`);
+    if (item) item.focus(); else verRefreshBtn.focus();
+  }
+  $('#ver-back').addEventListener('click', backToVerList);
+
+  // Un enlace del correo pegado con el panel ya abierto.
+  window.addEventListener('hashchange', () => {
+    if (panel.hidden || !session) return;
+    const m = /^#caso-(\d{1,10})$/.exec(location.hash);
+    const v = /^#verificacion-(\d{1,10})$/.exec(location.hash);
+    if (v && !(verCurrent && verCurrent.id_verification === Number(v[1]))) {
+      if (section !== 'verifs') { paintSection('verifs'); loadVerList(true); }
+      openVer(Number(v[1]));
+    } else if (m && !(current && current.id_support_case === Number(m[1]))) {
+      if (section !== 'cases') { paintSection('cases'); loadList(true); }
+      openCase(Number(m[1]));
+    }
+  });
 
   /* ---------- Avisos ---------- */
   const toastEl = $('#sop-toast');
@@ -1266,14 +2109,17 @@
   $('#sop-keys-close').addEventListener('click', () => keysDlg.close());
 
   function move(step) {
-    const items = $$('.sop-item');
+    const verifs = section === 'verifs';
+    const items = $$(verifs ? '#ver-items .sop-item' : '#sop-cases .sop-item');
     if (!items.length) return;
-    const at = current ? items.findIndex((b) => Number(b.dataset.id) === current.id_support_case) : -1;
+    const openId = verifs ? (verCurrent && verCurrent.id_verification) : (current && current.id_support_case);
+    const at = openId ? items.findIndex((b) => Number(b.dataset.id) === openId) : -1;
     const next = items[Math.max(0, Math.min(items.length - 1, at === -1 ? 0 : at + step))];
     next.focus();
     next.scrollIntoView({ block: 'nearest' });
-    if (!current || Number(next.dataset.id) !== current.id_support_case) {
-      openCase(Number(next.dataset.id), { focus: false });
+    if (Number(next.dataset.id) !== openId) {
+      if (verifs) openVer(Number(next.dataset.id), { focus: false });
+      else openCase(Number(next.dataset.id), { focus: false });
     }
   }
 
@@ -1282,21 +2128,30 @@
     if (document.querySelector('dialog[open]')) return;
     const t = e.target;
     if (t && t.closest && t.closest('input, textarea, select, [contenteditable="true"]')) return;
-    const tabs = $$('.sop-tab');
+    const verifs = section === 'verifs';
+    const tabs = $$(verifs ? '.ver-tab' : '.sop-tab');
     switch (e.key) {
       case 'j': move(1); break;
       case 'k': move(-1); break;
       case 'r':
-        if (!current || current.status === 'closed' || caseBody.hidden) return;
+        if (verifs || !current || current.status === 'closed' || caseBody.hidden) return;
         panel.dataset.view = 'case';
         reply.focus();
         break;
-      case '1': case '2': case '3': case '4': selectTab(tabs[Number(e.key) - 1]); tabs[Number(e.key) - 1].focus(); break;
-      case 'u': refreshAll(); break;
+      case 'c': if (verifs) setSection('cases'); else return; break;
+      case 'v': if (!verifs) setSection('verifs'); else return; break;
+      case '1': case '2': case '3': case '4': {
+        const tab = tabs[Number(e.key) - 1];
+        (verifs ? selectVerTab : selectTab)(tab);
+        tab.focus();
+        break;
+      }
+      case 'u': if (verifs) refreshVerifs(); else refreshAll(); break;
       case '?': keysDlg.showModal(); break;
       case 'Escape':
-        if (panel.dataset.view === 'case' && matchMedia('(max-width: 759.98px)').matches) backToList();
-        else return;
+        if (panel.dataset.view === 'case' && matchMedia('(max-width: 759.98px)').matches) {
+          if (verifs) backToVerList(); else backToList();
+        } else return;
         break;
       default: return;
     }
