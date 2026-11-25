@@ -46,9 +46,14 @@
     return svg;
   };
 
-  /* ---------- La sesión, en memoria ---------- */
-  let session = null; // { access, refresh, name }
+  /* ---------- La sesión del panel, en memoria ----------
+     Decisión 66: el panel tiene su propia sesión, que solo se emite después
+     del código de la verificación en dos pasos. Dura 8 horas fijas y no se
+     renueva: vencida, se vuelve a entrar con la contraseña y el código. La
+     sesión de la app no abre el panel (401 PANEL_SESION_INVALIDA). */
+  let session = null; // { access, name, agentId, expiresAt }
   let tempToken = null;
+  let expiryTimer = null;
 
   const show = (name, focus) => {
     const inPanel = name === 'panel';
@@ -67,10 +72,12 @@
   };
 
   /** Un pedido a la API. Devuelve { ok, status, data, message, code }. */
-  async function call(method, path, body, { auth = true, retried = false } = {}) {
+  async function call(method, path, body, { auth = true, token = null } = {}) {
     const headers = { Accept: 'application/json' };
     if (body !== undefined) headers['Content-Type'] = 'application/json';
-    if (auth && session) headers.Authorization = 'Bearer ' + session.access;
+    const bearer = token || (auth && session ? session.access : null);
+    if (bearer) headers.Authorization = 'Bearer ' + bearer;
+    const sent = auth ? session : null;
     let response;
     let json = null;
     try {
@@ -89,46 +96,37 @@
     } catch (e) {
       return { ok: false, status: 0, message: 'No pudimos conectar. Revisá tu internet y probá de nuevo.' };
     }
-    // El token de acceso venció: se renueva una vez y se reintenta.
-    if (response.status === 401 && auth && session && !retried) {
-      if (await renew()) return call(method, path, body, { auth, retried: true });
-      expire();
-      return { ok: false, status: 401, message: 'Tu sesión terminó.' };
-    }
     const data = json && 'data' in json ? json.data : json;
     const raw = json && json.message;
-    return {
+    const result = {
       ok: response.ok,
       status: response.status,
       data,
       code: json && json.code,
+      details: (json && json.details) || null,
       message: Array.isArray(raw) ? raw[0] : (typeof raw === 'string' ? raw : ''),
     };
-  }
-
-  // Una sola renovación a la vez: la bandeja pide varias cosas juntas, y dos
-  // renovaciones con el mismo refresh se pisarían.
-  let renewing = null;
-  function renew() {
-    if (!renewing) {
-      renewing = (async () => {
-        if (!session) return false;
-        const r = await call('POST', '/auth/refresh', { refresh_token: session.refresh }, { auth: false });
-        if (!session || !r.ok || !r.data || !r.data.access_token) return false;
-        session.access = r.data.access_token;
-        session.refresh = r.data.refresh_token || session.refresh;
-        return true;
-      })().finally(() => { renewing = null; });
+    // La sesión del panel ya no vale (venció, se cerró, le quitaron el rol,
+    // la cuenta cerró sus sesiones): no se renueva, se vuelve a entrar.
+    // Solo si es la sesión con que salió el pedido: una respuesta vieja no
+    // echa a quien ya entró de nuevo.
+    if (sent && sent === session) {
+      if (response.status === 401) expire(result.message);
+      else if (response.status === 403 && result.code === CODE_NEEDS_2FA) {
+        endSession();
+        showNeeds2fa(result.message);
+      }
     }
-    return renewing;
+    return result;
   }
 
+  /** El código y la contraseña dieron una sesión del panel: se abre. */
   async function startSession(data) {
-    const user = data.user || {};
     session = {
       access: data.access_token,
-      refresh: data.refresh_token,
-      name: [user.user_name, user.last_name].filter(Boolean).join(' ') || user.email || '',
+      name: (data.agent && data.agent.name) || '',
+      agentId: (data.agent && data.agent.id_user) || null,
+      expiresAt: data.expires_at || null,
     };
     tempToken = null;
     $('#sop-password').value = '';
@@ -136,11 +134,22 @@
     await openPanel();
   }
 
+  /** A las 8 horas la sesión vence sola: se avisa en el momento, no en el próximo clic. */
+  function armExpiry() {
+    clearTimeout(expiryTimer);
+    const at = session && session.expiresAt ? new Date(session.expiresAt).getTime() : NaN;
+    if (!Number.isFinite(at)) return;
+    // setTimeout no aguanta más de ~24 días; 8 horas entran de sobra.
+    expiryTimer = setTimeout(() => expire(), Math.max(0, at - Date.now()) + 1000);
+  }
+
   /** Corta la sesión en la API y limpia todo lo de la bandeja. */
   function endSession() {
-    const refresh = session && session.refresh;
+    const token = session && session.access;
     session = null;
-    if (refresh) call('POST', '/auth/logout', { refresh_token: refresh }, { auth: false });
+    clearTimeout(expiryTimer);
+    // Revoca la sesión en el momento (H7). Contesta lo mismo aunque ya no valga.
+    if (token) call('POST', '/support/admin/session/logout', undefined, { auth: false, token });
     cases = [];
     cursor = null;
     current = null;
@@ -159,10 +168,12 @@
     setError($('#sop-login-error'), '');
   }
 
-  /** La sesión venció y no se pudo renovar: se dice, con volver a entrar. */
-  function expire() {
+  /** La sesión del panel terminó: se dice, con volver a entrar. */
+  const EXPIRED_TEXT = 'Por seguridad, la sesión del panel dura 8 horas y se cierra si cambia algo de la cuenta. Lo que no llegaste a enviar no salió.';
+  function expire(message) {
     if (!session) return;
     endSession();
+    $('#sop-expired-text').textContent = message || EXPIRED_TEXT;
     show('expired', $('#sop-expired-title'));
   }
 
@@ -174,11 +185,36 @@
     if (label && t) t.textContent = label;
   };
 
-  // Decisión 66: el panel va a exigir la verificación en dos pasos. Cuando la
-  // API rechace una cuenta sin 2FA, contesta con este código y se muestra
-  // cómo prenderla. Hoy no llega nunca.
+  // Decisión 66: el panel solo abre con la verificación en dos pasos. Una
+  // cuenta de soporte sin ella recibe este código y se le muestra cómo
+  // prenderla; una sin el rol, SIN_PERMISO.
   const CODE_NEEDS_2FA = 'PANEL_REQUIERE_2FA';
-  const needs2fa = (r) => r && r.code === CODE_NEEDS_2FA;
+  const CODE_NO_ROLE = 'SIN_PERMISO';
+  const CODE_OWN_CASE = 'SOPORTE_CASO_PROPIO';
+  const CODE_CASE_CLOSED = 'CASO_CERRADO';
+  // El panel tiene un tope de códigos por cuenta y por hora, contando todos
+  // los orígenes. La API no dice cuánto falta: si no viene, se espera esto.
+  const CODE_OTP_LIMIT = 'OTP_DEMASIADOS';
+  const OTP_LIMIT_WAIT = 10 * 60;
+  const OWN_CASE = 'Esta consulta es tuya: la contesta otra persona del equipo.';
+  const needs2fa = (r) => r && r.status === 403 && r.code === CODE_NEEDS_2FA;
+  const noRole = (r) => r && r.status === 403 && r.code === CODE_NO_ROLE;
+  function showNeeds2fa(message) {
+    // Va el mensaje de la API tal cual. Si ya trae el camino en la app, los
+    // pasos de la tarjeta sobran; si no lo trae, lo dicen ellos.
+    $('#sop-need2fa-text').textContent = message || 'El panel solo abre con el código que llega a tu correo. Prendela desde la app y volvé a entrar:';
+    $('#sop-need2fa .crumbs').hidden = !!message && /Seguridad y 2FA/.test(message);
+    show('need2fa', $('#sop-need2fa-title'));
+  }
+  // La API dice lo mismo que el título ("Esta cuenta no tiene acceso al panel
+  // de soporte."): abajo va qué hacer.
+  function showDenied() {
+    show('denied', $('#sop-denied-title'));
+  }
+  /** Lo que se muestra de un ingreso que no entró. */
+  const loginMessage = (r) => (r.status === 429
+    ? (r.message || 'Hiciste varios intentos seguidos. Esperá un momento.')
+    : (r.message || 'No pudimos entrar. Probá de nuevo.'));
 
   const emailIn = $('#sop-email');
   const passIn = $('#sop-password');
@@ -223,26 +259,30 @@
     setError(loginErr, '');
     const go = $('#sop-login-go');
     busy(go, true, 'Entrando…');
-    const r = await call('POST', '/auth/login', { email, password }, { auth: false });
-    if (!r.ok) {
-      busy(go, false, 'Entrar');
-      if (needs2fa(r)) return show('need2fa', $('#sop-need2fa-title'));
-      return setError(loginErr, r.status === 429
-        ? (r.message || 'Hiciste varios intentos seguidos. Esperá un momento.')
-        : (r.message || 'No pudimos entrar. Probá de nuevo.'));
-    }
-    if (r.data && r.data.status === 'otp_required') {
-      busy(go, false, 'Entrar');
-      tempToken = r.data.temp_token;
-      $('#sop-otp-email').textContent = r.data.masked_email || 'tu correo';
-      paintOtp('');
-      setError($('#sop-otp-error'), '');
-      $('#sop-otp-ok').textContent = '';
-      show('otp', $('#sop-code'));
-      return;
-    }
-    await startSession(r.data);
+    const r = await call('POST', '/support/admin/session/login', { email, password }, { auth: false });
     busy(go, false, 'Entrar');
+    if (!r.ok) {
+      if (needs2fa(r) || noRole(r)) {
+        passIn.value = '';
+        return needs2fa(r) ? showNeeds2fa(r.message) : showDenied();
+      }
+      if (r.code === CODE_OTP_LIMIT) blockCodes(email, r);
+      passIn.focus();
+      return setError(loginErr, loginMessage(r));
+    }
+    // El panel siempre pide el código: no hay ingreso con la contraseña sola.
+    if (!r.data || r.data.status !== 'otp_required' || !r.data.temp_token) {
+      return setError(loginErr, 'No pudimos entrar. Probá de nuevo.');
+    }
+    passIn.value = '';
+    tempToken = r.data.temp_token;
+    $('#sop-otp-email').textContent = r.data.masked_email || 'tu correo';
+    paintOtp('');
+    setError($('#sop-otp-error'), '');
+    $('#sop-otp-ok').textContent = '';
+    otpEmail = email;
+    resumeBlock();
+    show('otp', $('#sop-code'));
   });
 
   /* ---------- El código: seis casillas sobre un solo campo ---------- */
@@ -291,14 +331,18 @@
     $('#sop-otp-ok').textContent = '';
     const go = $('#sop-otp-go');
     busy(go, true, 'Confirmando…');
-    const r = await call('POST', '/auth/verify-otp', { temp_token: tempToken, code: value }, { auth: false });
+    const r = await call('POST', '/support/admin/session', { temp_token: tempToken, code: value }, { auth: false });
     if (!r.ok) {
       busy(go, false, 'Confirmar');
+      // 401 PERMISO_VENCIDO: pasó el tiempo o cambió la contraseña en el medio.
       if (r.status === 401) {
-        show('login', emailIn);
+        tempToken = null;
+        show('login', passIn);
         return setError(loginErr, r.message || 'El ingreso venció. Entrá de nuevo.');
       }
-      if (needs2fa(r)) return show('need2fa', $('#sop-need2fa-title'));
+      // Le quitaron el rol o apagó el 2FA mientras tanto.
+      if (needs2fa(r)) { tempToken = null; return showNeeds2fa(r.message); }
+      if (noRole(r)) { tempToken = null; return showDenied(); }
       otpBox.classList.add('is-bad');
       otpBox.classList.remove('is-shake');
       void otpBox.offsetWidth;
@@ -311,33 +355,67 @@
     busy(go, false, 'Confirmar');
   });
 
-  // Reenviar, con una espera corta para no apretarlo diez veces.
+  // Reenviar, con una espera corta para no apretarlo diez veces, y larga si
+  // la cuenta llegó al tope de códigos (OTP_DEMASIADOS).
   const resend = $('#sop-otp-resend');
   let resendTimer = null;
+  let otpEmail = null; // la cuenta del paso del código
+  let otpBlock = null; // { email, until }: la cuenta que llegó al tope y hasta cuándo esperar
+  const waitLabel = (left) => (left >= 90 ? `Reenviar en ${Math.ceil(left / 60)} min` : `Reenviar en ${left} s`);
   const cooldown = (secs) => {
     clearInterval(resendTimer);
-    let left = secs;
+    let left = Math.max(1, Math.round(secs));
     resend.disabled = true;
-    resend.textContent = `Reenviar en ${left} s`;
+    resend.textContent = waitLabel(left);
     resendTimer = setInterval(() => {
       left -= 1;
       if (left <= 0) {
         clearInterval(resendTimer);
         resend.disabled = false;
         resend.textContent = 'Reenviar el código';
-      } else resend.textContent = `Reenviar en ${left} s`;
+      } else resend.textContent = waitLabel(left);
     }, 1000);
   };
+  function blockCodes(email, r) {
+    const secs = Number(r.details && r.details.retry_after_seconds) || OTP_LIMIT_WAIT;
+    otpBlock = { email, until: Date.now() + secs * 1000 };
+    if (email === otpEmail) cooldown(secs);
+  }
+  /** Al volver al paso del código con una cuenta que llegó al tope, "Reenviar" sigue esperando. */
+  function resumeBlock() {
+    clearInterval(resendTimer);
+    const left = otpBlock && otpBlock.email === otpEmail ? (otpBlock.until - Date.now()) / 1000 : 0;
+    if (left > 0) cooldown(left);
+    else { resend.disabled = false; resend.textContent = 'Reenviar el código'; }
+  }
   resend.addEventListener('click', async () => {
     resend.disabled = true;
-    const r = await call('POST', '/auth/resend-otp', { temp_token: tempToken }, { auth: false });
+    const r = await call('POST', '/support/admin/session/resend', { temp_token: tempToken }, { auth: false });
+    if (!r.ok && r.status === 401) {
+      // El permiso de paso tiene tope (30 minutos desde la contraseña).
+      tempToken = null;
+      resend.disabled = false;
+      show('login', passIn);
+      return setError(loginErr, r.message || 'El ingreso venció. Entrá de nuevo.');
+    }
     setError(otpErr, r.ok ? '' : (r.message || 'No pudimos reenviarlo.'));
-    $('#sop-otp-ok').textContent = r.ok ? 'Te mandamos un código nuevo.' : '';
-    if (r.ok) { paintOtp(''); code.focus(); cooldown(30); } else resend.disabled = false;
+    $('#sop-otp-ok').textContent = r.ok ? ((r.data && r.data.message) || 'Te mandamos un código nuevo.') : '';
+    // Llegó al tope de códigos: el mensaje de la API queda en la tarjeta y
+    // "Reenviar" espera. El código que ya llegó sigue sirviendo.
+    if (!r.ok && r.code === CODE_OTP_LIMIT) return blockCodes(otpEmail, r);
+    if (r.ok) {
+      // Cada reenvío trae su permiso de paso: el anterior ya no sirve.
+      if (r.data && r.data.temp_token) tempToken = r.data.temp_token;
+      if (r.data && r.data.masked_email) $('#sop-otp-email').textContent = r.data.masked_email;
+      paintOtp('');
+      code.focus();
+      cooldown(30);
+    } else resend.disabled = false;
   });
 
   $('#sop-otp-back').addEventListener('click', () => {
     tempToken = null;
+    otpEmail = null;
     clearInterval(resendTimer);
     resend.disabled = false;
     resend.textContent = 'Reenviar el código';
@@ -447,11 +525,26 @@
     const name = session ? session.name : '';
     $('#sop-who').textContent = name;
     $('#sop-me').textContent = initials(name);
+    const until = session && session.expiresAt ? new Date(session.expiresAt) : null;
+    const role = $('.me-role');
+    role.textContent = until && !Number.isNaN(until.getTime())
+      ? 'Hasta ' + fmtTime.format(until) : 'Equipo de soporte';
+    role.title = until && !Number.isNaN(until.getTime())
+      ? 'La sesión del panel dura 8 horas y no se renueva: ' + fmt(until.toISOString()) : '';
   }
 
   async function openPanel() {
+    // Quién es y hasta cuándo vale la sesión, de la API.
+    const me = await call('GET', '/support/admin/session');
+    if (!session) return;
+    if (me.ok && me.data) {
+      if (me.data.agent && me.data.agent.name) session.name = me.data.agent.name;
+      if (me.data.agent && me.data.agent.id_user) session.agentId = me.data.agent.id_user;
+      if (me.data.expires_at) session.expiresAt = me.data.expires_at;
+    }
+    armExpiry();
     const r = await loadList(true);
-    if (r === 'denied' || r === 'expired' || !session) return;
+    if (r === 'ended' || !session) return;
     paintMe();
     show('panel');
     refreshCounts();
@@ -459,13 +552,10 @@
     if (m) openCase(Number(m[1]));
   }
 
-  /** La cuenta entró, pero no es de soporte: se cierra su sesión. */
-  function deny(r) {
-    const refresh = session && session.refresh;
-    session = null;
-    if (refresh) call('POST', '/auth/logout', { refresh_token: refresh }, { auth: false });
-    if (needs2fa(r)) show('need2fa', $('#sop-need2fa-title'));
-    else show('denied', $('#sop-denied-title'));
+  /** La sesión abrió, pero la cuenta no es de soporte: se cierra. */
+  function deny() {
+    endSession();
+    showDenied();
   }
 
   function skeletonList() {
@@ -496,11 +586,11 @@
     if (cursor) q.set('cursor', cursor);
     const r = await call('GET', '/support/admin/cases' + (q.toString() ? '?' + q : ''));
     busy(more, false);
+    if (!session) return 'ended'; // la sesión terminó en el medio: call() ya lo mostró
     if (seq !== listSeq) return 'stale';
-    if (r.status === 401 && !session) return 'expired';
-    if (r.status === 403) {
-      deny(r);
-      return 'denied';
+    if (noRole(r)) {
+      deny();
+      return 'ended';
     }
     if (!r.ok) {
       listMessage('error', r.message || 'No pudimos cargar los casos.');
@@ -772,7 +862,7 @@
     if (seq !== caseSeq) return;
     caseSkel.hidden = true;
     if (!r.ok) {
-      if (r.status === 401 && !session) return;
+      if (!session) return; // la sesión terminó: call() ya mostró qué pasó
       if (quiet) return;
       caseBody.hidden = true;
       showCaseEmpty('No pudimos abrir el caso', r.message || 'Probá de nuevo en un momento.', r.status === 404 ? null : id);
@@ -866,7 +956,28 @@
     factsToggle.setAttribute('aria-expanded', String(open));
   });
 
-  const validShot = (url) => typeof url === 'string' && /^https:\/\/res\.cloudinary\.com\//.test(url);
+  // Las capturas son privadas (decisión 66): la API manda un enlace firmado a
+  // api.cloudinary.com que vence en attachment_expires_at (10 minutos). No se
+  // guarda: vencido, o si la imagen falla, se pide el caso de nuevo.
+  const validShot = (url) => typeof url === 'string' && /^https:\/\/(api|res)\.cloudinary\.com\//.test(url);
+  const shotExpired = (m) => {
+    const at = m && m.attachment_expires_at ? new Date(m.attachment_expires_at).getTime() : NaN;
+    return Number.isFinite(at) && at - Date.now() < 15000;
+  };
+  const findMsg = (id) => (current ? current.messages.find((m) => m.id_support_message === id) : null);
+  /** Pide el caso abierto de nuevo, con enlaces nuevos, sin moverse de lugar. */
+  async function refreshCase() {
+    if (current) await openCase(current.id_support_case, { focus: false, quiet: true });
+  }
+  // Un reintento por captura cada medio minuto: si el enlace nuevo también
+  // falla, la captura se marca rota en vez de pedir el caso sin fin.
+  const shotRetries = new Map();
+  const mayRetry = (id) => {
+    const last = shotRetries.get(id) || 0;
+    if (Date.now() - last < 30000) return false;
+    shotRetries.set(id, Date.now());
+    return true;
+  };
 
   function renderThread(c) {
     const thread = $('#sop-thread');
@@ -893,7 +1004,7 @@
       av.setAttribute('aria-hidden', 'true');
       const col = el('div', 'msg-col');
       const bubble = el('div', 'msg-bubble', m.body);
-      if (validShot(m.attachment_url)) bubble.append(shotFor(m.attachment_url, personName));
+      if (validShot(m.attachment_url)) bubble.append(shotFor(m, personName));
       const metaLine = el('span', 'msg-meta');
       if (support) {
         metaLine.append(el('b', '', 'Soporte'), document.createTextNode(' · ' + m.author_name + ' · '));
@@ -908,7 +1019,9 @@
     }
   }
 
-  function shotFor(url, name) {
+  function shotFor(m, name) {
+    const url = m.attachment_url;
+    const id = m.id_support_message;
     const b = el('button', 'shot');
     b.type = 'button';
     b.setAttribute('aria-label', 'Ver la captura en grande');
@@ -917,7 +1030,9 @@
     img.loading = 'lazy';
     img.decoding = 'async';
     img.referrerPolicy = 'no-referrer';
-    img.addEventListener('error', () => b.classList.add('is-broken'));
+    img.addEventListener('error', () => {
+      if (mayRetry(id)) refreshCase(); else b.classList.add('is-broken');
+    });
     // Si el hilo estaba abajo, que siga abajo cuando la captura termina de cargar.
     img.addEventListener('load', () => {
       const wrap = $('#sop-thread-wrap');
@@ -927,7 +1042,7 @@
     const cap = el('span', 'shot-cap');
     cap.append(icon('i-image'), document.createTextNode('Ver la captura'));
     b.append(img, cap);
-    b.addEventListener('click', () => openShot(url, img.alt));
+    b.addEventListener('click', () => openShot(id, img.alt));
     return b;
   }
 
@@ -956,13 +1071,17 @@
     wrap.scrollTop = keep === null ? wrap.scrollHeight : keep;
 
     const closed = c.status === 'closed';
-    $('#sop-reply-form').hidden = closed;
-    $('#sop-close').hidden = closed;
-    $('#sop-closed').hidden = !closed;
-    $('#sop-closed-t').textContent = closed && c.closed_at
-      ? `Cerrado el ${fmt(c.closed_at)}: no recibe más mensajes.`
-      : 'El caso está cerrado: no recibe más mensajes.';
-    if (!closed && !keepScroll) {
+    // Una consulta que escribió esta misma cuenta desde la app la contesta
+    // otra persona del equipo (la API la rechaza con SOPORTE_CASO_PROPIO).
+    const own = !!(session && session.agentId && c.person.id_user === session.agentId);
+    $('#sop-reply-form').hidden = closed || own;
+    $('#sop-close').hidden = closed || own;
+    $('#sop-closed').hidden = !(closed || own);
+    $('#sop-closed').classList.toggle('is-own', own && !closed);
+    $('#sop-closed-t').textContent = closed
+      ? (c.closed_at ? `Cerrado el ${fmt(c.closed_at)}: no recibe más mensajes.` : 'El caso está cerrado: no recibe más mensajes.')
+      : (own ? OWN_CASE : '');
+    if (!closed && !own && !keepScroll) {
       reply.value = drafts.get(c.id_support_case) || '';
       paintReply();
     }
@@ -1005,7 +1124,11 @@
     const id = current.id_support_case;
     const r = await call('POST', '/support/admin/cases/' + id + '/messages', { body: text });
     busy(go, false);
-    if (!r.ok) return setError(caseErr, r.message || 'No pudimos mandar la respuesta.');
+    if (!r.ok) {
+      if (r.code === CODE_OWN_CASE) { renderCase({ keepScroll: true }); return toast(r.message || OWN_CASE, true); }
+      if (r.code === CODE_CASE_CLOSED) return caseWasClosed(id);
+      return setError(caseErr, r.message || 'No pudimos mandar la respuesta.');
+    }
     drafts.delete(id);
     reply.value = '';
     current = r.data;
@@ -1015,6 +1138,18 @@
     loadList(true);
     refreshCounts();
   });
+
+  /**
+   * 409 CASO_CERRADO: lo cerró alguien más (otra persona del equipo, en ese
+   * mismo instante). La API no devuelve el caso por ahí; se pide con GET, que
+   * queda anotado, y se avisa corto.
+   */
+  async function caseWasClosed(id) {
+    toast('Este caso ya estaba cerrado.');
+    if (current && current.id_support_case === id) await refreshCase();
+    loadList(true);
+    refreshCounts();
+  }
 
   /* ---------- Cerrar, con confirmación ---------- */
   const confirmDlg = $('#sop-confirm');
@@ -1031,7 +1166,8 @@
     const r = await call('POST', '/support/admin/cases/' + current.id_support_case + '/close');
     busy(ok, false, 'Cerrar el caso');
     confirmDlg.close();
-    if (!r.ok) return toast(r.message || 'No pudimos cerrarlo.', true);
+    if (!r.ok && r.code === CODE_CASE_CLOSED) return caseWasClosed(current.id_support_case);
+    if (!r.ok) return toast(r.message || (r.code === CODE_OWN_CASE ? OWN_CASE : 'No pudimos cerrarlo.'), true);
     current = r.data;
     drafts.delete(current.id_support_case);
     renderCase();
@@ -1043,8 +1179,13 @@
 
   /* ---------- La captura, grande ---------- */
   const lightbox = $('#sop-lightbox');
-  function openShot(url, alt) {
-    if (!validShot(url)) return;
+  let shotOpen = null; // el mensaje cuya captura está abierta
+  async function openShot(id, alt) {
+    let m = findMsg(id);
+    if (shotExpired(m)) { await refreshCase(); m = findMsg(id); }
+    const url = m && m.attachment_url;
+    if (!validShot(url)) return toast('No pudimos abrir la captura. Probá de nuevo.', true);
+    shotOpen = id;
     const img = $('#sop-lightbox-img');
     img.src = url;
     img.alt = alt;
@@ -1054,7 +1195,22 @@
   }
   $('#sop-lightbox-close').addEventListener('click', () => lightbox.close());
   lightbox.addEventListener('click', (e) => { if (e.target === lightbox) lightbox.close(); });
-  lightbox.addEventListener('close', () => { $('#sop-lightbox-img').removeAttribute('src'); });
+  lightbox.addEventListener('close', () => { shotOpen = null; $('#sop-lightbox-img').removeAttribute('src'); });
+  // El enlace venció con la captura abierta, o falló: se pide uno nuevo una vez.
+  $('#sop-lightbox-img').addEventListener('error', async () => {
+    const id = shotOpen;
+    if (id === null || !lightbox.open || !$('#sop-lightbox-img').getAttribute('src')) return;
+    if (!mayRetry('big-' + id)) {
+      lightbox.close();
+      return toast('No pudimos cargar la captura.', true);
+    }
+    await refreshCase();
+    const m = findMsg(id);
+    if (lightbox.open && shotOpen === id && m && validShot(m.attachment_url)) {
+      $('#sop-lightbox-img').src = m.attachment_url;
+      $('#sop-lightbox-open').href = m.attachment_url;
+    }
+  });
 
   /* ---------- Volver a la lista (teléfono) ---------- */
   function backToList() {

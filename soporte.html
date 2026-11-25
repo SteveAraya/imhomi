@@ -7,9 +7,10 @@
   <!-- Es una herramienta interna: no va en buscadores ni en el sitemap. -->
   <meta name="robots" content="noindex, nofollow">
   <meta name="referrer" content="no-referrer">
-  <!-- Solo lo propio, la API y las capturas de Cloudinary. Lo que escriben
-       las personas entra con textContent, nunca como HTML. -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://res.cloudinary.com; connect-src https://imhomibackend-production.up.railway.app; form-action 'none'; base-uri 'none'; object-src 'none'">
+  <!-- Solo lo propio, la API y las capturas de Cloudinary (enlaces firmados de
+       api.cloudinary.com, decisión 66). Lo que escriben las personas entra con
+       textContent, nunca como HTML. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://api.cloudinary.com https://res.cloudinary.com; connect-src https://imhomibackend-production.up.railway.app; form-action 'none'; base-uri 'none'; object-src 'none'">
   <link rel="icon" href="/favicon.ico" sizes="32x32">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <meta name="theme-color" content="#0F2329">
@@ -141,7 +142,7 @@
              de esta pestaña y se pierde al cerrarla. -->
         <section id="sop-login" class="step" aria-labelledby="sop-login-h" hidden>
           <h1 class="card-h" id="sop-login-h">Iniciar sesión</h1>
-          <p class="card-sub">Entrá con tu cuenta de ImHomi.</p>
+          <p class="card-sub">Entrá con tu cuenta de ImHomi. Después te pedimos el código del correo.</p>
           <form id="sop-login-form" class="form" novalidate>
             <div class="field">
               <svg class="field-i"><use href="#i-at"/></svg>
@@ -187,7 +188,7 @@
         <section id="sop-denied" class="step step--msg" aria-labelledby="sop-denied-title" hidden>
           <span class="step-badge step-badge--warn"><svg><use href="#i-lock"/></svg></span>
           <h2 class="card-h" id="sop-denied-title" tabindex="-1">Esta cuenta no tiene acceso al panel</h2>
-          <p class="card-sub">Entraste bien, pero tu cuenta no tiene el rol de soporte. Cerramos la sesión.</p>
+          <p class="card-sub" id="sop-denied-text">Tu contraseña es correcta, pero la cuenta no tiene el rol de soporte. Si debería tenerlo, pedíselo a quien administra el equipo.</p>
           <button type="button" class="go go--ghost" id="sop-denied-back">Entrar con otra cuenta</button>
         </section>
 
@@ -195,19 +196,19 @@
         <section id="sop-need2fa" class="step step--msg" aria-labelledby="sop-need2fa-title" hidden>
           <span class="step-badge step-badge--warn"><svg><use href="#i-shield"/></svg></span>
           <h2 class="card-h" id="sop-need2fa-title" tabindex="-1">Activá la verificación en dos pasos</h2>
-          <p class="card-sub">El panel solo abre con el código que llega a tu correo. Prendela desde la app y volvé a entrar:</p>
-          <ol class="crumbs" aria-label="Dónde tocar en la app"><li>Mi cuenta</li><li>Seguridad y 2FA</li></ol>
+          <p class="card-sub" id="sop-need2fa-text">El panel solo abre con el código que llega a tu correo. Prendela desde la app y volvé a entrar:</p>
+          <ol class="crumbs" aria-label="Dónde tocar en la app"><li>Más</li><li>Mi cuenta</li><li>Seguridad y 2FA</li><li>Verificación en dos pasos</li></ol>
           <button type="button" class="go go--ghost" id="sop-need2fa-back">Volver a entrar</button>
         </section>
 
         <section id="sop-expired" class="step step--msg" aria-labelledby="sop-expired-title" hidden>
           <span class="step-badge"><svg><use href="#i-clock"/></svg></span>
           <h2 class="card-h" id="sop-expired-title" tabindex="-1">Tu sesión terminó</h2>
-          <p class="card-sub" id="sop-expired-text">Por seguridad, el panel pide entrar de nuevo cada tanto. Lo que no llegaste a enviar no salió.</p>
+          <p class="card-sub" id="sop-expired-text">Por seguridad, la sesión del panel dura 8 horas y se cierra si cambia algo de la cuenta. Lo que no llegaste a enviar no salió.</p>
           <button type="button" class="go" id="sop-expired-back"><span class="go-t">Volver a entrar</span><svg class="go-i" aria-hidden="true"><use href="#i-login"/></svg></button>
         </section>
 
-        <p class="card-foot"><svg aria-hidden="true"><use href="#i-shield"/></svg>Solo cuentas con rol de soporte. La sesión vive en esta pestaña: al cerrarla o recargar, se pide entrar de nuevo.</p>
+        <p class="card-foot"><svg aria-hidden="true"><use href="#i-shield"/></svg>Solo cuentas de soporte con la verificación en dos pasos. La sesión dura 8 horas y vive en esta pestaña: al cerrarla o recargar, se pide entrar de nuevo.</p>
       </div>
     </div>
   </main>
