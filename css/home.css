@@ -181,9 +181,6 @@
 .m-badge{position:absolute;top:-4px;right:12px;min-width:16px;height:16px;padding:0 4px;border-radius:8px;background:#E76F51;font-style:normal;font-size:9px;font-weight:700;color:#fff;display:grid;place-items:center;box-shadow:0 0 0 3px rgba(231,111,81,.25)}
 .m-badge.pop{transform:scale(0)}
 .scr.on .m-badge.pop{animation:mScale .45s var(--spring) forwards;animation-delay:calc(var(--d)*1ms)}
-.m-side{display:grid;justify-items:center;gap:8px}
-.m-fab{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#4ECDC4,#2A9D8F);box-shadow:0 4px 12px rgba(0,0,0,.38);display:grid;place-items:center;color:#fff}
-.m-fab svg{width:22px;height:22px}
 .m-orb{width:64px;height:64px;border-radius:50%;background:rgba(8,22,27,.62);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.1);display:grid;place-items:center;color:rgba(255,255,255,.75)}
 .m-orb.on{color:#fff}
 .m-orb svg{width:22px;height:22px}
