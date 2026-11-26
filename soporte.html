@@ -78,6 +78,10 @@
     <symbol id="i-xc" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6M9 9l6 6"/></symbol>
     <symbol id="i-ban" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></symbol>
     <symbol id="i-history" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5M12 7v5l4 2"/></symbol>
+    <symbol id="i-flag" viewBox="0 0 24 24"><path d="M4 22V4a1 1 0 0 1 .4-.8A6 6 0 0 1 8 2c3 0 5 2 7.33 2q2 0 3.07-.8A1 1 0 0 1 20 4v10a1 1 0 0 1-.4.8A6 6 0 0 1 16 16c-3 0-5-2-8-2a6 6 0 0 0-4 1.53"/></symbol>
+    <symbol id="i-msg" viewBox="0 0 24 24"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22z"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><path d="M11.53 2.3a.53.53 0 0 1 .94 0l2.31 4.68a2.12 2.12 0 0 0 1.6 1.16l5.17.76a.53.53 0 0 1 .3.9l-3.74 3.64a2.12 2.12 0 0 0-.61 1.88l.88 5.14a.53.53 0 0 1-.77.56l-4.62-2.43a2.12 2.12 0 0 0-1.97 0L6.4 21.02a.53.53 0 0 1-.77-.56l.88-5.14a2.12 2.12 0 0 0-.6-1.88L2.16 9.8a.53.53 0 0 1 .3-.9l5.16-.76a2.12 2.12 0 0 0 1.6-1.16z"/></symbol>
+    <symbol id="i-reply" viewBox="0 0 24 24"><path d="m9 17-5-5 5-5"/><path d="M20 18v-2a4 4 0 0 0-4-4H4"/></symbol>
     <symbol id="i-tag" viewBox="0 0 24 24"><path d="M12.59 2.59A2 2 0 0 0 11.17 2H4a2 2 0 0 0-2 2v7.17a2 2 0 0 0 .59 1.42l8.7 8.7a2.43 2.43 0 0 0 3.42 0l6.58-6.58a2.43 2.43 0 0 0 0-3.42z"/><circle cx="7.5" cy="7.5" r="1.5"/></symbol>
   </svg>
 
@@ -228,11 +232,13 @@
         <span class="tag">Soporte</span>
       </div>
 
-      <!-- Las dos cosas que atiende el panel: las consultas de "Escribinos"
-           (decisión 51) y las verificaciones de anuncios (decisión 54). -->
+      <!-- Lo que atiende el panel: las consultas de "Escribinos" (decisión
+           51), las verificaciones de anuncios (decisión 54) y los reportes
+           (decisión 52). -->
       <nav class="sect" aria-label="Secciones del panel">
         <button type="button" class="sect-b" data-section="cases" aria-current="page"><svg aria-hidden="true"><use href="#i-inbox"/></svg><span class="sect-t">Consultas</span><span class="count count--open" data-sect-count="cases"></span></button>
         <button type="button" class="sect-b" data-section="verifs"><svg aria-hidden="true"><use href="#i-verify"/></svg><span class="sect-t">Verificaciones</span><span class="count count--open" data-sect-count="verifs"></span></button>
+        <button type="button" class="sect-b" data-section="reports"><svg aria-hidden="true"><use href="#i-flag"/></svg><span class="sect-t">Reportes</span><span class="count count--open" data-sect-count="reports"></span></button>
       </nav>
 
       <nav class="side-nav" id="sop-nav-cases" aria-label="Estado de los casos">
@@ -259,6 +265,19 @@
           <button type="button" role="tab" class="ver-tab" data-status="cancelled" aria-selected="false" aria-controls="ver-list"><svg aria-hidden="true"><use href="#i-ban"/></svg><span class="tab-t">Canceladas</span></button>
         </div>
       </nav>
+
+      <nav class="side-nav" id="rep-nav" aria-label="Estado de los reportes" hidden>
+        <p class="side-h">Reportes</p>
+        <div class="tabs" id="rep-tabs" role="tablist" aria-label="Estado de los reportes">
+          <button type="button" role="tab" class="rep-tab" data-status="open" aria-selected="true" aria-controls="rep-list"><svg aria-hidden="true"><use href="#i-flag"/></svg><span class="tab-t">Abiertos</span><span class="count count--open" data-rcount="open"></span></button>
+          <button type="button" role="tab" class="rep-tab" data-status="resolved" aria-selected="false" aria-controls="rep-list"><svg aria-hidden="true"><use href="#i-archive"/></svg><span class="tab-t">Resueltos</span></button>
+        </div>
+      </nav>
+
+      <div class="side-note" id="rep-note" hidden>
+        <svg aria-hidden="true"><use href="#i-clock"/></svg>
+        <p>Cada reporte se atiende en <strong>24 horas</strong>. Los de una misma cosa van juntos: resolver uno los cierra a todos.</p>
+      </div>
 
       <div class="side-note" id="ver-note" hidden>
         <svg aria-hidden="true"><use href="#i-clock"/></svg>
@@ -400,6 +419,62 @@
       </div>
     </section>
 
+    <!-- ===== Reportes (decisión 52) ===== -->
+    <section class="list" id="rep-list" aria-labelledby="rep-list-title" hidden>
+      <header class="list-head">
+        <h1 class="list-title"><span id="rep-list-title">Abiertos</span> <span class="list-n" id="rep-list-n"></span></h1>
+        <span class="list-tools">
+          <button type="button" class="ibtn" id="rep-keys-open" aria-label="Atajos de teclado"><svg aria-hidden="true"><use href="#i-keys"/></svg></button>
+          <button type="button" class="ibtn" id="rep-refresh" aria-label="Actualizar los reportes"><svg aria-hidden="true"><use href="#i-refresh"/></svg></button>
+        </span>
+      </header>
+      <p class="sr" id="rep-list-state" role="status"></p>
+      <div class="list-scroll" id="rep-list-scroll">
+        <ul class="sop-cases" id="rep-items"></ul>
+        <div class="list-msg" id="rep-list-msg" hidden></div>
+        <button type="button" class="more" id="rep-more" hidden>Ver más</button>
+      </div>
+    </section>
+
+    <section class="case" id="rep-case" aria-label="Reporte" hidden>
+      <div class="case-empty" id="rep-empty">
+        <div class="illo" aria-hidden="true"></div>
+        <p class="empty-h" id="rep-empty-h">Elegí un reporte de la lista</p>
+        <p class="empty-t" id="rep-empty-t">Se abre acá con lo reportado como está hoy, cada reporte y el historial de la persona.</p>
+        <button type="button" class="go go--ghost go--sm" id="rep-retry" hidden>Reintentar</button>
+      </div>
+
+      <div class="case-skel" id="rep-skel" aria-hidden="true" hidden>
+        <div class="case-head"><span class="sk sk-av"></span><span class="sk-col"><span class="sk sk-l1"></span><span class="sk sk-l2"></span></span></div>
+        <div class="thread"><span class="sk sk-bub"></span><span class="sk sk-bub sk-bub--out"></span><span class="sk sk-bub sk-bub--tall"></span></div>
+      </div>
+
+      <div class="ver-body" id="rep-body" hidden>
+        <header class="case-head">
+          <button type="button" class="ibtn case-back" id="rep-back" aria-label="Volver a los reportes"><svg aria-hidden="true"><use href="#i-back"/></svg></button>
+          <span class="av av--lg" id="rep-av" aria-hidden="true"></span>
+          <h2 class="case-title" id="rep-title" tabindex="-1"></h2>
+          <span class="badge" id="rep-status"></span>
+        </header>
+
+        <div class="ver-scroll" id="rep-scroll"></div>
+
+        <div class="ver-actions" id="rep-actions">
+          <p class="form-error form-error--compose" id="rep-error" role="alert" hidden></p>
+          <div class="ver-actions-row">
+            <p class="ver-actions-t" id="rep-actions-t"></p>
+            <button type="button" class="go go--ghost go--sm" id="rep-dismiss-open"><svg aria-hidden="true"><use href="#i-check"/></svg><span class="go-t">Descartar</span></button>
+            <button type="button" class="go go--sm go--danger" id="rep-hide-open"><svg aria-hidden="true"><use href="#i-eye-off"/></svg><span class="go-t">Ocultar</span></button>
+          </div>
+        </div>
+        <div class="closed-bar rep-closed" id="rep-closed" hidden>
+          <svg aria-hidden="true"><use href="#i-archive"/></svg>
+          <span id="rep-closed-t"></span>
+          <button type="button" class="go go--ghost go--sm" id="rep-restore" hidden><span class="go-spin" aria-hidden="true"></span><svg class="go-i" aria-hidden="true"><use href="#i-eye"/></svg><span class="go-t">Volver a mostrar</span></button>
+        </div>
+      </div>
+    </section>
+
     <p class="toast" id="sop-toast" role="status" aria-live="polite"></p>
   </div>
 
@@ -437,6 +512,36 @@
     </form>
   </dialog>
 
+  <!-- Descartar un reporte: la confirmación. -->
+  <dialog class="dlg" id="rep-dismiss" aria-labelledby="rep-dismiss-h" aria-describedby="rep-dismiss-t">
+    <span class="step-badge"><svg aria-hidden="true"><use href="#i-check"/></svg></span>
+    <h2 class="dlg-h" id="rep-dismiss-h">¿Descartar el reporte?</h2>
+    <p class="dlg-t" id="rep-dismiss-t">Se cierran todos los reportes de esto. A quien reportó le llega que lo revisamos y no encontramos que infrinja nuestras reglas; al autor no le llega nada.</p>
+    <p class="form-error" id="rep-dismiss-error" role="alert" hidden></p>
+    <div class="dlg-actions">
+      <button type="button" class="go go--ghost go--sm" id="rep-dismiss-cancel">Cancelar</button>
+      <button type="button" class="go go--sm" id="rep-dismiss-ok"><span class="go-spin" aria-hidden="true"></span><span class="go-t">Descartar</span></button>
+    </div>
+  </dialog>
+
+  <!-- Ocultar lo reportado: el motivo lo lee el autor. -->
+  <dialog class="dlg dlg--form" id="rep-hide" aria-labelledby="rep-hide-h" aria-describedby="rep-hide-t">
+    <form id="rep-hide-form" novalidate>
+      <h2 class="dlg-h" id="rep-hide-h">Ocultar</h2>
+      <p class="dlg-t" id="rep-hide-t">Quien lo publicó lee el motivo en el aviso: escribilo para que entienda qué regla rompió.</p>
+      <p class="ver-quick-h" id="rep-quick-h">Motivos frecuentes</p>
+      <div class="ver-quick" id="rep-quick" role="group" aria-labelledby="rep-quick-h"></div>
+      <label class="ver-reason-l" for="rep-reason">Motivo</label>
+      <textarea id="rep-reason" class="reason-box" rows="3" maxlength="300" required aria-describedby="rep-reason-hint" placeholder="Por ejemplo: pide que le paguen por fuera de ImHomi."></textarea>
+      <p class="ver-reason-hint" id="rep-reason-hint"><span>Entre 10 y 300 caracteres.</span><span class="counter"><span id="rep-reason-count">0</span>/300</span></p>
+      <p class="form-error" id="rep-hide-error" role="alert" hidden></p>
+      <div class="dlg-actions">
+        <button type="button" class="go go--ghost go--sm" id="rep-hide-cancel">Cancelar</button>
+        <button type="submit" class="go go--sm go--danger" id="rep-hide-go"><span class="go-spin" aria-hidden="true"></span><span class="go-t">Ocultar</span></button>
+      </div>
+    </form>
+  </dialog>
+
   <!-- La captura, grande. -->
   <dialog class="dlg dlg--shot" id="sop-lightbox" aria-label="Captura adjunta">
     <img id="sop-lightbox-img" alt="" referrerpolicy="no-referrer">
@@ -453,7 +558,7 @@
       <dt><kbd>j</kbd> <kbd>k</kbd></dt><dd>Siguiente y anterior de la lista</dd>
       <dt><kbd>r</kbd></dt><dd>Escribir la respuesta</dd>
       <dt><kbd>Ctrl</kbd>/<kbd>⌘</kbd> <kbd>Enter</kbd></dt><dd>Enviar la respuesta</dd>
-      <dt><kbd>c</kbd> <kbd>v</kbd></dt><dd>Consultas y verificaciones</dd>
+      <dt><kbd>c</kbd> <kbd>v</kbd> <kbd>p</kbd></dt><dd>Consultas, verificaciones y reportes</dd>
       <dt><kbd>1</kbd>–<kbd>4</kbd></dt><dd>Las pestañas de la sección</dd>
       <dt><kbd>u</kbd></dt><dd>Actualizar la lista</dd>
       <dt><kbd>Esc</kbd></dt><dd>Salir del campo o volver a la lista</dd>

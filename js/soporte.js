@@ -2,9 +2,10 @@
    ImHomi · panel de soporte (decisión 51)
    Entra con el ingreso de la API (con el código si la cuenta tiene
    verificación en dos pasos), lista los casos por estado, muestra el hilo,
-   responde y cierra. Y revisa las verificaciones de anuncios (decisión 54):
+   responde y cierra. Revisa las verificaciones de anuncios (decisión 54):
    compara las fotos y el punto con lo que dice el anuncio, y aprueba o
-   rechaza con el motivo. Solo lo abre una cuenta con users.role = 'support':
+   rechaza con el motivo. Y atiende los reportes (decisión 52): descarta lo
+   reportado o lo oculta con el motivo que lee el autor. Solo lo abre una cuenta con users.role = 'support':
    la API contesta 403 SIN_PERMISO a cualquier otra.
 
    La sesión vive solo en la memoria de esta pestaña: nada en localStorage
@@ -161,6 +162,7 @@
     $('#sop-case-body').hidden = true;
     showCaseEmpty();
     resetVerifs();
+    resetReports();
     paintSection('cases');
     panel.dataset.view = 'list';
   }
@@ -547,17 +549,22 @@
       if (me.data.expires_at) session.expiresAt = me.data.expires_at;
     }
     armExpiry();
-    // El enlace del correo a soporte: `#caso-<id>` o `#verificacion-<id>`.
+    // El enlace del correo a soporte: `#caso-<id>`, `#verificacion-<id>` o
+    // `#reporte-<id>`.
     const m = /^#caso-(\d{1,10})$/.exec(location.hash);
     const v = /^#verificacion-(\d{1,10})$/.exec(location.hash);
+    const rp = /^#reporte-(\d{1,10})$/.exec(location.hash);
     if (v) paintSection('verifs');
-    const r = v ? await loadVerList(true) : await loadList(true);
+    else if (rp) paintSection('reports');
+    const r = v ? await loadVerList(true) : rp ? await loadRepList(true) : await loadList(true);
     if (r === 'ended' || !session) return;
     paintMe();
     show('panel');
     refreshCounts();
     refreshVerCounts();
+    refreshRepCounts();
     if (v) openVer(Number(v[1]));
+    else if (rp) openRep(Number(rp[1]));
     else if (m) openCase(Number(m[1]));
   }
 
@@ -1357,7 +1364,8 @@
   setInterval(() => {
     $$('[data-due]').forEach((t) => {
       const [text, tone] = dueText(new Date(t.dateTime));
-      t.textContent = t.dataset.due === 'long' ? dueLong(new Date(t.dateTime)) : text;
+      t.textContent = t.dataset.due === 'long' ? dueLong(new Date(t.dateTime))
+        : t.dataset.due === 'long-rep' ? dueLongRep(new Date(t.dateTime)) : text;
       t.classList.toggle('due--late', tone === 'late');
       t.classList.toggle('due--soon', tone === 'soon');
     });
@@ -1368,6 +1376,9 @@
       ? `El plazo de ${REVIEW_HOURS} horas venció el ${fmt(due.toISOString())} · ${text.toLowerCase()}`
       : `Revisala antes del ${fmt(due.toISOString())} · ${text.toLowerCase()}`;
   };
+
+  /** El plazo de un reporte, dicho en masculino. */
+  const dueLongRep = (due) => dueLong(due).replace('Revisala antes', 'Atendelo antes');
 
   /** Metros o kilómetros, como se leen. */
   function distText(m) {
@@ -1391,19 +1402,25 @@
   /** Muestra una sección u otra, sin pedir nada. */
   function paintSection(name) {
     section = name;
+    const cases = name === 'cases';
     const verifs = name === 'verifs';
+    const reps = name === 'reports';
     $$('.sect-b').forEach((b) => {
       if (b.dataset.section === name) b.setAttribute('aria-current', 'page');
       else b.removeAttribute('aria-current');
     });
-    $('#sop-nav-cases').hidden = verifs;
-    $('#sop-side-topics').hidden = verifs;
-    $('#sop-list').hidden = verifs;
-    $('#sop-case').hidden = verifs;
+    $('#sop-nav-cases').hidden = !cases;
+    $('#sop-side-topics').hidden = !cases;
+    $('#sop-list').hidden = !cases;
+    $('#sop-case').hidden = !cases;
     $('#ver-nav').hidden = !verifs;
     $('#ver-note').hidden = !verifs;
     $('#ver-list').hidden = !verifs;
     $('#ver-case').hidden = !verifs;
+    $('#rep-nav').hidden = !reps;
+    $('#rep-note').hidden = !reps;
+    $('#rep-list').hidden = !reps;
+    $('#rep-case').hidden = !reps;
     panel.dataset.section = name;
     panel.dataset.view = 'list';
   }
@@ -1411,15 +1428,19 @@
   /** Pasa a la otra sección y la pone al día. */
   function setSection(name) {
     if (section === name) return;
-    if (name === 'verifs') saveDraft();
+    if (section === 'cases') saveDraft();
     paintSection(name);
     if (history.replaceState) {
       const hash = name === 'verifs'
         ? (verCurrent ? '#verificacion-' + verCurrent.id_verification : '')
-        : (current ? '#caso-' + current.id_support_case : '');
+        : name === 'reports'
+          ? (repCurrent ? '#reporte-' + repCurrent.id_report : '')
+          : (current ? '#caso-' + current.id_support_case : '');
       history.replaceState(null, '', location.pathname + location.search + hash);
     }
-    if (name === 'verifs') { loadVerList(true); refreshVerCounts(); } else { loadList(true); refreshCounts(); }
+    if (name === 'verifs') { loadVerList(true); refreshVerCounts(); }
+    else if (name === 'reports') { loadRepList(true); refreshRepCounts(); }
+    else { loadList(true); refreshCounts(); }
     $(`.sect-b[data-section="${name}"]`).focus();
   }
   $$('.sect-b').forEach((b) => b.addEventListener('click', () => setSection(b.dataset.section)));
@@ -2083,14 +2104,816 @@
     if (panel.hidden || !session) return;
     const m = /^#caso-(\d{1,10})$/.exec(location.hash);
     const v = /^#verificacion-(\d{1,10})$/.exec(location.hash);
+    const rp = /^#reporte-(\d{1,10})$/.exec(location.hash);
     if (v && !(verCurrent && verCurrent.id_verification === Number(v[1]))) {
       if (section !== 'verifs') { paintSection('verifs'); loadVerList(true); }
       openVer(Number(v[1]));
+    } else if (rp && !(repCurrent && repCurrent.id_report === Number(rp[1]))) {
+      if (section !== 'reports') { paintSection('reports'); loadRepList(true); }
+      openRep(Number(rp[1]));
     } else if (m && !(current && current.id_support_case === Number(m[1]))) {
       if (section !== 'cases') { paintSection('cases'); loadList(true); }
       openCase(Number(m[1]));
     }
   });
+
+  /* =====================================================================
+     REPORTES (decisión 52)
+     Cualquiera reporta a una persona, un anuncio, una foto, un mensaje,
+     una calificación o una respuesta. Lo de una misma cosa llega junto: un
+     grupo por cosa reportada, con todos sus reportes, y resolverlo los
+     cierra a todos. Soporte lo descarta (a quien reportó le llega que no
+     infringe las reglas) o lo oculta con el motivo que lee el autor. Lo
+     oculto se puede volver a mostrar, salvo las fotos que se borraron.
+     Todo lo que escribieron las personas entra como texto.
+     ===================================================================== */
+  const RTYPE = {
+    user: { label: 'Persona', icon: 'i-user', hide: 'Quitar la foto de perfil', what: 'la foto de perfil' },
+    ad: { label: 'Anuncio', icon: 'i-tag', hide: 'Ocultar el anuncio', what: 'el anuncio' },
+    ad_image: { label: 'Foto', icon: 'i-image', hide: 'Quitar la foto', what: 'la foto' },
+    message: { label: 'Mensaje', icon: 'i-msg', hide: 'Ocultar el mensaje', what: 'el mensaje' },
+    rating: { label: 'Calificación', icon: 'i-star', hide: 'Ocultar la calificación', what: 'la calificación' },
+    rating_response: { label: 'Respuesta', icon: 'i-reply', hide: 'Ocultar la respuesta', what: 'la respuesta' },
+  };
+  const RREASON = {
+    scam: 'Estafa o plata por fuera',
+    harassment: 'Acoso o insultos',
+    inappropriate: 'Contenido inapropiado',
+    fake: 'Falso o engañoso',
+    discrimination: 'Discriminación',
+    other: 'Otro motivo',
+  };
+  const ROUTCOME = { dismissed: 'Descartado', content_hidden: 'Oculto', account_suspended: 'Cuenta suspendida' };
+  const RCONTEXT = {
+    visit_host: 'Como quien mostró la visita',
+    visit_guest: 'Como quien visitó',
+    landlord: 'Como propietario',
+    tenant: 'Como inquilino',
+    host: 'Como anfitrión',
+    roommate: 'Como roomie',
+  };
+  /** Los motivos rápidos al ocultar, según lo que se oculta. */
+  const RQUICK = {
+    message: ['Pide plata por fuera de ImHomi.', 'Tiene insultos o amenazas.', 'Muestra contenido sexual o violento.', 'Discrimina a una persona o a un grupo.'],
+    ad: ['Las fotos no son de la propiedad.', 'El anuncio es falso o engañoso.', 'Pide plata por fuera de ImHomi.', 'Discrimina a una persona o a un grupo.'],
+    ad_image: ['La foto no es de la propiedad.', 'Muestra contenido sexual o violento.', 'Muestra datos personales de otra persona.'],
+    user: ['La foto de perfil es ofensiva.', 'La foto de perfil muestra contenido sexual o violento.', 'La foto de perfil es de otra persona.'],
+    rating: ['Tiene insultos o amenazas.', 'Da datos personales de otra persona.', 'Discrimina a una persona o a un grupo.', 'No habla de la visita ni del acuerdo.'],
+    rating_response: ['Tiene insultos o amenazas.', 'Da datos personales de otra persona.', 'Discrimina a una persona o a un grupo.'],
+  };
+  const RTITLES = { open: 'Abiertos', resolved: 'Resueltos' };
+  const REMPTY = {
+    open: ['Nada para revisar', 'No hay reportes abiertos. Cuando alguien reporte algo, aparece acá y te llega un correo.'],
+    resolved: ['Ninguno resuelto todavía', 'Los que resuelvas quedan acá, con qué se hizo, quién y cuándo.'],
+  };
+  const CODE_REP_RESOLVED = 'REPORTE_RESUELTO';
+  const CODE_REP_PART = 'REPORTE_PARTE';
+  const CODE_REP_NOT_FOUND = 'REPORTE_NO_ENCONTRADO';
+  const CODE_NOTHING = 'MODERACION_NADA_QUE_OCULTAR';
+  const CODE_NO_UNDO = 'MODERACION_NO_SE_DESHACE';
+  const PART_REP = 'Sos parte de este reporte: lo resuelve otra persona del equipo.';
+
+  let repFilter = 'open';
+  let repItems = [];
+  let repCursor = null;
+  let repCurrent = null;
+  let repCounts = {}; // { open: { n, more } }
+  let repSeq = 0;
+  let repListSeq = 0;
+  const repDrafts = new Map(); // el motivo a medio escribir de cada grupo
+
+  const repEmpty = $('#rep-empty');
+  const repBody = $('#rep-body');
+  const repSkel = $('#rep-skel');
+  const repErr = $('#rep-error');
+  const repHideOpen = $('#rep-hide-open');
+  const repDismissOpen = $('#rep-dismiss-open');
+  const repRestore = $('#rep-restore');
+
+  const typeOf = (g) => RTYPE[g.target_type] || { label: g.target_type, icon: 'i-flag', hide: 'Ocultar', what: 'lo reportado' };
+  const nameOf = (p) => (p && p.name) || 'Cuenta eliminada';
+  /** Ocultar la única foto de un anuncio publicado oculta el anuncio entero. */
+  const onlyPhoto = (g) => g.target_type === 'ad_image' && !!(g.current && g.current.only_photo_of_published);
+  const hideLabel = (g) => (onlyPhoto(g) ? 'Ocultar el anuncio (es su única foto)' : typeOf(g).hide);
+
+  function resetReports() {
+    repItems = [];
+    repCursor = null;
+    repCurrent = null;
+    repCounts = {};
+    repDrafts.clear();
+    $('#rep-items').replaceChildren();
+    repBody.hidden = true;
+    showRepEmpty();
+    paintRepCounts();
+  }
+
+  /* ---------- La lista ---------- */
+  function skeletonRepList() {
+    const list = $('#rep-items');
+    list.replaceChildren();
+    for (let i = 0; i < 6; i++) {
+      const li = el('li', 'skel');
+      li.setAttribute('aria-hidden', 'true');
+      li.append(el('span', 'sk'), el('span', 'sk'), el('span', 'sk'), el('span', 'sk'));
+      list.append(li);
+    }
+    $('#rep-list-msg').hidden = true;
+    $('#rep-more').hidden = true;
+  }
+
+  async function loadRepList(reset) {
+    const seq = ++repListSeq;
+    const state = $('#rep-list-state');
+    const more = $('#rep-more');
+    if (reset) {
+      repItems = [];
+      repCursor = null;
+      skeletonRepList();
+    } else busy(more, true);
+    state.textContent = 'Cargando reportes…';
+    const q = new URLSearchParams({ status: repFilter });
+    if (repCursor) q.set('cursor', repCursor);
+    const r = await call('GET', '/support/admin/reports?' + q);
+    busy(more, false);
+    if (!session) return 'ended';
+    if (seq !== repListSeq) return 'stale';
+    if (noRole(r)) { deny(); return 'ended'; }
+    if (!r.ok) {
+      repListMessage('error', r.message || 'No pudimos cargar los reportes.');
+      state.textContent = r.message || 'No pudimos cargar los reportes.';
+      return 'error';
+    }
+    repItems = repItems.concat((r.data && r.data.data) || []);
+    repCursor = (r.data && r.data.next_cursor) || null;
+    if (repFilter === 'open' && !repCursor) { repCounts.open = { n: repItems.length, more: false }; paintRepCounts(); }
+    renderRepList();
+    return 'ok';
+  }
+
+  /** Cuántas cosas reportadas esperan: la primera tanda (de a 20). */
+  async function refreshRepCounts() {
+    const r = await call('GET', '/support/admin/reports?status=open');
+    if (!session) return;
+    if (r.ok && r.data && Array.isArray(r.data.data)) {
+      repCounts.open = { n: r.data.data.length, more: !!r.data.next_cursor };
+    }
+    paintRepCounts();
+  }
+  function paintRepCounts() {
+    const c = repCounts.open;
+    const text = c && c.n ? c.n + (c.more ? '+' : '') : '';
+    [$('[data-rcount="open"]'), $('[data-sect-count="reports"]')].forEach((n) => {
+      n.textContent = text;
+      n.classList.toggle('has', !!text);
+    });
+  }
+
+  function repListMessage(kind, text, title) {
+    const box = $('#rep-list-msg');
+    box.replaceChildren();
+    $('#rep-items').replaceChildren();
+    box.append(illo(kind === 'error' ? 'error' : (repFilter === 'open' ? 'done' : 'empty')));
+    box.append(el('p', 'empty-h', title || (kind === 'error' ? 'No pudimos cargar los reportes' : '')));
+    box.append(el('p', 'empty-t', text));
+    if (kind === 'error') {
+      $('#rep-list-n').textContent = '';
+      const retry = el('button', 'go go--ghost go--sm', 'Reintentar');
+      retry.type = 'button';
+      retry.addEventListener('click', () => { loadRepList(true); refreshRepCounts(); });
+      box.append(retry);
+    }
+    box.hidden = false;
+    $('#rep-more').hidden = kind === 'error' || !repCursor;
+  }
+
+  /** El resultado de un grupo resuelto, en pocas palabras. */
+  function outcomeTag(g) {
+    if (g.outcome === 'content_hidden' && g.restored_at) return el('span', 'tagc tagc--restored', 'Vuelto a mostrar');
+    if (g.outcome === 'content_hidden') return el('span', 'tagc tagc--hidden', 'Oculto');
+    if (g.outcome === 'account_suspended') return el('span', 'tagc tagc--hidden', 'Cuenta suspendida');
+    return el('span', 'tagc tagc--dismissed', 'Descartado');
+  }
+
+  function repItemFor(g) {
+    const li = el('li');
+    const b = el('button', 'sop-item rep-item');
+    b.type = 'button';
+    b.dataset.id = String(g.id_report);
+    if (repCurrent && repCurrent.id_report === g.id_report) {
+      b.classList.add('is-current');
+      b.setAttribute('aria-current', 'true');
+    }
+    const t = typeOf(g);
+    const who = nameOf(g.reported_user);
+
+    const top = el('span', 'item-top');
+    const kind = el('span', 'rep-kind');
+    kind.append(icon(t.icon), document.createTextNode(t.label));
+    top.append(kind, el('span', 'item-name', who));
+    if (g.status === 'open') top.append(dueChip(g.first_reported_at));
+    else if (g.resolved_at) {
+      const when = timeEl(g.resolved_at, 'item-when', ago(g.resolved_at));
+      when.dataset.ago = 'short';
+      top.append(when);
+    }
+
+    const meta = el('span', 'item-meta');
+    meta.append(el('span', '', `#${g.id_report} · ${g.reports_count} ${g.reports_count === 1 ? 'reporte' : 'reportes'}`));
+
+    const tags = el('span', 'item-tags');
+    if (g.status === 'open') {
+      (g.reasons || []).forEach((r) => tags.append(el('span', 'tagc tagc--reason', RREASON[r] || r)));
+    } else {
+      tags.append(outcomeTag(g));
+      if (g.resolver) tags.append(el('span', 'tagc tagc--who', 'Resolvió ' + g.resolver.name));
+    }
+
+    b.append(avatar(who, g.reported_user && g.reported_user.id_user), top, meta, tags);
+    // La vista previa sin direcciones de fotos (no le dicen nada a quien lee
+    // la lista); de una persona, su nombre ya está arriba.
+    const clean = (g.preview || '').replace(/https?:\/\/\S+/g, '').replace(/Foto de perfil:\s*/g, '').replace(/\s+/g, ' ').trim();
+    const prev = g.status !== 'open' && g.outcome_reason ? g.outcome_reason
+      : g.target_type === 'user' ? '' : clean;
+    if (prev) b.append(el('span', 'item-prev', prev));
+    b.setAttribute('aria-label', `${t.label} de ${who}, ${g.reports_count} ${g.reports_count === 1 ? 'reporte' : 'reportes'}`
+      + (g.status === 'open' ? '' : `, ${(ROUTCOME[g.outcome] || '').toLowerCase()}`));
+    b.addEventListener('click', () => openRep(g.id_report));
+    li.append(b);
+    return li;
+  }
+
+  function renderRepList() {
+    const list = $('#rep-items');
+    list.replaceChildren(...repItems.map(repItemFor));
+    $('#rep-list-msg').hidden = true;
+    $('#rep-more').hidden = !repCursor;
+    $('#rep-list-title').textContent = RTITLES[repFilter];
+    $('#rep-list-n').textContent = repItems.length ? repItems.length + (repCursor ? '+' : '') : '';
+    $('#rep-list-state').textContent = repItems.length
+      ? `${repItems.length} ${repItems.length === 1 ? 'cosa reportada' : 'cosas reportadas'}, ${RTITLES[repFilter].toLowerCase()}`
+      : 'No hay reportes en este estado.';
+    if (!repItems.length) repListMessage('empty', REMPTY[repFilter][1], REMPTY[repFilter][0]);
+  }
+
+  function selectRepTab(tab) {
+    repFilter = tab.dataset.status;
+    $$('.rep-tab').forEach((t) => t.setAttribute('aria-selected', t === tab ? 'true' : 'false'));
+    $('#rep-list-title').textContent = RTITLES[repFilter];
+    $('#rep-list-scroll').scrollTop = 0;
+    loadRepList(true);
+  }
+  $$('.rep-tab').forEach((tab) => tab.addEventListener('click', () => selectRepTab(tab)));
+  $('#rep-tabs').addEventListener('keydown', (e) => {
+    const keys = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 };
+    if (!(e.key in keys)) return;
+    const tabs = $$('.rep-tab');
+    const i = tabs.indexOf(document.activeElement);
+    if (i === -1) return;
+    e.preventDefault();
+    const next = tabs[(i + keys[e.key] + tabs.length) % tabs.length];
+    next.focus();
+    selectRepTab(next);
+  });
+  $('#rep-more').addEventListener('click', () => loadRepList(false));
+
+  const repRefreshBtn = $('#rep-refresh');
+  async function refreshReports() {
+    repRefreshBtn.classList.add('is-spin');
+    const jobs = [loadRepList(true), refreshRepCounts()];
+    if (repCurrent) jobs.push(openRep(repCurrent.id_report, { focus: false, quiet: true }));
+    await Promise.all(jobs);
+    repRefreshBtn.classList.remove('is-spin');
+  }
+  repRefreshBtn.addEventListener('click', refreshReports);
+  $('#rep-keys-open').addEventListener('click', () => $('#sop-keys').showModal());
+
+  /* ---------- Una cosa reportada ---------- */
+  function showRepEmpty(title, text, retryId) {
+    repEmpty.hidden = false;
+    repEmpty.classList.toggle('is-error', !!title);
+    repSkel.hidden = true;
+    $('#rep-empty-h').textContent = title || 'Elegí un reporte de la lista';
+    $('#rep-empty-t').textContent = text || 'Se abre acá con lo reportado como está hoy, cada reporte y el historial de la persona.';
+    const retry = $('#rep-retry');
+    retry.hidden = !retryId;
+    retry.dataset.id = retryId ? String(retryId) : '';
+    $('.illo', repEmpty).replaceWith(illo(title ? 'error' : 'empty'));
+  }
+  $('#rep-retry').addEventListener('click', (e) => {
+    const id = Number(e.currentTarget.dataset.id);
+    if (id) openRep(id);
+  });
+
+  function markRepCurrent() {
+    $$('#rep-items .sop-item').forEach((b) => {
+      const on = !!repCurrent && Number(b.dataset.id) === repCurrent.id_report;
+      b.classList.toggle('is-current', on);
+      if (on) b.setAttribute('aria-current', 'true'); else b.removeAttribute('aria-current');
+    });
+  }
+
+  async function openRep(id, { focus = true, quiet = false } = {}) {
+    const seq = ++repSeq;
+    if (section !== 'reports') paintSection('reports');
+    setError(repErr, '');
+    if (!quiet) panel.dataset.view = 'case';
+    const skelTimer = quiet ? null : setTimeout(() => {
+      if (seq !== repSeq) return;
+      repBody.hidden = true;
+      repEmpty.hidden = true;
+      repSkel.hidden = false;
+    }, 140);
+    const r = await call('GET', '/support/admin/reports/' + id);
+    clearTimeout(skelTimer);
+    if (seq !== repSeq) return;
+    repSkel.hidden = true;
+    if (!r.ok) {
+      if (!session || quiet) return;
+      repBody.hidden = true;
+      repCurrent = null;
+      markRepCurrent();
+      const notFound = r.status === 404 || r.code === CODE_REP_NOT_FOUND;
+      showRepEmpty(notFound ? 'No encontramos ese reporte' : 'No pudimos abrir el reporte',
+        notFound ? 'Revisá el número o elegí otro de la lista.' : (r.message || 'Probá de nuevo en un momento.'),
+        notFound ? null : id);
+      return;
+    }
+    const same = repCurrent && repCurrent.id_report === r.data.id_report;
+    repCurrent = r.data;
+    if (history.replaceState) history.replaceState(null, '', '#reporte-' + repCurrent.id_report);
+    renderRep({ keepScroll: quiet && same });
+    markRepCurrent();
+    if (focus) $('#rep-title').focus({ preventScroll: true });
+  }
+  const refreshRep = () => (repCurrent ? openRep(repCurrent.id_report, { focus: false, quiet: true }) : null);
+
+  /** Una foto que se agranda en el visor compartido. */
+  function bigPhotoButton(url, cls, label, alt) {
+    const b = el('button', cls);
+    b.type = 'button';
+    b.setAttribute('aria-label', label);
+    const img = document.createElement('img');
+    img.alt = alt;
+    img.decoding = 'async';
+    img.referrerPolicy = 'no-referrer';
+    img.addEventListener('error', () => b.classList.add('is-broken'));
+    img.src = url;
+    b.append(img);
+    b.addEventListener('click', () => showLightbox(url, alt, {
+      label: 'Foto reportada', closeLabel: 'Cerrar la foto', key: 'rep-' + url, fresh: async () => null,
+    }));
+    return b;
+  }
+  function photoThumbs(urls, what) {
+    const thumbs = el('ul', 'ver-thumbs');
+    urls.filter(validShot).forEach((url, i) => {
+      const li = el('li');
+      li.append(bigPhotoButton(url, 'ver-thumb', `Ver la foto ${i + 1} ${what} en grande`, `Foto ${i + 1} ${what}`));
+      thumbs.append(li);
+    });
+    return thumbs;
+  }
+  function flag(text, tone) {
+    const f = el('span', 'rep-flag rep-flag--' + tone);
+    f.append(icon(tone === 'hidden' ? 'i-eye-off' : 'i-alert'), document.createTextNode(text));
+    return f;
+  }
+  function stars(score) {
+    const s = el('span', 'rep-stars');
+    s.setAttribute('role', 'img');
+    s.setAttribute('aria-label', `${score} de 5 estrellas`);
+    for (let i = 1; i <= 5; i++) s.append(icon('i-star', i <= score ? '' : 'is-off'));
+    return s;
+  }
+
+  /** Lo reportado, como está hoy, según qué es. */
+  function renderCurrent(g, sec) {
+    const c = g.current;
+    if (!c || c.gone) {
+      const box = el('p', 'rep-gone');
+      box.append(icon('i-ban'), document.createTextNode(
+        g.target_type === 'user' ? 'La cuenta ya no existe: se eliminó.' : 'Ya no existe: se borró. Abajo está cómo era cuando lo reportaron.'));
+      sec.append(box);
+      return;
+    }
+    switch (g.target_type) {
+      case 'user': {
+        const p = el('div', 'rep-person');
+        if (c.has_own_photo && validShot(c.avatar_url)) {
+          p.append(bigPhotoButton(c.avatar_url, 'rep-avatar', 'Ver la foto de perfil en grande', `Foto de perfil de ${c.name}`));
+        } else p.append(avatar(c.name, g.reported_user && g.reported_user.id_user, 'av--lg'));
+        const col = el('div');
+        col.append(el('p', 'ver-banner-h', c.name));
+        col.append(el('p', 'ver-sub', c.has_own_photo ? 'Tiene una foto de perfil propia.' : 'Usa la foto por defecto: no hay foto propia para quitar.'));
+        p.append(col);
+        sec.append(p);
+        break;
+      }
+      case 'ad': {
+        const dl = el('dl', 'ver-dl');
+        dl.append(row('Título', c.title), row('Estado', `${AD_STATUS[c.status] || c.status} · ${LISTING[c.listing_type] || c.listing_type || ''}`.replace(/ · $/, '')));
+        sec.append(dl);
+        if (c.moderation) sec.append(flag(`Ya está oculto: ${c.moderation.reason}`, 'hidden'));
+        if (c.description) sec.append(el('p', 'rep-text', c.description));
+        if (c.images && c.images.length) {
+          sec.append(el('p', 'ver-subh', 'Fotos del anuncio'));
+          sec.append(photoThumbs(c.images, 'del anuncio'));
+        } else sec.append(el('p', 'ver-sub', 'El anuncio no tiene fotos.'));
+        break;
+      }
+      case 'ad_image': {
+        if (validShot(c.url)) sec.append(bigPhotoButton(c.url, 'rep-photo', 'Ver la foto reportada en grande', `Foto reportada del anuncio «${c.ad.title}»`));
+        const dl = el('dl', 'ver-dl');
+        dl.append(row('Del anuncio', c.ad.title, `#${c.ad.id_ad} · ${AD_STATUS[c.ad.status] || c.ad.status} · ${c.ad.images_count} ${c.ad.images_count === 1 ? 'foto' : 'fotos'}`));
+        sec.append(dl);
+        if (c.only_photo_of_published) {
+          sec.append(flag('Es la única foto de un anuncio publicado: ocultarla oculta el anuncio entero y la foto queda.', 'warn'));
+        }
+        break;
+      }
+      case 'message': {
+        sec.append(el('p', 'ver-sub', `En la conversación sobre «${c.conversation.ad_title}». Los mensajes de alrededor, para entender el tono.`));
+        const ol = el('ol', 'rep-thread');
+        (c.context || []).forEach((m) => {
+          const li = el('li', 'rep-msg' + (m.is_reported ? ' is-reported' : '') + (m.moderated ? ' is-hidden' : ''));
+          const top = el('p', 'rep-msg-top');
+          top.append(el('span', 'rep-msg-who', m.sender_name || 'Cuenta eliminada'), timeEl(m.created_at, '', fmt(m.created_at)));
+          if (m.is_reported) top.append(el('span', 'rep-msg-mark', 'El reportado'));
+          if (m.moderated) top.append(el('span', 'tagc tagc--hidden', 'Oculto'));
+          li.append(top, el('p', 'rep-msg-t', m.content));
+          if (m.is_reported) li.setAttribute('aria-label', 'Mensaje reportado');
+          ol.append(li);
+        });
+        sec.append(ol);
+        if (c.moderated) sec.append(flag('Ya está oculto: en la app los dos ven «Mensaje oculto por ImHomi».', 'hidden'));
+        break;
+      }
+      case 'rating': {
+        const dl = el('dl', 'ver-dl');
+        const score = el('dd');
+        score.append(stars(c.score));
+        dl.append(row('Calificación', score), row('A quién', c.reviewed ? c.reviewed.name : '—', RCONTEXT[c.context] || c.context));
+        sec.append(dl);
+        sec.append(c.comment ? el('p', 'rep-text rep-text--quote', c.comment) : el('p', 'ver-sub', 'No dejó comentario.'));
+        if (c.moderated) sec.append(flag('Ya está oculta: no se lista ni suma al promedio.', 'hidden'));
+        if (c.response) {
+          sec.append(el('p', 'ver-subh', 'Su respuesta'));
+          sec.append(el('p', 'rep-text', c.response.comment));
+          if (c.response.moderated) sec.append(flag('La respuesta está oculta.', 'hidden'));
+        }
+        break;
+      }
+      case 'rating_response': {
+        sec.append(el('p', 'rep-text rep-text--quote', c.comment));
+        if (c.moderated) sec.append(flag('Ya está oculta.', 'hidden'));
+        sec.append(el('p', 'ver-subh', 'Responde a esta calificación'));
+        const p = el('div', 'rep-text');
+        p.append(stars(c.rating.score));
+        if (c.rating.comment) p.append(el('p', '', c.rating.comment));
+        sec.append(p);
+        break;
+      }
+      default:
+        sec.append(el('p', 'ver-sub', 'No sabemos mostrar este tipo todavía.'));
+    }
+  }
+
+  function renderRep({ keepScroll = false } = {}) {
+    const g = repCurrent;
+    repEmpty.hidden = true;
+    repSkel.hidden = true;
+    repBody.hidden = false;
+    const t = typeOf(g);
+    const who = nameOf(g.reported_user);
+    const open = g.status === 'open';
+
+    $('#rep-title').replaceChildren(
+      el('span', 'ct-id', `#${g.id_report} · ${t.label} · ${g.reports_count} ${g.reports_count === 1 ? 'reporte' : 'reportes'}`),
+      el('span', 'sr', ' — '),
+      el('span', 'ct-name', who),
+    );
+    $('#rep-av').replaceWith(Object.assign(avatar(who, g.reported_user && g.reported_user.id_user, 'av--lg'), { id: 'rep-av' }));
+    $('#rep-av').setAttribute('aria-hidden', 'true');
+    const badge = $('#rep-status');
+    badge.className = 'badge badge--' + (open ? 'open' : g.outcome === 'content_hidden' && !g.restored_at ? 'rejected' : 'resolved');
+    badge.textContent = open ? 'Abierto' : (g.outcome === 'content_hidden' && g.restored_at ? 'Vuelto a mostrar' : ROUTCOME[g.outcome] || 'Resuelto');
+
+    const scroll = $('#rep-scroll');
+    const keep = keepScroll ? scroll.scrollTop : 0;
+    const wrap = el('div', 'ver-wrap');
+
+    // El plazo, o cómo se resolvió.
+    if (open) {
+      const due = g.due_at ? new Date(g.due_at) : dueOf(g.first_reported_at);
+      const late = due.getTime() <= Date.now();
+      const box = el('div', 'ver-banner' + (late ? ' ver-banner--late' : ''));
+      box.append(icon('i-clock'));
+      const tm = el('time', '', dueLongRep(due));
+      tm.dateTime = due.toISOString();
+      tm.dataset.due = 'long-rep';
+      box.append(tm);
+      wrap.append(box);
+    } else {
+      const hidden = g.outcome !== 'dismissed';
+      const box = el('div', 'ver-banner ver-banner--' + (g.restored_at ? 'approved' : hidden ? 'rejected' : 'cancelled'));
+      box.append(icon(g.restored_at ? 'i-eye' : hidden ? 'i-eye-off' : 'i-check'));
+      const col = el('div', 'ver-banner-col');
+      const by = g.resolver ? ' por ' + g.resolver.name : '';
+      const when = g.resolved_at ? ' el ' + fmt(g.resolved_at) : '';
+      col.append(el('p', 'ver-banner-h', `${ROUTCOME[g.outcome] || 'Resuelto'}${by}${when}`));
+      if (g.outcome_reason) col.append(el('p', 'ver-banner-t', 'Motivo que leyó el autor: ' + g.outcome_reason));
+      if (g.restored_at) col.append(el('p', 'ver-banner-t', 'Se volvió a mostrar el ' + fmt(g.restored_at) + '.'));
+      if (g.outcome === 'dismissed') col.append(el('p', 'ver-banner-t', 'A quien reportó le llegó que no infringe las reglas.'));
+      box.append(col);
+      wrap.append(box);
+    }
+
+    // Lo reportado, hoy.
+    const now = verSection('rep-now-h', `${t.label === 'Persona' ? 'La persona' : 'Lo reportado'}, como está hoy`, t.icon);
+    renderCurrent(g, now);
+    wrap.append(now);
+
+    // Cada reporte.
+    const list = verSection('rep-list-h', g.reports_count === 1 ? 'El reporte' : `Los ${g.reports_count} reportes`, 'i-flag',
+      'Con lo que había en el momento de reportarlo: puede haber cambiado.');
+    const ol = el('ol', 'rep-list');
+    (g.reports || []).forEach((r) => {
+      const li = el('li', 'rep-r');
+      const top = el('p', 'rep-r-top');
+      top.append(el('span', 'tagc tagc--reason', RREASON[r.reason] || r.reason),
+        el('span', 'rep-r-who', nameOf(r.reporter)), timeEl(r.created_at, '', agoLong(r.created_at)));
+      li.append(top);
+      if (r.details) li.append(el('p', 'rep-r-details', r.details));
+      li.append(el('p', 'rep-r-snap-h', 'Lo que había en ese momento'));
+      li.append(el('p', 'rep-r-snap', r.snapshot));
+      ol.append(li);
+    });
+    list.append(ol);
+    wrap.append(list);
+
+    // La persona reportada.
+    const p = g.person || {};
+    const ps = verSection('rep-person-h', 'La persona reportada', 'i-user');
+    ps.append(el('p', 'ver-sub', `${nameOf(p)}${p.deleted ? ' · cuenta eliminada' : ''}${p.created_at ? ' · en ImHomi desde ' + fmt(p.created_at) : ''}`));
+    const stats = el('div', 'rep-stats');
+    const stat = (n, label, warn) => {
+      const d = el('div', 'rep-stat' + (warn ? ' is-warn' : ''));
+      d.append(el('b', '', String(n ?? 0)), el('span', '', label));
+      return d;
+    };
+    stats.append(
+      stat(p.reports_against, p.reports_against === 1 ? 'reporte en contra' : 'reportes en contra', p.reports_against > 3),
+      stat(p.distinct_reporters, p.distinct_reporters === 1 ? 'persona la reportó' : 'personas la reportaron', p.distinct_reporters > 2),
+      stat(p.hidden_before, p.hidden_before === 1 ? 'vez se le ocultó algo' : 'veces se le ocultó algo', p.hidden_before > 0),
+    );
+    ps.append(stats);
+    if (p.recent && p.recent.length) {
+      ps.append(el('p', 'ver-subh', 'Los últimos'));
+      const hist = el('ol', 'ver-hist');
+      p.recent.forEach((h) => {
+        const li = el('li', 'ver-hist-i');
+        const top = el('p', 'ver-hist-top');
+        const st = h.outcome ? (h.outcome === 'dismissed' ? 'closed' : 'rejected') : 'open';
+        top.append(el('span', 'item-st item-st--' + st, h.outcome ? ROUTCOME[h.outcome] : 'Abierto'),
+          el('span', '', ` #${h.id_report} · ${(RTYPE[h.target_type] || {}).label || h.target_type} · `),
+          timeEl(h.created_at, '', fmt(h.created_at)));
+        li.append(top);
+        hist.append(li);
+      });
+      ps.append(hist);
+    }
+    wrap.append(ps);
+
+    scroll.replaceChildren(wrap);
+    scroll.scrollTop = keep;
+    paintRepActions();
+  }
+
+  /** Qué se puede hacer, según el estado y `actions` de la API. */
+  function paintRepActions() {
+    const g = repCurrent;
+    const open = g.status === 'open';
+    const me = session && session.agentId;
+    const part = !!(g._part || (me && ((g.reported_user && g.reported_user.id_user === me)
+      || (g.reports || []).some((r) => r.reporter && r.reporter.id_user === me))));
+    const a = g.actions || {};
+    const noOwnPhoto = g.target_type === 'user' && g.current && !g.current.gone && !g.current.has_own_photo;
+
+    $('#rep-actions').hidden = !open || part;
+    $('.go-t', repHideOpen).textContent = hideLabel(g);
+    repHideOpen.hidden = !a.can_hide || noOwnPhoto;
+    const why = !a.can_hide ? (a.hide_blocked || 'Ya no hay nada que ocultar.')
+      : noOwnPhoto ? 'No tiene una foto de perfil propia para quitar: si es por su conducta, descartalo.' : null;
+    $('#rep-actions-t').textContent = why
+      || (onlyPhoto(g)
+        ? 'Si la ocultás, el anuncio entero sale de la búsqueda con el motivo; la foto queda y se puede volver a mostrar.'
+        : `Si lo ocultás, a quien lo publicó le llega el motivo y a quien reportó, que tomamos medidas.`);
+
+    const closed = $('#rep-closed');
+    closed.hidden = open && !part;
+    closed.classList.toggle('is-own', open && part);
+    repRestore.hidden = open || !a.can_restore;
+    $('#rep-closed-t').textContent = open && part ? PART_REP
+      : g.outcome === 'dismissed' ? 'Descartado: no se ocultó nada.'
+        : g.restored_at ? 'Se volvió a mostrar.'
+          : a.can_restore ? 'Oculto. Si te equivocaste, lo podés volver a mostrar.'
+            : (a.restore_blocked || 'Resuelto.');
+  }
+
+  /* ---------- Descartar, ocultar y volver a mostrar ---------- */
+  function repBusy(on) {
+    repHideOpen.disabled = on;
+    repDismissOpen.disabled = on;
+  }
+
+  /** Lo que pasa cuando resolver o volver a mostrar no sale. */
+  async function repFailed(r, id) {
+    if (!session) return;
+    const mine = () => repCurrent && repCurrent.id_report === id;
+    if (r.code === CODE_REP_RESOLVED) {
+      toast(r.message && /nada oculto/i.test(r.message)
+        ? 'Ya no hay nada oculto que volver a mostrar: te mostramos cómo quedó.'
+        : 'Otra persona del equipo ya lo resolvió: te mostramos cómo quedó.');
+      if (mine()) await refreshRep();
+      loadRepList(true);
+      refreshRepCounts();
+      return;
+    }
+    if (r.code === CODE_REP_PART) {
+      if (mine()) { repCurrent._part = true; paintRepActions(); }
+      return toast(r.message || PART_REP, true);
+    }
+    if (r.code === CODE_NOTHING || r.code === CODE_NO_UNDO) {
+      toast(r.message || 'No se pudo: ya cambió. Te mostramos cómo está.', true);
+      if (mine()) await refreshRep();
+      return;
+    }
+    if (r.status === 404 || r.code === CODE_REP_NOT_FOUND) {
+      repBody.hidden = true;
+      repCurrent = null;
+      showRepEmpty('No encontramos ese reporte', 'Elegí otro de la lista.');
+      loadRepList(true);
+      refreshRepCounts();
+      return;
+    }
+    setError(repErr, r.message || 'No pudimos resolverlo. Probá de nuevo.');
+  }
+
+  /** Después de resolver: el grupo nuevo, la lista y el aviso. */
+  function repDone(data, text) {
+    repCurrent = data;
+    renderRep();
+    markRepCurrent();
+    if (history.replaceState) history.replaceState(null, '', '#reporte-' + data.id_report);
+    $('#rep-title').focus({ preventScroll: true });
+    toast(text);
+    loadRepList(true);
+    refreshRepCounts();
+  }
+
+  // Descartar, con su confirmación.
+  const dismissDlg = $('#rep-dismiss');
+  const dismissOk = $('#rep-dismiss-ok');
+  repDismissOpen.addEventListener('click', () => {
+    if (!repCurrent || repDismissOpen.disabled) return;
+    const n = repCurrent.reports_count;
+    $('#rep-dismiss-h').textContent = n === 1 ? '¿Descartar el reporte?' : `¿Descartar los ${n} reportes?`;
+    setError($('#rep-dismiss-error'), '');
+    dismissDlg.showModal();
+    dismissOk.focus();
+  });
+  $('#rep-dismiss-cancel').addEventListener('click', () => dismissDlg.close());
+  dismissOk.addEventListener('click', async () => {
+    if (!repCurrent || dismissOk.disabled) return;
+    const id = repCurrent.id_report;
+    busy(dismissOk, true, 'Descartando…');
+    $('#rep-dismiss-cancel').disabled = true;
+    repBusy(true);
+    const r = await call('POST', `/support/admin/reports/${id}/resolve`, { outcome: 'dismissed' });
+    busy(dismissOk, false, 'Descartar');
+    $('#rep-dismiss-cancel').disabled = false;
+    repBusy(false);
+    dismissDlg.close();
+    if (!r.ok) return repFailed(r, id);
+    repDone(r.data, 'Descartado: a quien reportó le avisamos que lo revisamos.');
+  });
+
+  // Ocultar, con el motivo.
+  const hideDlg = $('#rep-hide');
+  const repReason = $('#rep-reason');
+  const hideErr = $('#rep-hide-error');
+  const hideGo = $('#rep-hide-go');
+  function paintRepReason() {
+    const n = repReason.value.length;
+    $('#rep-reason-count').textContent = String(n);
+    $('.counter', hideDlg).classList.toggle('is-near', n > 270);
+  }
+  repHideOpen.addEventListener('click', () => {
+    if (!repCurrent || repHideOpen.disabled) return;
+    const g = repCurrent;
+    const label = hideLabel(g);
+    $('#rep-hide-h').textContent = label;
+    $('.go-t', hideGo).textContent = onlyPhoto(g) ? 'Ocultar el anuncio' : typeOf(g).hide;
+    $('#rep-hide-t').textContent = onlyPhoto(g)
+      ? 'Es la única foto de un anuncio publicado: se oculta el anuncio entero y la foto queda. Su dueño lee el motivo en el aviso.'
+      : g.target_type === 'message'
+        ? 'Los dos lados van a ver «Mensaje oculto por ImHomi». Quien lo mandó lee el motivo en el aviso.'
+        : `Quien lo publicó lee el motivo en el aviso: escribilo para que entienda qué regla rompió.`;
+    const quick = $('#rep-quick');
+    quick.replaceChildren(...(RQUICK[onlyPhoto(g) ? 'ad' : g.target_type] || []).map((text) => {
+      const chip = el('button', 'chip', text);
+      chip.type = 'button';
+      chip.addEventListener('click', () => {
+        repReason.value = text;
+        paintRepReason();
+        setError(hideErr, '');
+        if (repCurrent) repDrafts.set(repCurrent.id_report, repReason.value);
+        repReason.focus();
+        repReason.setSelectionRange(repReason.value.length, repReason.value.length);
+      });
+      return chip;
+    }));
+    repReason.value = repDrafts.get(g.id_report) || '';
+    paintRepReason();
+    setError(hideErr, '');
+    hideDlg.showModal();
+    repReason.focus();
+  });
+  repReason.addEventListener('input', () => {
+    paintRepReason();
+    setError(hideErr, '');
+    if (repCurrent) repDrafts.set(repCurrent.id_report, repReason.value);
+  });
+  repReason.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+      e.preventDefault();
+      $('#rep-hide-form').requestSubmit();
+    }
+  });
+  $('#rep-hide-cancel').addEventListener('click', () => hideDlg.close());
+  $('#rep-hide-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!repCurrent || hideGo.disabled) return;
+    const text = cleanReason(repReason.value);
+    if (text.length < 10) {
+      repReason.focus();
+      return setError(hideErr, text ? 'Escribí el motivo con un poco más de detalle: lo va a leer quien lo publicó.'
+        : 'Escribí el motivo: lo va a leer quien lo publicó.');
+    }
+    const g = repCurrent;
+    const id = g.id_report;
+    const was = onlyPhoto(g) ? 'ad' : g.target_type;
+    const label = $('.go-t', hideGo).textContent;
+    setError(hideErr, '');
+    busy(hideGo, true, 'Ocultando…');
+    $('#rep-hide-cancel').disabled = true;
+    repBusy(true);
+    const r = await call('POST', `/support/admin/reports/${id}/resolve`, { outcome: 'content_hidden', reason: text });
+    busy(hideGo, false, label);
+    $('#rep-hide-cancel').disabled = false;
+    repBusy(false);
+    if (!r.ok) {
+      if (r.status === 400 && !r.code) return setError(hideErr, r.message || 'Revisá el motivo.');
+      if (!session) return;
+      hideDlg.close();
+      return repFailed(r, id);
+    }
+    repDrafts.delete(id);
+    hideDlg.close();
+    const DONE = {
+      user: 'Listo: se quitó la foto de perfil y le llega el motivo.',
+      ad: 'Listo: el anuncio salió de la búsqueda y a su dueño le llega el motivo.',
+      ad_image: 'Listo: la foto salió del anuncio y a su dueño le llega el motivo.',
+      message: 'Listo: el mensaje ya no se ve en el chat y a quien lo mandó le llega el motivo.',
+      rating: 'Listo: la calificación ya no se lista ni suma, y a quien la dejó le llega el motivo.',
+      rating_response: 'Listo: la respuesta ya no se ve y a quien la escribió le llega el motivo.',
+    };
+    repDone(r.data, DONE[was] || 'Listo: quedó oculto.');
+  });
+
+  // Volver a mostrar.
+  repRestore.addEventListener('click', async () => {
+    if (!repCurrent || repRestore.disabled) return;
+    const g = repCurrent;
+    const id = g.id_report;
+    const wasAd = g.target_type === 'ad' || g.target_type === 'ad_image';
+    busy(repRestore, true, 'Volviendo a mostrar…');
+    const r = await call('POST', `/support/admin/reports/${id}/restore`);
+    busy(repRestore, false, 'Volver a mostrar');
+    if (!r.ok) return repFailed(r, id);
+    repDone(r.data, wasAd
+      ? 'Listo: el anuncio quedó pausado para que su dueño lo vuelva a publicar.'
+      : 'Listo: se volvió a mostrar y a su autor le llega el aviso.');
+  });
+
+  /* ---------- Volver a la lista (teléfono) ---------- */
+  function backToRepList() {
+    panel.dataset.view = 'list';
+    const item = repCurrent && $(`#rep-items .sop-item[data-id="${repCurrent.id_report}"]`);
+    if (item) item.focus(); else repRefreshBtn.focus();
+  }
+  $('#rep-back').addEventListener('click', backToRepList);
 
   /* ---------- Avisos ---------- */
   const toastEl = $('#sop-toast');
@@ -2110,15 +2933,19 @@
 
   function move(step) {
     const verifs = section === 'verifs';
-    const items = $$(verifs ? '#ver-items .sop-item' : '#sop-cases .sop-item');
+    const reps = section === 'reports';
+    const items = $$(verifs ? '#ver-items .sop-item' : reps ? '#rep-items .sop-item' : '#sop-cases .sop-item');
     if (!items.length) return;
-    const openId = verifs ? (verCurrent && verCurrent.id_verification) : (current && current.id_support_case);
+    // En reportes, la fila lleva el primer reporte de su grupo.
+    const openId = verifs ? (verCurrent && verCurrent.id_verification)
+      : reps ? (repCurrent && repCurrent.id_report) : (current && current.id_support_case);
     const at = openId ? items.findIndex((b) => Number(b.dataset.id) === openId) : -1;
     const next = items[Math.max(0, Math.min(items.length - 1, at === -1 ? 0 : at + step))];
     next.focus();
     next.scrollIntoView({ block: 'nearest' });
     if (Number(next.dataset.id) !== openId) {
       if (verifs) openVer(Number(next.dataset.id), { focus: false });
+      else if (reps) openRep(Number(next.dataset.id), { focus: false });
       else openCase(Number(next.dataset.id), { focus: false });
     }
   }
@@ -2129,28 +2956,31 @@
     const t = e.target;
     if (t && t.closest && t.closest('input, textarea, select, [contenteditable="true"]')) return;
     const verifs = section === 'verifs';
-    const tabs = $$(verifs ? '.ver-tab' : '.sop-tab');
+    const reps = section === 'reports';
+    const tabs = $$(verifs ? '.ver-tab' : reps ? '.rep-tab' : '.sop-tab');
     switch (e.key) {
       case 'j': move(1); break;
       case 'k': move(-1); break;
       case 'r':
-        if (verifs || !current || current.status === 'closed' || caseBody.hidden) return;
+        if (section !== 'cases' || !current || current.status === 'closed' || caseBody.hidden) return;
         panel.dataset.view = 'case';
         reply.focus();
         break;
-      case 'c': if (verifs) setSection('cases'); else return; break;
+      case 'c': if (section !== 'cases') setSection('cases'); else return; break;
       case 'v': if (!verifs) setSection('verifs'); else return; break;
+      case 'p': if (!reps) setSection('reports'); else return; break;
       case '1': case '2': case '3': case '4': {
         const tab = tabs[Number(e.key) - 1];
-        (verifs ? selectVerTab : selectTab)(tab);
+        if (!tab) return;
+        (verifs ? selectVerTab : reps ? selectRepTab : selectTab)(tab);
         tab.focus();
         break;
       }
-      case 'u': if (verifs) refreshVerifs(); else refreshAll(); break;
+      case 'u': if (verifs) refreshVerifs(); else if (reps) refreshReports(); else refreshAll(); break;
       case '?': keysDlg.showModal(); break;
       case 'Escape':
         if (panel.dataset.view === 'case' && matchMedia('(max-width: 759.98px)').matches) {
-          if (verifs) backToVerList(); else backToList();
+          if (verifs) backToVerList(); else if (reps) backToRepList(); else backToList();
         } else return;
         break;
       default: return;

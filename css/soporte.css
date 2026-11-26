@@ -297,6 +297,9 @@ kbd{display:inline-grid;place-items:center;min-width:1.7em;height:1.7em;padding:
 .sop-item.is-current{background:rgba(42,157,143,.14);border-color:rgba(78,205,196,.26)}
 .sop-item.is-current::before{content:"";position:absolute;left:-1px;top:16px;bottom:16px;width:3px;border-radius:0 3px 3px 0;background:var(--teal-l)}
 .sop-item .av{grid-row:1 / span 3;align-self:start}
+/* Lo que va debajo del nombre, siempre en la columna del texto: con etiquetas
+   y vista previa son más de tres filas, y la cuarta caía debajo del avatar. */
+.sop-item .item-tags,.sop-item .item-prev{grid-column:2}
 .item-top{display:flex;align-items:center;gap:8px;min-width:0}
 .item-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600;font-size:.95rem;color:var(--ink)}
 .item-when{flex:none;color:var(--muted);font-size:.76rem;font-variant-numeric:tabular-nums}
@@ -560,12 +563,12 @@ body.sop:not(.is-auth) .orb{animation:none}
 /* El número va en la sección de al lado: en la que estás, ya está en su pestaña. */
 .sect-b[aria-current] .count{display:none}
 
-.ver-tab{position:relative;display:flex;align-items:center;gap:12px;width:100%;min-height:46px;padding:0 10px 0 12px;border-radius:12px;color:var(--ink-2);font-weight:600;font-size:.94rem;text-align:left;transition:background .2s,color .2s}
-.ver-tab svg{width:19px;height:19px;color:var(--muted);transition:color .2s}
-.ver-tab:hover{background:rgba(255,255,255,.05);color:var(--ink)}
-.ver-tab[aria-selected="true"]{background:rgba(78,205,196,.11);color:var(--ink)}
-.ver-tab[aria-selected="true"] svg{color:var(--teal-l)}
-.ver-tab[aria-selected="true"]::before{content:"";position:absolute;left:0;top:50%;width:3px;height:20px;translate:0 -50%;border-radius:0 3px 3px 0;background:var(--teal-l);box-shadow:0 0 10px rgba(78,205,196,.6)}
+.rep-tab,.ver-tab{position:relative;display:flex;align-items:center;gap:12px;width:100%;min-height:46px;padding:0 10px 0 12px;border-radius:12px;color:var(--ink-2);font-weight:600;font-size:.94rem;text-align:left;transition:background .2s,color .2s}
+.rep-tab svg,.ver-tab svg{width:19px;height:19px;color:var(--muted);transition:color .2s}
+.rep-tab:hover,.ver-tab:hover{background:rgba(255,255,255,.05);color:var(--ink)}
+.rep-tab[aria-selected="true"],.ver-tab[aria-selected="true"]{background:rgba(78,205,196,.11);color:var(--ink)}
+.rep-tab[aria-selected="true"] svg,.ver-tab[aria-selected="true"] svg{color:var(--teal-l)}
+.rep-tab[aria-selected="true"]::before,.ver-tab[aria-selected="true"]::before{content:"";position:absolute;left:0;top:50%;width:3px;height:20px;translate:0 -50%;border-radius:0 3px 3px 0;background:var(--teal-l);box-shadow:0 0 10px rgba(78,205,196,.6)}
 
 .side-note{display:flex;gap:10px;margin:0 4px;padding:14px;border-radius:14px;background:rgba(78,205,196,.06);border:1px dashed rgba(78,205,196,.28);color:var(--ink-2);font-size:.82rem;line-height:1.5}
 .side-note svg{width:17px;height:17px;margin-top:1px;color:var(--teal-l)}
@@ -674,9 +677,9 @@ body.sop:not(.is-auth) .orb{animation:none}
 .chip{min-height:44px;padding:8px 13px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid var(--line-2);color:var(--ink-2);font-size:.84rem;line-height:1.35;text-align:left;transition:background .2s,border-color .2s,color .2s}
 .chip:hover{background:rgba(78,205,196,.08);border-color:rgba(78,205,196,.45);color:var(--ink)}
 .ver-reason-l{display:block;margin-top:18px;color:var(--ink-2);font-size:.82rem;font-weight:700}
-#ver-reason{display:block;width:100%;min-height:96px;margin-top:6px;padding:12px 14px;border-radius:14px;background:var(--field);border:1px solid var(--field-b);color:var(--ink);font:inherit;font-size:.95rem;line-height:1.5;resize:vertical;transition:border-color .2s,box-shadow .2s}
-#ver-reason::placeholder{color:var(--muted);opacity:1}
-#ver-reason:focus{outline:none;border-color:rgba(78,205,196,.7);box-shadow:0 0 0 3px rgba(78,205,196,.16)}
+#ver-reason,.reason-box{display:block;width:100%;min-height:96px;margin-top:6px;padding:12px 14px;border-radius:14px;background:var(--field);border:1px solid var(--field-b);color:var(--ink);font:inherit;font-size:.95rem;line-height:1.5;resize:vertical;transition:border-color .2s,box-shadow .2s}
+#ver-reason::placeholder,.reason-box::placeholder{color:var(--muted);opacity:1}
+#ver-reason:focus,.reason-box:focus{outline:none;border-color:rgba(78,205,196,.7);box-shadow:0 0 0 3px rgba(78,205,196,.16)}
 .ver-reason-hint{display:flex;justify-content:space-between;gap:12px;margin-top:6px;color:var(--muted);font-size:.76rem}
 .dlg--form .form-error{margin-top:10px}
 
@@ -687,15 +690,18 @@ body.sop:not(.is-auth) .orb{animation:none}
   .sect-b{flex:1 1 0;justify-content:center;min-height:44px;padding:0 12px;font-size:.9rem}
   .sect-t{flex:none}
   .side-note{display:none}
-  .ver-tab{flex:none;width:auto;min-height:44px;padding:0 14px;gap:8px;border-radius:999px;border:1px solid var(--line-2);font-size:.88rem}
-  .ver-tab svg{display:none}
-  .ver-tab[aria-selected="true"]{border-color:rgba(78,205,196,.55)}
-  .ver-tab[aria-selected="true"]::before{display:none}
+  .ver-tab,.rep-tab{flex:none;width:auto;min-height:44px;padding:0 14px;gap:8px;border-radius:999px;border:1px solid var(--line-2);font-size:.88rem}
+  .ver-tab svg,.rep-tab svg{display:none}
+  .ver-tab[aria-selected="true"],.rep-tab[aria-selected="true"]{border-color:rgba(78,205,196,.55)}
+  .ver-tab[aria-selected="true"]::before,.rep-tab[aria-selected="true"]::before{display:none}
 }
 
 /* Teléfono. */
 @media (max-width:759.98px){
-  #ver-keys-open{display:none}
+  #ver-keys-open,#rep-keys-open{display:none}
+  /* Tres secciones a lo ancho de un teléfono: sin el ícono, que el nombre entre. */
+  .sect-b{gap:6px;padding:0 6px;font-size:.84rem}
+  .sect-b svg{display:none}
   .ver-body .case-head .av{display:none}
   .ver-scroll{padding:16px 12px 24px}
   .ver-sec{padding:14px 14px 16px;border-radius:16px}
@@ -711,4 +717,81 @@ body.sop:not(.is-auth) .orb{animation:none}
 }
 @media (prefers-reduced-motion:reduce){
   .ver-banner{animation:none!important}
+}
+
+/* =====================================================================
+   REPORTES (decisión 52)
+   ===================================================================== */
+
+/* En la lista: qué es, y los motivos. */
+.rep-item .item-prev{margin-top:3px}
+.rep-kind{display:inline-flex;align-items:center;gap:5px;flex:none;color:var(--teal-l);font-size:.72rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase}
+.rep-kind svg{width:13px;height:13px}
+.tagc--reason{color:var(--amber);background:rgba(255,179,71,.1)}
+.tagc--hidden{color:var(--danger);background:rgba(255,123,123,.12)}
+.tagc--dismissed{color:var(--muted)}
+.tagc--restored{color:var(--green);background:rgba(46,204,113,.12)}
+.item-st--resolved{color:var(--muted)}
+.badge--resolved{color:var(--muted);background:rgba(255,255,255,.06)}
+
+/* Lo reportado, hoy. */
+.rep-gone{display:flex;align-items:center;gap:10px;margin-top:12px;padding:12px 14px;border-radius:14px;background:rgba(255,255,255,.035);border:1px dashed var(--line-2);color:var(--ink-2);font-size:.9rem}
+.rep-gone svg{width:18px;height:18px;color:var(--muted)}
+.rep-text{margin-top:12px;padding:14px 16px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid var(--line);color:var(--ink);font-size:.95rem;line-height:1.55;white-space:pre-line;overflow-wrap:anywhere}
+.rep-text--quote{border-left:3px solid rgba(255,179,71,.55)}
+.rep-flag{display:inline-flex;align-items:center;gap:5px;margin-top:8px;padding:3px 9px;border-radius:999px;font-size:.74rem;font-weight:700}
+.rep-flag svg{width:13px;height:13px}
+.rep-flag--hidden{color:var(--danger);background:rgba(255,123,123,.12)}
+.rep-flag--warn{color:var(--amber);background:rgba(255,179,71,.12)}
+.rep-stars{display:inline-flex;align-items:center;gap:2px;color:var(--amber);font-weight:700}
+.rep-stars svg{width:16px;height:16px;fill:currentColor}
+.rep-stars .is-off{color:rgba(255,255,255,.18)}
+.rep-person{display:flex;align-items:center;gap:14px;margin-top:12px}
+.rep-avatar{display:block;width:96px;height:96px;flex:none;border-radius:50%;overflow:hidden;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.25)}
+.rep-avatar img{display:block;width:100%;height:100%;object-fit:cover}
+.rep-avatar.is-broken img{display:none}
+.rep-photo{display:block;width:min(100%,420px);aspect-ratio:4/3;margin-top:12px;border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.25)}
+.rep-photo img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .5s var(--ease)}
+.rep-photo:hover img{transform:scale(1.03)}
+.rep-photo.is-broken img{display:none}
+
+/* El hilo del chat alrededor del mensaje reportado. */
+.rep-thread{display:grid;gap:8px;margin-top:12px}
+.rep-msg{padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid var(--line)}
+.rep-msg-top{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 8px;color:var(--muted);font-size:.78rem}
+.rep-msg-who{color:var(--ink-2);font-weight:700}
+.rep-msg-t{margin-top:4px;color:var(--ink);font-size:.92rem;line-height:1.5;white-space:pre-line;overflow-wrap:anywhere}
+.rep-msg.is-reported{background:rgba(255,179,71,.08);border-color:rgba(255,179,71,.42);box-shadow:inset 3px 0 0 rgba(255,179,71,.7)}
+.rep-msg.is-hidden .rep-msg-t{color:var(--muted)}
+.rep-msg-mark{color:var(--amber);font-weight:700}
+
+/* Cada reporte. */
+.rep-list{display:grid;gap:10px;margin-top:12px}
+.rep-r{padding:12px 14px;border-radius:14px;background:rgba(255,255,255,.03);border:1px solid var(--line)}
+.rep-r-top{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;color:var(--muted);font-size:.84rem}
+.rep-r-who{color:var(--ink-2);font-weight:700}
+.rep-r-details{margin-top:8px;color:var(--ink);font-size:.92rem;line-height:1.5;white-space:pre-line;overflow-wrap:anywhere}
+.rep-r-snap-h{margin-top:10px;color:var(--muted);font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.rep-r-snap{margin-top:4px;padding:8px 10px;border-radius:10px;background:rgba(0,0,0,.18);color:var(--ink-2);font-size:.86rem;line-height:1.5;white-space:pre-line;overflow-wrap:anywhere}
+
+/* La persona reportada. */
+.rep-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}
+.rep-stat{padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.035);border:1px solid var(--line)}
+.rep-stat b{display:block;color:var(--ink);font-size:1.3rem;font-weight:800;font-variant-numeric:tabular-nums}
+.rep-stat span{color:var(--muted);font-size:.78rem;line-height:1.35}
+.rep-stat.is-warn b{color:var(--amber)}
+
+/* Las acciones: el texto arriba y los dos botones juntos debajo; con un botón largo ("Ocultar el anuncio (es su única
+   foto)"), el texto pasa arriba en vez de quedar en una columna angosta. */
+#rep-actions .ver-actions-row{flex-wrap:wrap;justify-content:flex-end}
+#rep-actions-t{flex:1 1 100%}
+
+/* Lo resuelto: la barra con "Volver a mostrar". */
+.rep-closed{flex-wrap:wrap}
+.rep-closed .go{width:auto;margin:0;padding:0 18px}
+.rep-closed .go svg{width:17px;height:17px}
+
+@media (max-width:759.98px){
+  .rep-stats{grid-template-columns:minmax(0,1fr)}
+  .rep-avatar{width:72px;height:72px}
 }
