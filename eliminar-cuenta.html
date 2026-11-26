@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eliminar tu cuenta — ImHomi</title>
+  <meta name="description" content="Cómo eliminar tu cuenta de ImHomi, desde la app o desde esta página: qué se borra, qué se conserva y qué pasa si tenés un contrato o una convivencia en curso.">
+  <!-- Se piden la contraseña y un código: que la dirección no viaje a ningún otro sitio. -->
+  <meta name="referrer" content="no-referrer">
+  <link rel="canonical" href="https://www.imhomi.com/eliminar-cuenta.html">
+  <link rel="icon" href="/favicon.ico" sizes="32x32">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/favicon-96.png" type="image/png" sizes="96x96">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#0F2329">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400..900&family=Instrument+Serif:ital@1&display=swap">
+  <link rel="stylesheet" href="css/site.css">
+</head>
+<!-- data-api: la misma API que usa la app. El origen de esta web tiene que
+     estar en CORS_ORIGINS del backend (ya está, por reset-password.html). -->
+<body class="legal-page" data-api="https://imhomibackend-production.up.railway.app/api">
+
+  <a class="skip" href="#main">Saltar al contenido</a>
+
+  <header class="hdr hdr--solid" id="hdr">
+    <a href="./" class="logo" aria-label="ImHomi, inicio">ImHom<span class="idot">ı</span></a>
+    <nav class="nav" id="nav" aria-label="Secciones">
+      <span class="nav-ind" aria-hidden="true"></span>
+      <a href="./">Inicio</a>
+      <a href="privacy.html">Privacidad</a>
+      <a href="terms.html">Términos</a>
+    </nav>
+    <a href="./#descargar" class="btn btn--coral btn--sm">Descargar</a>
+  </header>
+
+  <main id="main" class="legal">
+    <div class="legal-in">
+      <span class="eyebrow">Tu cuenta</span>
+      <h1>Eliminar tu <span class="serif">cuenta</span></h1>
+      <p class="date">Lo podés hacer desde la app o desde esta página. Es definitivo: una cuenta eliminada no se recupera.</p>
+
+      <h2>Qué se borra</h2>
+      <ul>
+        <li>Tu nombre, tu correo, tu teléfono y tu foto de perfil.</li>
+        <li>Tus sesiones abiertas, en todos los dispositivos.</li>
+        <li>Tus favoritos, tus alertas de búsqueda, tus avisos y tus consultas a soporte.</li>
+        <li>De tus anuncios: las fotos, la dirección exacta y la ubicación en el mapa. Los anuncios que nadie alquiló ni consultó se borran enteros.</li>
+      </ul>
+
+      <h2>Qué se conserva, y por qué</h2>
+      <p>Los <strong>contratos, liquidaciones, calificaciones y conversaciones</strong> en los que participaste se conservan sin tus datos, porque también son de la otra persona: ahí figurás como <strong>«Cuenta eliminada»</strong>. Cuánto tiempo se guardan lo explica la <a href="privacy.html">Política de privacidad</a>.</p>
+
+      <h2>Si tenés un contrato o una convivencia en curso</h2>
+      <p>Mientras tengas un contrato o una convivencia vigente, en preaviso o liquidando el depósito, la cuenta no se puede eliminar: la otra persona todavía te necesita para cerrarlo. Lo que sí podés pedir es <strong>«Cerrar mi cuenta cuando termine»</strong>: tu cuenta sigue funcionando normal, y cuando se cierre lo que tenés en curso la eliminamos y te mandamos la constancia por correo. Lo podés cancelar cuando quieras.</p>
+
+      <h2>Desde la app</h2>
+      <p>Abrí ImHomi y entrá en <strong>Más › Mi cuenta › Seguridad y 2FA › Eliminar mi cuenta</strong>.</p>
+
+      <h2 id="web-h">Desde esta página</h2>
+      <p>Entrá con tu cuenta. Antes de eliminar nada te mostramos si se puede, y te pedimos otra vez la contraseña para confirmar.</p>
+
+      <!-- Sin JavaScript no se puede hablar con la API: se dice, con la salida. -->
+      <noscript>
+        <div class="notice">
+          <strong>Hace falta JavaScript</strong>
+          Esta página necesita JavaScript para eliminar tu cuenta. Activalo, hacelo desde la app, o escribinos a <a href="mailto:soporte@imhomi.com">soporte@imhomi.com</a>.
+        </div>
+      </noscript>
+
+      <!-- Una sola de estas secciones está a la vista. La elige js/eliminar-cuenta.js. -->
+      <div class="baja" id="baja" aria-labelledby="web-h" hidden>
+
+        <!-- 1. Entrar -->
+        <section id="baja-login" class="revert" aria-labelledby="baja-login-h">
+          <h3 id="baja-login-h" tabindex="-1">Entrá con tu cuenta</h3>
+          <form id="baja-login-form" class="reset-form" novalidate>
+            <div class="reset-field">
+              <label for="baja-email">Correo</label>
+              <input type="email" id="baja-email" name="email" autocomplete="username" required maxlength="100" spellcheck="false" autocapitalize="off" aria-describedby="baja-email-error">
+              <p class="reset-error" id="baja-email-error" role="alert" hidden></p>
+            </div>
+            <div class="reset-field">
+              <label for="baja-password">Contraseña</label>
+              <input type="password" id="baja-password" name="password" autocomplete="current-password" required maxlength="255" aria-describedby="baja-password-error">
+              <p class="reset-error" id="baja-password-error" role="alert" hidden></p>
+            </div>
+            <label class="reset-show"><input type="checkbox" id="baja-show"> Mostrar la contraseña</label>
+            <div class="revert-actions">
+              <button type="submit" class="btn btn--coral" id="baja-login-go">Entrar</button>
+            </div>
+            <p class="revert-msg" id="baja-login-error" role="alert" hidden></p>
+          </form>
+          <p class="baja-small">Si te registraste y nunca verificaste el correo, esa cuenta se borra sola a los 7 días: no hace falta que hagas nada.</p>
+        </section>
+
+        <!-- 1b. El código del ingreso (cuentas con 2FA) -->
+        <section id="baja-otp" class="revert" aria-labelledby="baja-otp-h" hidden>
+          <h3 id="baja-otp-h" tabindex="-1">Escribí el código del correo</h3>
+          <p>Tu cuenta tiene la verificación en dos pasos. Te mandamos un código de 6 dígitos a <strong id="baja-otp-email">tu correo</strong>. Vale 10 minutos.</p>
+          <form id="baja-otp-form" class="reset-form" novalidate>
+            <div class="reset-field">
+              <label for="baja-otp-code">Código</label>
+              <input type="text" id="baja-otp-code" name="code" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" required aria-describedby="baja-otp-code-error">
+              <p class="reset-error" id="baja-otp-code-error" role="alert" hidden></p>
+            </div>
+            <div class="revert-actions">
+              <button type="submit" class="btn btn--coral" id="baja-otp-go">Confirmar</button>
+              <button type="button" class="btn btn--glass" id="baja-otp-resend">Mandarme otro código</button>
+              <button type="button" class="btn btn--glass" id="baja-otp-back">Usar otra cuenta</button>
+            </div>
+            <p class="revert-msg" id="baja-otp-error" role="alert" hidden></p>
+            <p class="baja-ok-msg" id="baja-otp-ok" role="status" hidden></p>
+          </form>
+        </section>
+
+        <!-- 2. Lo que se puede hacer con esta cuenta -->
+        <section id="baja-check" class="revert" aria-labelledby="baja-check-h" hidden>
+          <h3 id="baja-check-h" tabindex="-1">Tu cuenta</h3>
+          <p class="baja-who">Entraste como <strong id="baja-who"></strong>.</p>
+          <p class="revert-msg" id="baja-check-msg" role="alert" hidden></p>
+
+          <!-- Ya pidió cerrarla cuando termine -->
+          <div id="baja-scheduled" hidden>
+            <div class="revert-ok" role="status">
+              <h2>Tu cuenta se va a cerrar cuando termine lo que tenés en curso</h2>
+              <p>Lo pediste el <strong id="baja-scheduled-at"></strong>. Mientras tanto la cuenta funciona normal; cuando se cierre lo que tenés en curso la eliminamos y te mandamos la constancia por correo.</p>
+            </div>
+            <div class="revert-actions">
+              <button type="button" class="btn btn--glass" id="baja-cancel-schedule">Cancelar el cierre programado</button>
+              <button type="button" class="btn btn--glass" data-salir>Salir</button>
+            </div>
+          </div>
+
+          <!-- Lo que la frena -->
+          <div id="baja-blocked" hidden>
+            <div class="notice" role="status">
+              <strong>Por ahora no se puede eliminar</strong>
+              <span id="baja-blocked-text"></span>
+            </div>
+            <ul class="baja-blockers" id="baja-blockers"></ul>
+          </div>
+
+          <!-- Lo que le deben (decisión 50): no frena, pero se dice antes -->
+          <div class="notice" id="baja-owed" hidden>
+            <strong>Te deben plata en recibos compartidos</strong>
+            <span>En recibos que pagaste y otros roomies todavía no te devolvieron hay <b id="baja-owed-amount"></b>. Si cerrás la cuenta, esa plata queda para arreglarla con ellos por fuera de ImHomi.</span>
+          </div>
+
+          <!-- Confirmar: eliminar ahora, o programarlo -->
+          <form id="baja-confirm-form" class="reset-form" novalidate hidden>
+            <h3 id="baja-confirm-h">Confirmá con tu contraseña</h3>
+            <p id="baja-confirm-text"></p>
+            <div class="reset-field">
+              <label for="baja-confirm-password">Contraseña</label>
+              <input type="password" id="baja-confirm-password" name="password" autocomplete="current-password" required maxlength="255" aria-describedby="baja-confirm-password-error">
+              <p class="reset-error" id="baja-confirm-password-error" role="alert" hidden></p>
+            </div>
+            <div id="baja-code-box" hidden>
+              <p>Tu cuenta tiene la verificación en dos pasos: también hace falta un código que te mandamos al correo.</p>
+              <div class="revert-actions baja-inline">
+                <button type="button" class="btn btn--glass" id="baja-code-send">Mandarme el código</button>
+              </div>
+              <div class="reset-field" id="baja-code-field" hidden>
+                <label for="baja-confirm-code">Código del correo</label>
+                <input type="text" id="baja-confirm-code" name="code" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" aria-describedby="baja-confirm-code-hint baja-confirm-code-error">
+                <p class="reset-hint" id="baja-confirm-code-hint"></p>
+                <p class="reset-error" id="baja-confirm-code-error" role="alert" hidden></p>
+              </div>
+            </div>
+            <label class="reset-show baja-sure"><input type="checkbox" id="baja-sure"> <span id="baja-sure-text">Entiendo que es definitivo.</span></label>
+            <div class="revert-actions">
+              <button type="submit" class="btn btn--coral" id="baja-confirm-go">Eliminar mi cuenta</button>
+              <button type="button" class="btn btn--glass" data-salir>Salir sin hacer nada</button>
+            </div>
+            <p class="revert-msg" id="baja-confirm-error" role="alert" hidden></p>
+          </form>
+        </section>
+
+        <!-- 3. Resultado -->
+        <section id="baja-done" class="revert" aria-labelledby="baja-done-h" hidden>
+          <div class="revert-ok" role="status">
+            <h2 id="baja-done-h" tabindex="-1"></h2>
+            <p id="baja-done-text"></p>
+          </div>
+          <div class="revert-actions">
+            <a href="./" class="btn btn--glass">Volver al inicio</a>
+          </div>
+        </section>
+      </div>
+
+      <h2>¿Necesitás ayuda?</h2>
+      <p>Si no podés entrar o algo no funciona, escribinos a <a href="mailto:soporte@imhomi.com">soporte@imhomi.com</a> desde el correo de tu cuenta.</p>
+    </div>
+  </main>
+
+  <footer class="foot">
+    <div class="wrap">
+      <div class="foot-top">
+        <a href="./" class="logo" aria-label="ImHomi, inicio">ImHom<span class="idot">ı</span></a>
+        <nav aria-label="Pie de página">
+          <a href="./#diferencia">La diferencia</a><a href="./#capacidades">Qué podés hacer</a><a href="./#solo-aca">Solo acá</a><a href="./#confianza">Confianza</a><a href="privacy.html">Privacidad</a><a href="terms.html">Términos</a><a href="eliminar-cuenta.html" aria-current="page">Eliminar tu cuenta</a><a href="mailto:hola@imhomi.com" class="mail-l">hola@imhomi.com</a>
+        </nav>
+      </div>
+      <div class="giant giant--full" aria-hidden="true"><span class="g-out">ImHom<span>i</span></span><span class="g-fill">ImHom<span>i</span></span></div>
+      <div class="foot-bot"><span>© 2026 ImHomi. Hecho en Costa Rica.</span><a href="https://www.dimonkey.com" target="_blank" rel="noopener">Un producto de <span class="dm">DiMonkey</span></a></div>
+    </div>
+  </footer>
+
+  <script src="js/site.js"></script>
+  <script src="js/eliminar-cuenta.js"></script>
+</body>
+</html>

@@ -204,3 +204,23 @@ svg{display:block}
 .reset-show input{width:20px;height:20px;accent-color:var(--teal-l)}
 
 /* El panel de soporte (soporte.html) tiene su hoja propia: css/soporte.css. */
+
+/* =====================================================================
+   Eliminar la cuenta (eliminar-cuenta.html)
+   Usa lo de las páginas de deshacer y de contraseña; esto es lo propio.
+   ===================================================================== */
+.baja{margin:8px 0 24px;padding:24px;border-radius:22px;background:rgba(255,255,255,.025);border:1px solid var(--line)}
+.baja h3:first-child{margin-top:0}
+.legal .baja h3{color:var(--ink);font-size:1.15rem}
+.baja h3:focus{outline:none}
+.legal .baja-small{margin-top:18px;color:var(--muted);font-size:.9rem;line-height:1.6}
+.legal .baja-who{color:var(--muted);font-size:.95rem}
+.legal .baja-ok-msg{margin-top:14px;padding:14px 18px;border-radius:14px;background:rgba(42,157,143,.1);border:1px solid rgba(78,205,196,.4);color:var(--ink)}
+.legal .baja-blockers{margin:4px 0 20px}
+.legal .baja-blockers li{color:var(--ink-2)}
+.baja-inline{margin:4px 0 16px}
+.baja .reset-form{max-width:none}
+.baja .revert-ok h2:focus,.baja .notice strong:focus{outline:none}
+.baja-sure{align-items:flex-start;margin-top:4px}
+.baja-sure input{margin-top:2px;flex:none}
+@media (max-width:560px){.baja{padding:18px 16px;border-radius:18px}}
