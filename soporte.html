@@ -464,6 +464,7 @@
           <div class="ver-actions-row">
             <p class="ver-actions-t" id="rep-actions-t"></p>
             <button type="button" class="go go--ghost go--sm" id="rep-dismiss-open"><svg aria-hidden="true"><use href="#i-check"/></svg><span class="go-t">Descartar</span></button>
+            <button type="button" class="go go--ghost go--sm go--ghost-danger" id="rep-suspend-open" hidden><svg aria-hidden="true"><use href="#i-lock"/></svg><span class="go-t">Suspender la cuenta</span></button>
             <button type="button" class="go go--sm go--danger" id="rep-hide-open"><svg aria-hidden="true"><use href="#i-eye-off"/></svg><span class="go-t">Ocultar</span></button>
           </div>
         </div>
@@ -540,6 +541,54 @@
         <button type="submit" class="go go--sm go--danger" id="rep-hide-go"><span class="go-spin" aria-hidden="true"></span><span class="go-t">Ocultar</span></button>
       </div>
     </form>
+  </dialog>
+
+  <!-- Suspender la cuenta (decisión 73): el motivo lo lee la persona, y se confirma. -->
+  <dialog class="dlg dlg--form" id="rep-suspend" aria-labelledby="rep-suspend-h" aria-describedby="rep-suspend-t">
+    <form id="rep-suspend-form" novalidate>
+      <span class="step-badge step-badge--danger"><svg aria-hidden="true"><use href="#i-lock"/></svg></span>
+      <h2 class="dlg-h" id="rep-suspend-h">Suspender la cuenta</h2>
+      <div class="dlg-t" id="rep-suspend-t">
+        <p id="rep-suspend-lead">Es la medida más fuerte. Mientras dure:</p>
+        <ul class="dlg-list">
+          <li>Entra solo para terminar lo que tiene en curso —contrato, convivencia, servicios, recibos y liquidación— y para escribirnos.</li>
+          <li>Sus anuncios salen de la búsqueda y no los puede publicar.</li>
+          <li>Se cancela lo pendiente con otras personas: visitas, propuestas e invitaciones.</li>
+          <li>Le llegan el aviso y un correo con el motivo. La podés levantar después desde su tarjeta.</li>
+        </ul>
+      </div>
+      <p class="ver-quick-h" id="sus-quick-h">Motivos frecuentes</p>
+      <div class="ver-quick" id="sus-quick" role="group" aria-labelledby="sus-quick-h">
+        <button type="button" class="chip">Pidió plata por fuera de ImHomi a varias personas.</button>
+        <button type="button" class="chip">Acosó o amenazó a otras personas.</button>
+        <button type="button" class="chip">Publicó anuncios falsos.</button>
+        <button type="button" class="chip">Discriminó a otras personas.</button>
+      </div>
+      <label class="ver-reason-l" for="sus-reason">Motivo</label>
+      <textarea id="sus-reason" class="reason-box" rows="3" maxlength="300" required aria-describedby="sus-reason-hint" placeholder="Lo lee la persona en la app y en el correo."></textarea>
+      <p class="ver-reason-hint" id="sus-reason-hint"><span>Entre 10 y 300 caracteres. Lo lee la persona.</span><span class="counter"><span id="sus-reason-count">0</span>/300</span></p>
+      <label class="dlg-check" for="sus-sure">
+        <input type="checkbox" id="sus-sure">
+        <span id="sus-sure-t">Revisé lo reportado y su historial, y quiero suspender esta cuenta.</span>
+      </label>
+      <p class="form-error" id="rep-suspend-error" role="alert" hidden></p>
+      <div class="dlg-actions">
+        <button type="button" class="go go--ghost go--sm" id="rep-suspend-cancel">Cancelar</button>
+        <button type="submit" class="go go--sm go--danger" id="rep-suspend-go" disabled><span class="go-spin" aria-hidden="true"></span><span class="go-t">Suspender la cuenta</span></button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Levantar la suspensión: la confirmación. -->
+  <dialog class="dlg" id="rep-lift" aria-labelledby="rep-lift-h" aria-describedby="rep-lift-t">
+    <span class="step-badge"><svg aria-hidden="true"><use href="#i-check"/></svg></span>
+    <h2 class="dlg-h" id="rep-lift-h">¿Levantar la suspensión?</h2>
+    <p class="dlg-t" id="rep-lift-t">Vuelve a usar ImHomi como siempre. Sus anuncios ocultos por la suspensión quedan pausados para que los publique; los que ocultó un reporte siguen ocultos. Le llegan el aviso y un correo.</p>
+    <p class="form-error" id="rep-lift-error" role="alert" hidden></p>
+    <div class="dlg-actions">
+      <button type="button" class="go go--ghost go--sm" id="rep-lift-cancel">Cancelar</button>
+      <button type="button" class="go go--sm" id="rep-lift-ok"><span class="go-spin" aria-hidden="true"></span><span class="go-t">Levantar la suspensión</span></button>
+    </div>
   </dialog>
 
   <!-- La captura, grande. -->

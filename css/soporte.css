@@ -795,3 +795,53 @@ body.sop:not(.is-auth) .orb{animation:none}
   .rep-stats{grid-template-columns:repeat(2,minmax(0,1fr))}
   .rep-avatar{width:72px;height:72px}
 }
+
+/* ============================================================
+   SUSPENDER UNA CUENTA (decisión 73)
+   ============================================================ */
+.go--ghost-danger{color:var(--danger);border-color:rgba(255,123,123,.42)}
+.go--ghost-danger:hover{background:rgba(255,123,123,.1);border-color:rgba(255,123,123,.6)}
+.step-badge--danger{color:var(--danger);background:radial-gradient(closest-side,rgba(255,123,123,.24),rgba(255,123,123,.06) 70%,transparent);border-color:rgba(255,123,123,.4)}
+.dlg-t p{margin:0}
+.dlg-list{margin:8px 0 0;padding-left:18px;display:grid;gap:4px}
+.dlg-list li{line-height:1.5}
+.dlg-check{display:flex;align-items:flex-start;gap:10px;margin-top:14px;padding:10px 12px;border-radius:12px;
+  background:rgba(255,123,123,.06);border:1px solid rgba(255,123,123,.24);color:var(--ink-2);font-size:.88rem;line-height:1.45;cursor:pointer}
+.dlg-check input{flex:none;width:20px;height:20px;margin:1px 0 0;accent-color:#C4502F;cursor:pointer}
+.dlg-check:focus-within{outline:2px solid var(--teal-l);outline-offset:2px}
+
+.tagc--suspended{color:var(--danger);background:rgba(255,123,123,.14);box-shadow:inset 0 0 0 1px rgba(255,123,123,.45)}
+.item-st--suspended{color:var(--danger);background:rgba(255,123,123,.14);box-shadow:inset 0 0 0 1px rgba(255,123,123,.45)}
+.badge--suspended{color:var(--danger);background:rgba(255,123,123,.14);box-shadow:inset 0 0 0 1px rgba(255,123,123,.45)}
+
+/* La marca de la persona suspendida, en su tarjeta, y lo que se puede hacer. */
+.sus-mark{display:flex;align-items:flex-start;gap:10px;margin-top:12px;padding:12px 14px;border-radius:12px;
+  background:rgba(255,123,123,.07);border:1px solid rgba(255,123,123,.32)}
+.sus-mark > svg{flex:none;width:18px;height:18px;margin-top:2px;color:var(--danger)}
+.sus-mark-h{margin:0;color:var(--ink);font-weight:700;font-size:.92rem}
+.sus-mark-t{margin:4px 0 0;color:var(--ink-2);font-size:.88rem;line-height:1.5;overflow-wrap:anywhere}
+.sus-row{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;margin-top:12px}
+.sus-row p{margin:0;color:var(--muted);font-size:.84rem;line-height:1.45;flex:1 1 220px}
+
+/* El cuerpo del detalle de verificaciones y reportes no tiene áreas con
+   nombre: la franja de "resuelto" (`.closed-bar`, con `grid-area:compose`
+   del caso) abría una columna implícita y angostaba el encabezado y el
+   contenido. Va en su fila, como lo demás. */
+.ver-body > .closed-bar{grid-area:auto}
+
+/* Teléfono: con tres acciones, cada botón toma lo que su texto necesita y
+   se acomodan en renglones (el largo, "Ocultar el anuncio (es su única
+   foto)", va solo). */
+@media (max-width:759.98px){
+  #rep-actions .go{flex:1 1 auto}
+}
+
+/* El aviso, en teléfono: con `left:50%` su ancho disponible era la mitad
+   derecha de la pantalla, y un texto largo quedaba en ocho renglones de
+   195 px encima del contenido. Toma lo que su texto pide, hasta el ancho de
+   la pantalla menos los márgenes. */
+.toast{width:max-content}
+
+/* La lista de lo que pasa al suspender, con sus viñetas (site.css las saca). */
+.dlg-list{list-style:disc}
+.dlg-list li::marker{color:var(--danger)}

@@ -2171,6 +2171,12 @@
   const CODE_REP_NOT_FOUND = 'REPORTE_NO_ENCONTRADO';
   const CODE_NOTHING = 'MODERACION_NADA_QUE_OCULTAR';
   const CODE_NO_UNDO = 'MODERACION_NO_SE_DESHACE';
+  // Suspender (decisión 73).
+  const CODE_ALREADY_SUSPENDED = 'YA_SUSPENDIDA';
+  const CODE_NOT_SUSPENDED = 'NO_SUSPENDIDA';
+  const CODE_SUSPEND_SELF = 'SUSPENSION_PROPIA';
+  const CODE_NO_REASON = 'MOTIVO_FALTANTE';
+  const CODE_PERSON_GONE = 'PERSONA_NO_DISPONIBLE';
   const PART_REP = 'Sos parte de este reporte: lo resuelve otra persona del equipo.';
 
   let repFilter = 'open';
@@ -2188,6 +2194,7 @@
   const repErr = $('#rep-error');
   const repHideOpen = $('#rep-hide-open');
   const repDismissOpen = $('#rep-dismiss-open');
+  const repSuspendOpen = $('#rep-suspend-open');
   const repRestore = $('#rep-restore');
 
   const typeOf = (g) => RTYPE[g.target_type] || { label: g.target_type, icon: 'i-flag', hide: 'Ocultar', what: 'lo reportado' };
@@ -2291,7 +2298,7 @@
   function outcomeTag(g) {
     if (g.outcome === 'content_hidden' && g.restored_at) return el('span', 'tagc tagc--restored', 'Vuelto a mostrar');
     if (g.outcome === 'content_hidden') return el('span', 'tagc tagc--hidden', 'Oculto');
-    if (g.outcome === 'account_suspended') return el('span', 'tagc tagc--hidden', 'Cuenta suspendida');
+    if (g.outcome === 'account_suspended') return el('span', 'tagc tagc--suspended', 'Cuenta suspendida');
     return el('span', 'tagc tagc--dismissed', 'Descartado');
   }
 
@@ -2596,7 +2603,9 @@
     $('#rep-av').replaceWith(Object.assign(avatar(who, g.reported_user && g.reported_user.id_user, 'av--lg'), { id: 'rep-av' }));
     $('#rep-av').setAttribute('aria-hidden', 'true');
     const badge = $('#rep-status');
-    badge.className = 'badge badge--' + (open ? 'open' : g.outcome === 'content_hidden' && !g.restored_at ? 'rejected' : 'resolved');
+    badge.className = 'badge badge--' + (open ? 'open'
+      : g.outcome === 'account_suspended' ? 'suspended'
+        : g.outcome === 'content_hidden' && !g.restored_at ? 'rejected' : 'resolved');
     badge.textContent = open ? 'Abierto' : (g.outcome === 'content_hidden' && g.restored_at ? 'Vuelto a mostrar' : ROUTCOME[g.outcome] || 'Resuelto');
 
     const scroll = $('#rep-scroll');
@@ -2616,13 +2625,16 @@
       wrap.append(box);
     } else {
       const hidden = g.outcome !== 'dismissed';
+      const suspended = g.outcome === 'account_suspended';
       const box = el('div', 'ver-banner ver-banner--' + (g.restored_at ? 'approved' : hidden ? 'rejected' : 'cancelled'));
-      box.append(icon(g.restored_at ? 'i-eye' : hidden ? 'i-eye-off' : 'i-check'));
+      box.append(icon(g.restored_at ? 'i-eye' : suspended ? 'i-lock' : hidden ? 'i-eye-off' : 'i-check'));
       const col = el('div', 'ver-banner-col');
       const by = g.resolver ? ' por ' + g.resolver.name : '';
       const when = g.resolved_at ? ' el ' + fmt(g.resolved_at) : '';
       col.append(el('p', 'ver-banner-h', `${ROUTCOME[g.outcome] || 'Resuelto'}${by}${when}`));
-      if (g.outcome_reason) col.append(el('p', 'ver-banner-t', 'Motivo que leyó el autor: ' + g.outcome_reason));
+      if (g.outcome_reason) {
+        col.append(el('p', 'ver-banner-t', (suspended ? 'Motivo que leyó la persona: ' : 'Motivo que leyó el autor: ') + g.outcome_reason));
+      }
       if (g.restored_at) col.append(el('p', 'ver-banner-t', 'Se volvió a mostrar el ' + fmt(g.restored_at) + '.'));
       if (g.outcome === 'dismissed') col.append(el('p', 'ver-banner-t', 'A quien reportó le llegó que no infringe las reglas.'));
       box.append(col);
@@ -2670,13 +2682,14 @@
       stat(p.blocked_by, p.blocked_by === 1 ? 'persona la bloqueó' : 'personas la bloquearon', p.blocked_by > 2),
     );
     ps.append(stats);
+    paintSuspension(ps, g, p);
     if (p.recent && p.recent.length) {
       ps.append(el('p', 'ver-subh', 'Los últimos'));
       const hist = el('ol', 'ver-hist');
       p.recent.forEach((h) => {
         const li = el('li', 'ver-hist-i');
         const top = el('p', 'ver-hist-top');
-        const st = h.outcome ? (h.outcome === 'dismissed' ? 'closed' : 'rejected') : 'open';
+        const st = h.outcome ? (h.outcome === 'dismissed' ? 'closed' : h.outcome === 'account_suspended' ? 'suspended' : 'rejected') : 'open';
         top.append(el('span', 'item-st item-st--' + st, h.outcome ? ROUTCOME[h.outcome] : 'Abierto'),
           el('span', '', ` #${h.id_report} · ${(RTYPE[h.target_type] || {}).label || h.target_type} · `),
           timeEl(h.created_at, '', fmt(h.created_at)));
@@ -2703,6 +2716,8 @@
     const noOwnPhoto = g.target_type === 'user' && g.current && !g.current.gone && !g.current.has_own_photo;
 
     $('#rep-actions').hidden = !open || part;
+    // Decisión 73: suspender a la persona reportada, resolviendo el reporte.
+    repSuspendOpen.hidden = !a.can_suspend || !g.person || isMe(g.person.id_user);
     $('.go-t', repHideOpen).textContent = hideLabel(g);
     repHideOpen.hidden = !a.can_hide || noOwnPhoto;
     const why = !a.can_hide ? (a.hide_blocked || 'Ya no hay nada que ocultar.')
@@ -2727,6 +2742,7 @@
   function repBusy(on) {
     repHideOpen.disabled = on;
     repDismissOpen.disabled = on;
+    repSuspendOpen.disabled = on;
   }
 
   /** Lo que pasa cuando resolver o volver a mostrar no sale. */
@@ -2907,6 +2923,178 @@
     repDone(r.data, wasAd
       ? 'Listo: el anuncio quedó pausado para que su dueño lo vuelva a publicar.'
       : 'Listo: se volvió a mostrar y a su autor le llega el aviso.');
+  });
+
+  /* ---------- Suspender y levantar la suspensión (decisión 73) ---------- */
+  const isMe = (id) => !!(session && session.agentId && id === session.agentId);
+
+  /**
+   * En la tarjeta de la persona: si está suspendida, desde cuándo y por qué,
+   * y levantarla. En un reporte ya resuelto, si no lo está, suspenderla desde
+   * acá (en uno abierto se suspende resolviéndolo, en la barra de abajo).
+   */
+  function paintSuspension(box, g, p) {
+    if (p.suspension) {
+      const mark = el('div', 'sus-mark');
+      mark.append(icon('i-lock'));
+      const col = el('div', '');
+      const h = el('p', 'sus-mark-h', 'Suspendida desde el ');
+      h.append(timeEl(p.suspension.at, '', fmt(p.suspension.at)));
+      col.append(h);
+      if (p.suspension.reason) col.append(el('p', 'sus-mark-t', 'Motivo: ' + p.suspension.reason));
+      mark.append(col);
+      box.append(mark);
+    }
+    if (p.deleted || !p.id_user || isMe(p.id_user)) return;
+    if (g.status === 'open' && !p.suspension) return;
+    const row = el('div', 'sus-row');
+    const b = el('button', 'go go--sm go--ghost' + (p.suspension ? '' : ' go--ghost-danger'));
+    b.type = 'button';
+    b.id = p.suspension ? 'rep-lift-open' : 'rep-card-suspend';
+    const sp = el('span', 'go-spin');
+    sp.setAttribute('aria-hidden', 'true');
+    b.append(sp, icon(p.suspension ? 'i-check' : 'i-lock', 'go-i'),
+      el('span', 'go-t', p.suspension ? 'Levantar la suspensión' : 'Suspender la cuenta'));
+    row.append(el('p', '', p.suspension
+      ? 'Si ya no hace falta, levantala: vuelve a usar ImHomi y sus anuncios quedan pausados para que los publique.'
+      : 'Si su conducta lo amerita, podés suspender la cuenta aunque este reporte ya esté resuelto.'), b);
+    b.addEventListener('click', () => (p.suspension ? openLift(p) : openSuspend('user', p)));
+    box.append(row);
+  }
+
+  // El diálogo: desde un reporte abierto (resolverlo con la suspensión) o
+  // desde la tarjeta (suspender sin reporte).
+  const susDlg = $('#rep-suspend');
+  const susReason = $('#sus-reason');
+  const susSure = $('#sus-sure');
+  const susErr = $('#rep-suspend-error');
+  const susGo = $('#rep-suspend-go');
+  let susMode = null; // { kind: 'report' | 'user', id_report, person }
+  const susDrafts = new Map(); // el motivo a medio escribir, por persona
+
+  function paintSus() {
+    const n = susReason.value.length;
+    $('#sus-reason-count').textContent = String(n);
+    $('.counter', susDlg).classList.toggle('is-near', n > 270);
+    susGo.disabled = !susSure.checked || susGo.getAttribute('aria-busy') === 'true';
+  }
+  function openSuspend(kind, person) {
+    if (!repCurrent || !person) return;
+    susMode = { kind, id_report: repCurrent.id_report, person };
+    const name = nameOf(person);
+    $('#rep-suspend-h').textContent = `Suspender la cuenta de ${name}`;
+    $('#rep-suspend-lead').textContent = kind === 'report'
+      ? 'Es la medida más fuerte: cierra este reporte y, mientras dure la suspensión:'
+      : 'Es la medida más fuerte. Mientras dure:';
+    $('#sus-sure-t').textContent = `Revisé lo reportado y su historial, y quiero suspender la cuenta de ${name}.`;
+    susReason.value = susDrafts.get(person.id_user) || '';
+    susSure.checked = false;
+    setError(susErr, '');
+    paintSus();
+    susDlg.showModal();
+    susReason.focus();
+  }
+  repSuspendOpen.addEventListener('click', () => {
+    if (!repCurrent || repSuspendOpen.disabled) return;
+    openSuspend('report', repCurrent.person);
+  });
+  $$('#sus-quick .chip').forEach((chip) => chip.addEventListener('click', () => {
+    susReason.value = chip.textContent;
+    if (susMode) susDrafts.set(susMode.person.id_user, susReason.value);
+    setError(susErr, '');
+    paintSus();
+    susReason.focus();
+    susReason.setSelectionRange(susReason.value.length, susReason.value.length);
+  }));
+  susReason.addEventListener('input', () => {
+    if (susMode) susDrafts.set(susMode.person.id_user, susReason.value);
+    setError(susErr, '');
+    paintSus();
+  });
+  susSure.addEventListener('change', () => { setError(susErr, ''); paintSus(); });
+  $('#rep-suspend-cancel').addEventListener('click', () => susDlg.close());
+
+  /** Lo que pasa cuando suspender o levantar no sale, fuera de los reportes. */
+  async function susFailed(r, closeDlg) {
+    if (!session) return;
+    if (r.code === CODE_NO_REASON) return setError(susErr, r.message || 'Escribí el motivo: lo va a leer la persona.');
+    closeDlg();
+    if (r.code === CODE_ALREADY_SUSPENDED || r.code === CODE_NOT_SUSPENDED || r.code === CODE_PERSON_GONE) {
+      toast((r.code === CODE_ALREADY_SUSPENDED ? 'Otra persona del equipo ya la suspendió'
+        : r.code === CODE_NOT_SUSPENDED ? 'Otra persona del equipo ya levantó la suspensión'
+          : 'Esa cuenta ya no existe') + ': te mostramos cómo quedó.', r.code === CODE_PERSON_GONE);
+      await refreshRep();
+      return;
+    }
+    if (r.code === CODE_SUSPEND_SELF) return toast(r.message || 'No podés suspender tu propia cuenta.', true);
+    toast(r.message || 'No se pudo. Probá de nuevo.', true);
+  }
+
+  $('#rep-suspend-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!susMode || susGo.disabled) return;
+    const text = cleanReason(susReason.value);
+    if (text.length < 10) {
+      susReason.focus();
+      return setError(susErr, text ? 'Escribí el motivo con un poco más de detalle: lo va a leer la persona.'
+        : 'Escribí el motivo: lo va a leer la persona.');
+    }
+    if (!susSure.checked) {
+      susSure.focus();
+      return setError(susErr, 'Confirmá que querés suspender la cuenta.');
+    }
+    const mode = susMode;
+    setError(susErr, '');
+    busy(susGo, true, 'Suspendiendo…');
+    $('#rep-suspend-cancel').disabled = true;
+    repBusy(true);
+    const r = mode.kind === 'report'
+      ? await call('POST', `/support/admin/reports/${mode.id_report}/resolve`, { outcome: 'account_suspended', reason: text })
+      : await call('POST', `/support/admin/users/${mode.person.id_user}/suspend`, { reason: text });
+    busy(susGo, false, 'Suspender la cuenta');
+    $('#rep-suspend-cancel').disabled = false;
+    repBusy(false);
+    paintSus();
+    if (!r.ok) {
+      if (r.status === 400 && !r.code) return setError(susErr, r.message || 'Revisá el motivo.');
+      if (mode.kind === 'report' && [CODE_REP_RESOLVED, CODE_REP_PART, CODE_REP_NOT_FOUND].includes(r.code)) {
+        susDlg.close();
+        return repFailed(r, mode.id_report);
+      }
+      return susFailed(r, () => susDlg.close());
+    }
+    susDrafts.delete(mode.person.id_user);
+    susDlg.close();
+    const done = 'Listo: la cuenta quedó suspendida. Sus anuncios salieron de la búsqueda y le llegan el aviso y el correo con el motivo.';
+    if (mode.kind === 'report') return repDone(r.data, done);
+    toast(done);
+    await refreshRep();
+    loadRepList(true);
+  });
+
+  // Levantar la suspensión.
+  const liftDlg = $('#rep-lift');
+  const liftOk = $('#rep-lift-ok');
+  let liftPerson = null;
+  function openLift(person) {
+    liftPerson = person;
+    $('#rep-lift-h').textContent = `¿Levantar la suspensión de ${nameOf(person)}?`;
+    setError($('#rep-lift-error'), '');
+    liftDlg.showModal();
+    liftOk.focus();
+  }
+  $('#rep-lift-cancel').addEventListener('click', () => liftDlg.close());
+  liftOk.addEventListener('click', async () => {
+    if (!liftPerson || liftOk.disabled) return;
+    busy(liftOk, true, 'Levantando…');
+    $('#rep-lift-cancel').disabled = true;
+    const r = await call('POST', `/support/admin/users/${liftPerson.id_user}/restore`);
+    busy(liftOk, false, 'Levantar la suspensión');
+    $('#rep-lift-cancel').disabled = false;
+    if (!r.ok) return susFailed(r, () => liftDlg.close());
+    liftDlg.close();
+    toast('Listo: se levantó la suspensión. Sus anuncios quedaron pausados para que los publique, y le llegan el aviso y el correo.');
+    await refreshRep();
   });
 
   /* ---------- Volver a la lista (teléfono) ---------- */
