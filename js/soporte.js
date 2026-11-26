@@ -2666,6 +2666,8 @@
       stat(p.reports_against, p.reports_against === 1 ? 'reporte en contra' : 'reportes en contra', p.reports_against > 3),
       stat(p.distinct_reporters, p.distinct_reporters === 1 ? 'persona la reportó' : 'personas la reportaron', p.distinct_reporters > 2),
       stat(p.hidden_before, p.hidden_before === 1 ? 'vez se le ocultó algo' : 'veces se le ocultó algo', p.hidden_before > 0),
+      // Decisión 72: cuántas personas la bloquearon, sin decir quiénes.
+      stat(p.blocked_by, p.blocked_by === 1 ? 'persona la bloqueó' : 'personas la bloquearon', p.blocked_by > 2),
     );
     ps.append(stats);
     if (p.recent && p.recent.length) {

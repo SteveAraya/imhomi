@@ -775,7 +775,7 @@ body.sop:not(.is-auth) .orb{animation:none}
 .rep-r-snap{margin-top:4px;padding:8px 10px;border-radius:10px;background:rgba(0,0,0,.18);color:var(--ink-2);font-size:.86rem;line-height:1.5;white-space:pre-line;overflow-wrap:anywhere}
 
 /* La persona reportada. */
-.rep-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}
+.rep-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:12px}
 .rep-stat{padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.035);border:1px solid var(--line)}
 .rep-stat b{display:block;color:var(--ink);font-size:1.3rem;font-weight:800;font-variant-numeric:tabular-nums}
 .rep-stat span{color:var(--muted);font-size:.78rem;line-height:1.35}
@@ -792,6 +792,6 @@ body.sop:not(.is-auth) .orb{animation:none}
 .rep-closed .go svg{width:17px;height:17px}
 
 @media (max-width:759.98px){
-  .rep-stats{grid-template-columns:minmax(0,1fr)}
+  .rep-stats{grid-template-columns:repeat(2,minmax(0,1fr))}
   .rep-avatar{width:72px;height:72px}
 }
