@@ -29,10 +29,9 @@
   <link rel="icon" href="/favicon-96.png" type="image/png" sizes="96x96">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <link rel="manifest" href="/site.webmanifest">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <!-- Inter como fuente variable (un solo archivo para 400–900) e Instrument Serif solo en cursiva, la única que se usa. -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400..900&family=Instrument+Serif:ital@1&display=swap">
+  <!-- Las tipografías se sirven desde el sitio (css/fonts.css): ninguna visita le manda la IP a otro. -->
+  <link rel="preload" href="assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/fonts.css">
   <link rel="stylesheet" href="css/site.css">
   <link rel="stylesheet" href="css/home.css">
   <script>document.documentElement.classList.add('js')</script>
@@ -245,7 +244,7 @@
                 </div>
                 <div class="m-info">
                   <div class="m-tl"><b>Cuarto en casa compartida</b><span class="m-chip c-t"><svg class="ln" viewBox="0 0 24 24"><use href="#i-verified"/></svg>Verificado</span></div>
-                  <div class="m-meta"><svg class="fl" viewBox="0 0 24 24" style="color:#E6B840"><use href="#i-star"/></svg><strong>4,9</strong>del dueño · 23 calificaciones</div>
+                  <div class="m-meta"><svg class="fl" viewBox="0 0 24 24" style="color:#E6B840"><use href="#i-star"/></svg><strong>4,9</strong>como anfitrión · 23 calificaciones</div>
                   <div class="m-meta"><svg class="ln" viewBox="0 0 24 24" style="color:#4ECDC4;width:13px;height:13px"><use href="#i-pin"/></svg>San Pedro · hace 2 días</div>
                   <div class="m-tags"><span class="m-chip c-b"><svg class="fl" viewBox="0 0 24 24"><use href="#m-door"/></svg>Cuarto</span><span class="m-chip c-o"><svg class="fl" viewBox="0 0 24 24"><use href="#m-paw"/></svg>Mascotas</span><span class="m-incl"><svg class="ln" viewBox="0 0 24 24"><use href="#i-checkc"/></svg>Incluye agua y luz</span></div>
                   <div class="m-specs"><span><svg class="ln" viewBox="0 0 24 24"><use href="#i-bed"/></svg>3 hab</span><i></i><span><svg class="ln" viewBox="0 0 24 24"><use href="#i-shower"/></svg>2 baños</span><i></i><span><svg class="ln" viewBox="0 0 24 24"><use href="#i-ruler"/></svg>120 m²</span></div>
@@ -275,7 +274,7 @@
                 <div class="m-bub ot m-typing" style="--d:2300;--d2:3200"><i></i><i></i><i></i></div>
                 <div class="m-bub ot a" style="--d:3250">Claro, agendá la visita desde aquí arriba.<small>9:16</small></div>
               </div>
-              <div class="m-input"><span class="m-field">Escribe un mensaje...</span><span class="m-send"><svg class="fl" viewBox="0 0 24 24"><use href="#m-send"/></svg></span></div>
+              <div class="m-input"><span class="m-field">Escribí un mensaje</span><span class="m-send"><svg class="fl" viewBox="0 0 24 24"><use href="#m-send"/></svg></span></div>
             </div>
           </div>
 
@@ -291,9 +290,9 @@
                 <div class="m-handle"></div>
                 <div class="m-shh"><svg class="fl" viewBox="0 0 24 24"><use href="#m-calcheck"/></svg>Agendar visita</div>
                 <small>Cuarto en casa compartida</small>
-                <div class="m-sel go" style="--d:700"><svg class="ln" viewBox="0 0 24 24"><use href="#i-calendar"/></svg><span class="xf" style="--d:700"><span>Seleccioná la fecha</span><span>29/11/2026</span></span><svg class="ln chev" viewBox="0 0 24 24"><use href="#i-chev"/></svg></div>
-                <div class="m-sel go" style="--d:1300"><svg class="ln" viewBox="0 0 24 24"><use href="#i-clock"/></svg><span class="xf" style="--d:1300"><span>Seleccioná la hora</span><span>10:00</span></span><svg class="ln chev" viewBox="0 0 24 24"><use href="#i-chev"/></svg></div>
-                <div class="m-note">Nota para el propietario (opcional)</div>
+                <div class="m-sel go" style="--d:700"><svg class="ln" viewBox="0 0 24 24"><use href="#i-calendar"/></svg><span class="xf" style="--d:700"><span>Seleccioná la fecha</span><span>29 de noviembre de 2026</span></span><svg class="ln chev" viewBox="0 0 24 24"><use href="#i-chev"/></svg></div>
+                <div class="m-sel go" style="--d:1300"><svg class="ln" viewBox="0 0 24 24"><use href="#i-clock"/></svg><span class="xf" style="--d:1300"><span>Seleccioná la hora</span><span>10:00 a. m.</span></span><svg class="ln chev" viewBox="0 0 24 24"><use href="#i-chev"/></svg></div>
+                <div class="m-note">Nota para Ana Rodríguez (opcional)</div>
                 <div class="m-btn2 pri tap" style="--t:2300">Solicitar visita</div>
               </div>
               <i class="m-touch" style="left:195px;top:567px;--t:700"></i>
@@ -308,7 +307,7 @@
               <div class="m-gh go" style="--d:4300"><i></i><span class="xf" style="--d:4300"><span>Pendientes</span><span>Confirmadas</span></span></div>
               <div class="m-vcard go a" style="--d:3150">
                 <div class="m-vt">Cuarto en casa compartida</div>
-                <div class="m-dt"><span><svg class="ln" viewBox="0 0 24 24"><use href="#i-calendar"/></svg>29/11/2026</span><span><svg class="ln" viewBox="0 0 24 24"><use href="#i-clock"/></svg>10:00</span></div>
+                <div class="m-dt"><span><svg class="ln" viewBox="0 0 24 24"><use href="#i-calendar"/></svg>dom 29 nov 2026</span><span><svg class="ln" viewBox="0 0 24 24"><use href="#i-clock"/></svg>10:00 a. m.</span></div>
                 <div class="m-vnote"><svg class="ln" viewBox="0 0 24 24"><use href="#i-chat"/></svg>Me interesa el cuarto del fondo.</div>
                 <div class="m-addr go" style="--d:4500"><b>Dirección exacta</b>Del Más x Menos de San Pedro, 200 m norte, casa esquinera.</div>
                 <div class="m-vact"><div class="xf blk" style="--d:4500"><div class="m-btn2 scd red">Cancelar visita</div><div class="m-btn2 scd"><svg class="fl" viewBox="0 0 24 24"><use href="#m-locdot"/></svg>Ir con Google Maps</div></div></div>
@@ -352,13 +351,13 @@
               <div class="m-rcard a" style="--d:600">
                 <div class="m-rt"><b>Cuarto 3 · San Pedro</b><span class="xf" style="--d:2300"><span class="m-st c-b">Pendiente</span><span class="m-st c-g">Activa</span></span></div>
                 <p>Tu roomie: Mari Solís</p><p>₡120.000 por mes</p>
-                <p class="m-rn"><svg class="ln" viewBox="0 0 24 24"><use href="#i-info"/></svg>Este depósito se lo devolvés vos, no el dueño de la propiedad.</p>
+                <p class="m-rn"><svg class="ln" viewBox="0 0 24 24"><use href="#i-info"/></svg>Este depósito se lo devolvés vos, no el propietario.</p>
                 <div class="m-pair m-reveal" style="--d:2500"><span class="m-btn2 scd">Inventario</span><span class="m-btn2 scd red">Terminar convivencia</span></div>
               </div>
               <div class="m-rcard a" style="--d:250">
                 <div class="m-rt"><b>Cuarto 2 · San Pedro</b><span class="m-st c-g">Activa</span></div>
                 <p>Tu roomie: Dani Mora</p><p>₡120.000 por mes</p>
-                <p class="m-rn"><svg class="ln" viewBox="0 0 24 24"><use href="#i-info"/></svg>Este depósito se lo devolvés vos, no el dueño de la propiedad.</p>
+                <p class="m-rn"><svg class="ln" viewBox="0 0 24 24"><use href="#i-info"/></svg>Este depósito se lo devolvés vos, no el propietario.</p>
                 <div class="m-pair"><span class="m-btn2 scd">Inventario</span><span class="m-btn2 scd red">Terminar convivencia</span></div>
               </div>
             </div>
@@ -379,9 +378,9 @@
                   <div class="m-ded"><span>Llave del lavatorio</span><b>₡12.000</b></div>
                   <div class="m-nb c-r s1"><div><strong>Argumento del inquilino</strong>La pintura ya estaba así cuando entré.</div></div>
                   <p class="m-sub">HISTORIAL</p>
-                  <div class="m-hist"><i></i>Propuesta inicial<b>₡30.000</b><small>03/12/2027</small></div>
-                  <div class="m-hist s1"><i></i>Contrapropuesta<b>₡12.000</b><small>04/12/2027</small></div>
-                  <div class="m-hist s2" style="--c:#2ECC71"><i></i>Aceptada<b>₡12.000</b><small>04/12/2027</small></div>
+                  <div class="m-hist"><i></i>Propuesta inicial<b>₡30.000</b><small>3 dic 2027</small></div>
+                  <div class="m-hist s1"><i></i>Contrapropuesta<b>₡12.000</b><small>4 dic 2027</small></div>
+                  <div class="m-hist s2" style="--c:#2ECC71"><i></i>Aceptada<b>₡12.000</b><small>4 dic 2027</small></div>
                   <div class="m-done s2"><span class="ic"><svg class="ln" viewBox="0 0 24 24"><use href="#i-checkc"/></svg></span><div><b>Acuerdo alcanzado</b><small>Devolución: ₡228.000</small></div></div>
                 </div>
               </div>
@@ -479,9 +478,9 @@
         <div class="panel-h"><h3>Comparto un cuarto</h3><span>busco roomie o busco cuarto</span></div>
         <ul class="bento">
           <li class="cap" style="--i:0"><span class="ico ico--t"><svg viewBox="0 0 24 24"><use href="#i-door"/></svg></span><h4>Cuartos, no solo propiedades</h4><p>Una categoría propia. El precio y el depósito que ves son <strong>por cuarto</strong>, no por la casa entera.</p></li>
-          <li class="cap cap--wide" style="--i:1"><span class="ico ico--c"><svg viewBox="0 0 24 24"><use href="#i-doc"/></svg></span><h4>Publicá tu cuarto, con permiso del dueño</h4><p>Pedís la autorización a tu arrendador desde la app. Cuando la da, el anuncio sale de tu contrato activo y hereda ubicación y servicios del anuncio del dueño. Vos ponés tu precio y tu depósito. Nada de subarriendo a escondidas.</p></li>
+          <li class="cap cap--wide" style="--i:1"><span class="ico ico--c"><svg viewBox="0 0 24 24"><use href="#i-doc"/></svg></span><h4>Publicá tu cuarto, con permiso del propietario</h4><p>Le pedís la autorización a tu propietario desde la app. Cuando la da, el anuncio sale de tu contrato activo y hereda ubicación y servicios del anuncio del propietario. Vos ponés tu precio y tu depósito. Nada de subarriendo a escondidas.</p></li>
           <li class="cap" style="--i:2"><span class="ico ico--g"><svg viewBox="0 0 24 24"><use href="#i-users"/></svg></span><h4>Cuántos lugares quedan</h4><p>El anuncio dice cuántos cupos tiene y cuántos siguen libres.</p></li>
-          <li class="cap" style="--i:3"><span class="ico ico--t"><svg viewBox="0 0 24 24"><use href="#i-split"/></svg></span><h4>Acuerdo de convivencia</h4><p>Cuánto pagás por mes, el depósito y desde cuándo, con su propio estado, aparte del contrato del dueño.</p></li>
+          <li class="cap" style="--i:3"><span class="ico ico--t"><svg viewBox="0 0 24 24"><use href="#i-split"/></svg></span><h4>Acuerdo de convivencia</h4><p>Cuánto pagás por mes, el depósito y desde cuándo, con su propio estado, aparte del contrato del propietario.</p></li>
           <li class="cap" style="--i:4"><span class="ico ico--g"><svg viewBox="0 0 24 24"><use href="#i-star"/></svg></span><h4>Calificá a tu roomie</h4><p>La convivencia también deja reputación.</p></li>
         </ul>
       </div>
@@ -489,16 +488,16 @@
         <div class="panel-h"><h3>Ya estoy alquilando</h3><span>quiero traerlo a ImHomi</span></div>
         <ul class="bento">
           <li class="cap cap--wide" style="--i:0"><span class="ico ico--c"><svg viewBox="0 0 24 24"><use href="#i-ticket"/></svg></span><h4>Traé tu alquiler con un código</h4><p>No hace falta que empiece en ImHomi. Generás un código, se lo pasás a la otra parte y se une a la propiedad. Funciona en las dos direcciones: quien llegó primero trae al otro.</p></li>
-          <li class="cap" style="--i:1"><span class="ico ico--t"><svg viewBox="0 0 24 24"><use href="#i-swap"/></svg></span><h4>Cuatro maneras de sumarse</h4><p>Tu arrendador, tu inquilino, un roomie, o quien te sucede en el contrato.</p></li>
-          <li class="cap" style="--i:2"><span class="ico ico--g"><svg viewBox="0 0 24 24"><use href="#i-clipboard"/></svg></span><h4>Inventario del inmueble</h4><p>Cómo estaba todo al entrar, ítem por ítem. Sin esa línea base, cualquier daño se te puede atribuir.</p></li>
+          <li class="cap" style="--i:1"><span class="ico ico--t"><svg viewBox="0 0 24 24"><use href="#i-swap"/></svg></span><h4>Cuatro maneras de sumarse</h4><p>Tu propietario, tu inquilino, un roomie, o quien te sucede en el contrato.</p></li>
+          <li class="cap" style="--i:2"><span class="ico ico--g"><svg viewBox="0 0 24 24"><use href="#i-clipboard"/></svg></span><h4>Inventario de la propiedad</h4><p>Cómo estaba todo al entrar, ítem por ítem. Sin esa línea base, cualquier daño se te puede atribuir.</p></li>
           <li class="cap cap--wide" style="--i:3"><span class="ico ico--c"><svg viewBox="0 0 24 24"><use href="#i-coins"/></svg></span><h4>Liquidación del depósito</h4><p>Una parte propone el desglose contra el inventario y la otra acepta o contrapropone, dentro de la app, hasta que queda cerrado.</p></li>
         </ul>
       </div>
       <div class="panel" role="tabpanel" id="p-dueno" aria-labelledby="t-dueno" hidden>
-        <div class="panel-h"><h3>Alquilo mi propiedad</h3><span>soy el arrendador</span></div>
+        <div class="panel-h"><h3>Alquilo mi propiedad</h3><span>soy el propietario</span></div>
         <ul class="bento">
           <li class="cap" style="--i:0"><span class="ico ico--t"><svg viewBox="0 0 24 24"><use href="#i-tag"/></svg></span><h4>Publicar es gratis</h4><p>Sin comisión y sin pagar para que tu anuncio se vea.</p></li>
-          <li class="cap" style="--i:1"><span class="ico ico--g"><svg viewBox="0 0 24 24"><use href="#i-shield"/></svg></span><h4>Anuncio verificado</h4><p>Pasás la verificación una vez y tu anuncio lo muestra.</p></li>
+          <li class="cap" style="--i:1"><span class="ico ico--g"><svg viewBox="0 0 24 24"><use href="#i-shield"/></svg></span><h4>Anuncio verificado</h4><p>Subís tres fotos desde la propiedad, soporte las revisa y tu anuncio muestra la insignia.</p></li>
           <li class="cap" style="--i:2"><span class="ico ico--c"><svg viewBox="0 0 24 24"><use href="#i-doc"/></svg></span><h4>Términos que las dos partes aceptan</h4><p>Cada parte los acepta desde su cuenta. Las enmiendas y las renovaciones también se proponen y se aceptan en la app.</p></li>
           <li class="cap" style="--i:3"><span class="ico ico--t"><svg viewBox="0 0 24 24"><use href="#i-clock"/></svg></span><h4>Aviso antes del vencimiento</h4><p>Recordatorios conforme se acerca la fecha, para que renovar no sea una carrera.</p></li>
           <li class="cap" style="--i:4"><span class="ico ico--g"><svg viewBox="0 0 24 24"><use href="#i-calendar"/></svg></span><h4>Visitas ordenadas</h4><p>Las solicitudes llegan a un solo lugar, con día y hora.</p></li>
@@ -522,7 +521,7 @@
           <span class="ktag">Cuartos</span>
           <h3>Tu cuarto sale <span class="serif">de tu contrato</span></h3>
           <p>Cerca de las universidades, lo normal es alquilar una casa entera y buscar con quién compartirla. Hoy eso se resuelve en Facebook.</p>
-          <p>Acá el anuncio del cuarto lo publica <strong>quien ya vive ahí</strong>, después de que <strong class="mark">el arrendador autoriza</strong>. Hereda la ubicación y los servicios, y el precio es por cuarto.</p>
+          <p>Acá el anuncio del cuarto lo publica <strong>quien ya vive ahí</strong>, después de que <strong class="mark">el propietario autoriza</strong>. Hereda la ubicación y los servicios, y el precio es por cuarto.</p>
           <button class="replay" data-replay="cuarto" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-replay"/></svg>Ver otra vez</button>
         </div>
         <div class="demo" id="demo-cuarto" aria-hidden="true">
@@ -548,7 +547,7 @@
           <span class="ktag">Invitaciones</span>
           <h3>Un código <span class="serif">y ya están adentro</span></h3>
           <p>Tu alquiler no tiene que haber nacido en la app. Generás un código, se lo pasás a la otra parte y quedan vinculados a la propiedad.</p>
-          <p>Sirve para traer a tu arrendador, a tu inquilino, sumar un roomie o pasarle el contrato a quien te sucede. <strong class="mark">Quien llegó primero trae al otro.</strong></p>
+          <p>Sirve para traer a tu propietario, a tu inquilino, sumar un roomie o pasarle el contrato a quien te sucede. <strong class="mark">Quien llegó primero trae al otro.</strong></p>
           <button class="replay" data-replay="codigo" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-replay"/></svg>Generar otro código</button>
         </div>
         <div class="demo" id="demo-codigo" aria-hidden="true">
@@ -557,7 +556,7 @@
           <div class="link">
             <div class="person"><span class="av av--t">V</span><b>Vos</b><small>generás el código</small></div>
             <div class="wire"></div>
-            <div class="person"><span class="av">?</span><b id="whoName">Ana</b><small class="role" id="role">tu arrendadora</small></div>
+            <div class="person"><span class="av">?</span><b id="whoName">Ana</b><small class="role" id="role">tu propietaria</small></div>
           </div>
           <p class="ok"><svg viewBox="0 0 24 24" width="18" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><use href="#i-check"/></svg>Vinculados a la propiedad</p>
         </div>
@@ -605,7 +604,7 @@
         <div class="blind">
           <div class="flip" id="flipYou">
             <div class="face front">
-              <header><span class="av av--t">V</span><div><b>Vos calificás a Ana</b><small>Tu arrendadora</small></div></header>
+              <header><span class="av av--t">V</span><div><b>Vos calificás a Ana</b><small>Tu propietaria</small></div></header>
               <div class="stars" id="stars" role="radiogroup" aria-label="Tu calificación para Ana">
                 <button type="button" role="radio" aria-checked="false" aria-label="1 estrella"><svg viewBox="0 0 24 24"><use href="#i-star"/></svg></button>
                 <button type="button" role="radio" aria-checked="false" aria-label="2 estrellas"><svg viewBox="0 0 24 24"><use href="#i-star"/></svg></button>
@@ -616,19 +615,19 @@
               <span class="st8" id="youState"><i></i>Todavía no calificaste</span>
             </div>
             <div class="face back">
-              <header><span class="av av--t">V</span><div><b>Le diste a Ana</b><small>Visible para las dos</small></div></header>
+              <header><span class="av av--t">V</span><div><b>Le diste a Ana</b><small>Visible en el perfil</small></div></header>
               <span class="shown-stars" id="youShown">★★★★★</span>
               <span class="quote">“Respondió rápido y devolvió el depósito como acordamos.”</span>
             </div>
           </div>
           <div class="flip" id="flipHer">
             <div class="face front">
-              <header><span class="av">A</span><div><b>Ana te califica</b><small>Tu arrendadora</small></div></header>
+              <header><span class="av">A</span><div><b>Ana te califica</b><small>Tu propietaria</small></div></header>
               <span class="hidden-stars" aria-hidden="true">★★★★★</span>
               <span class="st8 wait" id="herState"><i></i>Calificando…</span>
             </div>
             <div class="face back">
-              <header><span class="av">A</span><div><b>Ana te dio</b><small>Visible para las dos</small></div></header>
+              <header><span class="av">A</span><div><b>Ana te dio</b><small>Visible en el perfil</small></div></header>
               <span class="shown-stars">★★★★★</span>
               <span class="quote">“Dejó todo como lo recibió. Lo recomiendo.”</span>
             </div>
@@ -647,7 +646,7 @@
           </svg>
         </div>
         <h3>Anuncios verificados</h3>
-        <p>Pasan por verificación y el estado se muestra en el anuncio, no en letra chica.</p>
+        <p>Quien publica sube tres fotos desde la propiedad y marca el punto ahí mismo; soporte lo revisa antes de mostrar la insignia, en el anuncio y no en letra chica.</p>
       </div>
 
       <div class="tcard" data-reveal style="--d:2">

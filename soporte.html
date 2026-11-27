@@ -10,13 +10,13 @@
   <!-- Solo lo propio, la API y las capturas de Cloudinary (enlaces firmados de
        api.cloudinary.com, decisión 66). Lo que escriben las personas entra con
        textContent, nunca como HTML. -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://api.cloudinary.com https://res.cloudinary.com; connect-src https://imhomibackend-production.up.railway.app; form-action 'none'; base-uri 'none'; object-src 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data: https://api.cloudinary.com https://res.cloudinary.com; connect-src https://imhomibackend-production.up.railway.app; form-action 'none'; base-uri 'none'; object-src 'none'">
   <link rel="icon" href="/favicon.ico" sizes="32x32">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <meta name="theme-color" content="#0F2329">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400..900&family=Instrument+Serif:ital@1&display=swap">
+  <!-- Las tipografías se sirven desde el sitio (css/fonts.css): ninguna visita le manda la IP a otro. -->
+  <link rel="preload" href="assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/fonts.css">
   <link rel="stylesheet" href="css/site.css">
   <link rel="stylesheet" href="css/soporte.css">
 </head>

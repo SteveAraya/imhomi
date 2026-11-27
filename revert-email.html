@@ -15,9 +15,9 @@
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <link rel="manifest" href="/site.webmanifest">
   <meta name="theme-color" content="#0F2329">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400..900&family=Instrument+Serif:ital@1&display=swap">
+  <!-- Las tipografías se sirven desde el sitio (css/fonts.css): ninguna visita le manda la IP a otro. -->
+  <link rel="preload" href="assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/fonts.css">
   <link rel="stylesheet" href="css/site.css">
 </head>
 <!-- data-api: la API a la que esta página le pide deshacer el cambio. Es la
@@ -79,7 +79,7 @@
           <li>En la pantalla de ingreso tocá <strong>"¿Olvidaste tu contraseña?"</strong> y escribí tu correo.</li>
           <li>Te llega un código a ese correo: con él elegís una contraseña nueva y entrás.</li>
         </ul>
-        <p>Para dejar la cuenta más protegida, activá la verificación en dos pasos en <strong>Mi cuenta → Seguridad</strong>.</p>
+        <p>Para dejar la cuenta más protegida, activá la verificación en dos pasos en la app, en <strong>Más › Mi cuenta › Seguridad y 2FA</strong>.</p>
       </section>
 
       <section id="revert-invalid" class="revert" hidden>

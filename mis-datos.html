@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Descargar mis datos — ImHomi</title>
+  <meta name="description" content="Descargá una copia de los datos que ImHomi guarda sobre vos.">
+  <!-- Es una página para quien llega desde la app: no va en buscadores ni en el sitemap. -->
+  <meta name="robots" content="noindex, nofollow">
+  <!-- El enlace lleva un token: que no viaje a ningún otro sitio. -->
+  <meta name="referrer" content="no-referrer">
+  <link rel="icon" href="/favicon.ico" sizes="32x32">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/favicon-96.png" type="image/png" sizes="96x96">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#0F2329">
+  <!-- Las tipografías se sirven desde el sitio (css/fonts.css): ninguna visita le manda la IP a otro. -->
+  <link rel="preload" href="assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/fonts.css">
+  <link rel="stylesheet" href="css/site.css">
+</head>
+<!-- data-api: la API a la que esta página le pide la copia. Es la misma que
+     usa la app. El origen de esta web tiene que estar en CORS_ORIGINS del
+     backend. -->
+<body class="legal-page" data-api="https://imhomibackend-production.up.railway.app/api">
+
+  <a class="skip" href="#main">Saltar al contenido</a>
+
+  <header class="hdr hdr--solid" id="hdr">
+    <a href="./" class="logo" aria-label="ImHomi, inicio">ImHom<span class="idot">ı</span></a>
+    <nav class="nav" id="nav" aria-label="Secciones">
+      <span class="nav-ind" aria-hidden="true"></span>
+      <a href="./">Inicio</a>
+      <a href="privacy.html">Privacidad</a>
+      <a href="terms.html">Términos</a>
+    </nav>
+    <a href="./#descargar" class="btn btn--coral btn--sm">Descargar</a>
+  </header>
+
+  <main id="main" class="legal">
+    <div class="legal-in">
+      <span class="eyebrow">Tu cuenta</span>
+      <h1>Descargar mis <span class="serif">datos</span></h1>
+      <p class="date">Llegaste acá desde la app: Más › Mi cuenta › Descargar mis datos.</p>
+
+      <!-- Sin JavaScript no se puede llamar a la API: se dice, con la salida. -->
+      <noscript>
+        <div class="notice">
+          <strong>Hace falta JavaScript</strong>
+          Esta página necesita JavaScript para bajar tu copia. Activalo y volvé a pedirla desde la app, o escribinos a <a href="mailto:soporte@imhomi.com">soporte@imhomi.com</a> desde el correo de tu cuenta.
+        </div>
+      </noscript>
+
+      <!-- Una sola de estas secciones está a la vista. La elige js/mis-datos.js. -->
+      <section id="datos-ask" class="revert" hidden>
+        <p>Te bajamos un archivo con todo lo que ImHomi guarda sobre vos: tu cuenta, tus anuncios, tus visitas, tus mensajes, tus contratos y convivencias, tus calificaciones, tus notificaciones y tus consultas a soporte.</p>
+        <ul>
+          <li>De las otras personas figura solo el nombre. De lo que escribieron o subieron ellas, solo lo que escribieron sobre vos (las calificaciones que recibiste); de tus contratos y convivencias, lo que pactaron entre las dos partes y lo que escribiste vos.</li>
+          <li>Las fotos que subiste a tus contratos y convivencias vienen con enlaces que sirven 24 horas: si las querés guardar, bajalas antes.</li>
+          <li>Es un archivo de texto en formato JSON, que se abre con cualquier editor.</li>
+          <li>Guardalo en un lugar seguro: tiene tus datos personales.</li>
+        </ul>
+        <div class="revert-actions">
+          <button type="button" class="btn btn--coral" id="datos-go">Descargar mis datos</button>
+        </div>
+        <p class="revert-msg" id="datos-error" role="alert" hidden></p>
+      </section>
+
+      <section id="datos-done" class="revert" hidden>
+        <div class="revert-ok" role="status">
+          <h2 id="datos-done-title" tabindex="-1">Listo: tu copia se descargó</h2>
+          <p>Buscala en tus descargas como <strong id="datos-file"></strong>.</p>
+        </div>
+        <p>Si querés corregir algo, hacelo desde la app, en Más › Mi cuenta. Para lo que no puedas hacer desde ahí, escribinos a <a href="mailto:soporte@imhomi.com">soporte@imhomi.com</a> desde el correo de tu cuenta: te respondemos dentro de los 5 días hábiles. Más detalles en la <a href="privacy.html#derechos">Política de privacidad</a>.</p>
+      </section>
+
+      <section id="datos-invalid" class="revert" hidden>
+        <div class="notice" role="status">
+          <strong id="datos-invalid-title" tabindex="-1">Este enlace ya no sirve</strong>
+          <span id="datos-invalid-text">Vale 10 minutos desde que lo pediste.</span>
+        </div>
+        <p>Pedí otro desde la app: <strong>Más › Mi cuenta › Descargar mis datos</strong>. Si no tenés la app o no podés entrar, escribinos a <a href="mailto:soporte@imhomi.com">soporte@imhomi.com</a> desde el correo de tu cuenta y te mandamos la copia dentro de los 5 días hábiles.</p>
+      </section>
+    </div>
+  </main>
+
+  <footer class="foot">
+    <div class="wrap">
+      <div class="foot-top">
+        <a href="./" class="logo" aria-label="ImHomi, inicio">ImHom<span class="idot">ı</span></a>
+        <nav aria-label="Pie de página">
+          <a href="./#diferencia">La diferencia</a><a href="./#capacidades">Qué podés hacer</a><a href="./#solo-aca">Solo acá</a><a href="./#confianza">Confianza</a><a href="privacy.html">Privacidad</a><a href="terms.html">Términos</a><a href="eliminar-cuenta.html">Eliminar tu cuenta</a><a href="mailto:hola@imhomi.com" class="mail-l">hola@imhomi.com</a>
+        </nav>
+      </div>
+      <div class="giant giant--full" aria-hidden="true"><span class="g-out">ImHom<span>i</span></span><span class="g-fill">ImHom<span>i</span></span></div>
+      <div class="foot-bot"><span>© 2026 ImHomi. Hecho en Costa Rica.</span><a href="https://www.dimonkey.com" target="_blank" rel="noopener">Un producto de <span class="dm">DiMonkey</span></a></div>
+    </div>
+  </footer>
+
+  <script src="js/site.js"></script>
+  <script src="js/mis-datos.js"></script>
+</body>
+</html>

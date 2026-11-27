@@ -11,9 +11,9 @@
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <link rel="manifest" href="/site.webmanifest">
   <meta name="theme-color" content="#0F2329">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400..900&family=Instrument+Serif:ital@1&display=swap">
+  <!-- Las tipografías se sirven desde el sitio (css/fonts.css): ninguna visita le manda la IP a otro. -->
+  <link rel="preload" href="assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/fonts.css">
   <link rel="stylesheet" href="css/site.css">
 </head>
 <body class="legal-page">
@@ -35,18 +35,20 @@
     <div class="legal-in">
     <span class="eyebrow">Legal</span>
     <h1>Términos y <span class="serif">condiciones</span></h1>
-    <p class="date">Versión 2026-09-04 &middot; Vigente desde el 4 de setiembre de 2026</p>
+    <p class="date">Versión 2026-11-25 &middot; Vigente desde el 25 de noviembre de 2026</p>
 
     <p>Estos términos regulan el uso de ImHomi. Al crear una cuenta los aceptás. Te pedimos leerlos: varias funciones de la plataforma tienen <strong>plazos que corren solos</strong> y consecuencias sobre tu dinero, y están descritas acá.</p>
 
     <h2>1. Qué es ImHomi y qué no es</h2>
     <p>ImHomi es una plataforma digital costarricense donde se publican propiedades en alquiler, se coordinan visitas y se registra y administra la relación entre propietario e inquilino: el acuerdo, sus modificaciones, los inventarios de entrada y salida, las averías, la liquidación del depósito y las calificaciones entre las partes.</p>
     <p>ImHomi <strong>no</strong> es parte del contrato de arrendamiento, no es agencia ni corredora de bienes raíces, no representa a ninguna de las partes y <strong>no custodia ni transfiere dinero</strong> en ningún momento. La renta, el depósito, los servicios y cualquier otro pago se hacen directamente entre las partes, por fuera de la plataforma.</p>
+    <!-- Responsable (decisión 58): el mismo nombre y domicilio en §19 y en la Política §1 y §11. Sin cédula hasta que lo diga el abogado. -->
+    <p><strong>Quién opera ImHomi.</strong> Mientras se constituye la sociedad que va a operarla, ImHomi es operada por Adelso Steve Araya Solórzano, desarrollador de la aplicación, con domicilio en Alajuela, Costa Rica. Para cualquier solicitud o notificación: <a href="mailto:soporte@imhomi.com">soporte@imhomi.com</a>. Cuando la sociedad exista, ImHomi pasa a ella: te lo vamos a avisar en la app y te vamos a pedir que aceptes estos términos de nuevo.</p>
     <p><strong>El contrato que ImHomi aloja es el registro de lo que las partes acordaron.</strong> No sustituye al contrato de arrendamiento ni a la asesoría legal, y no modifica los derechos y obligaciones que la Ley General de Arrendamientos Urbanos y Suburbanos (Ley 7527) le reconoce a cada parte. Si tenés dudas sobre tu situación, consultá a un profesional.</p>
 
     <h2>2. Tu cuenta</h2>
     <ul>
-      <li>Debés ser mayor de 18 años y tener capacidad legal para contratar.</li>
+      <li>Debés ser mayor de 18 años y tener capacidad legal para contratar. Al crear la cuenta lo declarás, en la misma casilla con que aceptás estos términos.</li>
       <li>La información que registrés debe ser verídica, propia y estar actualizada.</li>
       <li>Sos responsable de lo que ocurra con tu cuenta y de mantener tus credenciales en reserva. Avisanos de inmediato si sospechás de un acceso no autorizado.</li>
       <li>No podés ceder tu cuenta ni usar la de otra persona.</li>
@@ -63,11 +65,11 @@
     </ul>
 
     <h3>3.1 Verificación de anuncios</h3>
-    <p>ImHomi ofrece un proceso opcional de verificación en el que quien publica sube fotografías tomadas en el sitio. El distintivo de anuncio verificado significa únicamente que <strong>ese material fue aportado y revisado en ese proceso</strong>.</p>
-    <p>La verificación <strong>no</strong> acredita el estado real de la propiedad, su legalidad, su habitabilidad, ni la titularidad o el derecho de quien publica a alquilarla. No sustituye tu propia inspección antes de comprometerte.</p>
+    <p>Quien publica puede pedir la verificación de su anuncio subiendo tres fotografías tomadas en el lugar —exterior, interior y un detalle— y marcando la ubicación desde ahí con su teléfono. Nuestro equipo de soporte revisa ese material y aprueba o rechaza la verificación, diciendo el motivo; mientras tanto el anuncio se publica sin la insignia. Si se aprueba, esa ubicación pasa a ser el punto del anuncio en el mapa.</p>
+    <p>La insignia de anuncio verificado significa únicamente que <strong>quien publica aportó ese material desde la propiedad y que lo revisamos</strong>. ImHomi no visita la propiedad, y la insignia <strong>no</strong> acredita su estado real, su legalidad, su habitabilidad, ni la titularidad o el derecho de quien publica a alquilarla. Antes de comprometerte, visitala.</p>
 
     <h3>3.2 Dirección exacta</h3>
-    <p>Las señas exactas y la ubicación en el mapa de una propiedad son información privada: se comparten con quien agenda una visita y con nadie más. El anuncio público muestra únicamente una referencia de zona. Al publicar, aceptás que esa información se le muestre a quien coordine una visita contigo.</p>
+    <p>Las señas exactas y el punto en el mapa de una propiedad son información privada. Solo los ve quien publica y quien tiene una visita que el propietario confirmó, también después de hacerla, hasta que el anuncio se vuelva a publicar. Las partes de un contrato o una convivencia en curso sobre esa propiedad ven las señas, sin el punto del mapa. El anuncio público muestra solo la zona. Al publicar, aceptás que esa información se le muestre a esas personas.</p>
 
     <h2>4. Visitas</h2>
     <p>Las visitas se coordinan entre las partes a través de la plataforma. ImHomi no participa, no acompaña ni supervisa las visitas, y no responde por lo que ocurra durante ellas. Tomá las precauciones que tomarías en cualquier encuentro con una persona que no conocés.</p>
@@ -75,8 +77,10 @@
     <h2>5. Contratos registrados en ImHomi</h2>
     <p>Un propietario puede proponerle a un inquilino un contrato con sus términos: monto, depósito, día de pago, fechas, qué servicios van incluidos y cómo se pagan los que no. El contrato existe cuando la otra parte lo acepta.</p>
     <ul>
-      <li><strong>Enmiendas y renovaciones:</strong> cualquier cambio de monto o de plazo se propone y requiere la aceptación expresa de la contraparte. Sin esa aceptación, no tiene efecto en la plataforma.</li>
-      <li><strong>Terminación:</strong> la solicitud de cancelación y el período de gracia posterior quedan registrados con sus fechas.</li>
+      <li><strong>Cambios de renta y renovaciones:</strong> se proponen y solo valen si la otra parte los acepta. La cuota de condominio es la excepción: la fija la administración del condominio, así que el propietario la registra con su fecha y queda como aviso al inquilino, sin aceptación.</li>
+      <li><strong>Vencimiento:</strong> si el contrato llega a su fecha de fin sin que nadie lo renueve ni dé el preaviso, sigue vigente en la plataforma en las mismas condiciones hasta que lo renueven o alguna parte dé el preaviso.</li>
+      <li><strong>Preaviso:</strong> cualquiera de las dos partes puede registrar que quiere terminar el contrato. La salida queda fijada tres meses después del día en que se registra, y las propuestas de cambio de renta o de renovación pendientes se cierran. Para deshacerlo, las dos partes acuerdan una renovación. Al salir el inquilino empieza la liquidación del depósito (cláusula 7).</li>
+      <li><strong>Registrar un preaviso en ImHomi no reemplaza los avisos, plazos ni causas que exige la Ley 7527</strong>, ni le permite a nadie terminar un arrendamiento antes de lo que esa ley autoriza.</li>
       <li>Lo que quede registrado en ImHomi refleja lo que las partes declararon. Si difiere de lo que firmaron por fuera, entre ellas rige lo que corresponda legalmente.</li>
     </ul>
 
@@ -105,17 +109,29 @@
     <p>Al terminar una visita o un acuerdo, las partes pueden calificarse entre sí.</p>
     <ul>
       <li>Solo puede calificar quien tuvo una visita o un acuerdo real registrado en la plataforma, y solo a su contraparte.</li>
+      <li>Hay 7 días para calificar desde que la visita ocurrió o el contrato o la convivencia se cerró.</li>
       <li>Las calificaciones permanecen ocultas hasta que ambas partes califican o hasta que vence el plazo, para que ninguna condicione a la otra.</li>
-      <li>Quien recibe una calificación tiene derecho a responderla públicamente una vez.</li>
+      <li>Cuando se revelan, la calificación —el puntaje general y por criterio, el comentario y el nombre de quien la escribió— queda visible <strong>para cualquier persona con cuenta en ImHomi</strong> en el perfil de la persona calificada. En los anuncios se muestra además el promedio de quien publica como propietario —y como anfitrión, en un cuarto—, desde tres calificaciones. Entre las mismas dos personas en el mismo rol, al promedio suma solo la más reciente.</li>
+      <li>Quien recibe una calificación puede responderla públicamente, una vez.</li>
+      <li>Una calificación se conserva mientras exista la cuenta de la persona calificada (ver la cláusula 6 de la Política de privacidad).</li>
       <li>La calificación debe referirse a la experiencia real. Está prohibido usarla para insultar, discriminar, amenazar, extorsionar o divulgar datos personales de la otra parte.</li>
       <li>Una calificación publicada <strong>no se elimina a pedido</strong> por el solo hecho de ser desfavorable. Sí se retira la que incumpla estas reglas.</li>
     </ul>
 
     <h2>11. Convivencias y roomies</h2>
-    <p>Un inquilino puede registrar una convivencia con un roomie, y buscarlos desde la plataforma cuando el propietario lo haya autorizado. Esa autorización queda registrada con su fecha. Registrar una convivencia en ImHomi no sustituye ningún permiso que el contrato de arrendamiento o la ley exijan para subarrendar.</p>
+    <p>Quien alquila puede sumar roomies y publicar un cuarto cuando el propietario lo autorizó; esa autorización queda registrada con su fecha y, si se revoca, el cuarto publicado se despublica. Un roomie entra aceptando una propuesta, que vence a las 72 horas, o una invitación con código, que también le llega por correo. Quien publica el cuarto es el anfitrión.</p>
+    <ul>
+      <li>La convivencia registra la cuota mensual y el depósito, que el anfitrión marca como recibido y el roomie confirma.</li>
+      <li><strong>Recibos compartidos:</strong> quien pagó un recibo lo anota, la app calcula la parte de cada uno según lo pactado (en partes iguales o con el porcentaje acordado), cada uno marca cuando pagó y quien adelantó la plata lo confirma. Los recordatorios son un aviso de cortesía.</li>
+      <li><strong>Incidencias:</strong> cualquiera puede registrar una incidencia entre roomies —ruido, limpieza, visitas a deshoras— con su historia y aviso a los demás.</li>
+      <li><strong>ImHomi no cobra, no paga ni comprueba ningún pago</strong> de la cuota, el depósito ni los recibos.</li>
+      <li>Si alguien cierra su cuenta con partes de recibos pendientes, esas partes se separan del recibo y quedan para arreglarlas por fuera de ImHomi.</li>
+      <li>La convivencia termina cuando alguno la termina y, a más tardar, cuando el anfitrión deja la propiedad.</li>
+    </ul>
+    <p>Registrar una convivencia en ImHomi no sustituye ningún permiso que el contrato de arrendamiento o la ley exijan para subarrendar.</p>
 
     <h2>12. Mensajería</h2>
-    <p>La plataforma incluye un chat entre las partes. No lo uses para compartir contraseñas, datos de tarjetas ni información sensible de terceros. ImHomi puede revisar conversaciones reportadas para atender denuncias de abuso.</p>
+    <p>El chat conecta a quien pregunta por un anuncio con quien lo publica. Lo que escribís lo ve la otra persona y queda guardado, aunque alguno cierre su cuenta, hasta 2 años después del último mensaje: un mensaje enviado no se puede borrar ni editar. No lo uses para compartir contraseñas, datos de tarjetas ni información sensible de terceros. Podés reportar un mensaje desde la conversación; cuando lo hacés, nuestro equipo lee ese mensaje y los de alrededor para atender el reporte (cláusula 14).</p>
 
     <h2>13. Conducta prohibida</h2>
     <ul>
@@ -131,24 +147,32 @@
     <p>También podés <strong>bloquear a una persona</strong>, al instante y sin esperar a nadie: desde ese momento ninguno de los dos puede escribirle al otro, pedirle visitas ni proponerle acuerdos, y no ven los anuncios del otro. Las visitas, propuestas e invitaciones pendientes entre ustedes se cancelan; un contrato o una convivencia en curso siguen, porque son un acuerdo que ya existe. Podés desbloquearla cuando quieras desde Mi cuenta.</p>
     <p>Si algo incumple estos términos podemos ocultarlo —un mensaje, una calificación, una respuesta, una foto o un anuncio entero— y suspender o cerrar la cuenta infractora. Cuando ocultamos algo tuyo te avisamos el motivo; si creés que es un error, escribinos desde Ayuda y lo revisamos de nuevo.</p>
     <p>Si suspendemos tu cuenta te avisamos el motivo en la app y por correo. Mientras dure la suspensión podés entrar para terminar lo que tenés en curso —un contrato o una convivencia, sus servicios, recibos, inventarios y liquidación— y para escribirnos, pero no podés publicar, escribirle a alguien nuevo, pedir visitas, proponer acuerdos ni calificar, y tus anuncios no aparecen en la búsqueda. Las visitas, propuestas e invitaciones que tenías pendientes se cancelan. Cuando levantamos la suspensión te avisamos y tus anuncios quedan pausados para que los publiques de nuevo.</p>
-    <p>Podés eliminar tu cuenta cuando quieras, desde la app (Más › Mi cuenta › Seguridad y 2FA › Eliminar mi cuenta) o desde <a href="eliminar-cuenta.html">imhomi.com/eliminar-cuenta.html</a>. Mientras tengas un contrato o una convivencia en curso —incluida la liquidación del depósito— no se puede eliminar, porque la otra parte todavía te necesita; pero podés pedir <strong>«Cerrar mi cuenta cuando termine»</strong>: tu cuenta sigue funcionando y la eliminamos sola cuando se cierre lo que tenés en curso, con la constancia por correo. Lo podés cancelar antes. Los registros necesarios para acreditar acuerdos ya ocurridos se conservan según lo que indica la Política de Privacidad.</p>
+    <p>Podés eliminar tu cuenta desde la app (Más › Mi cuenta › Seguridad y 2FA › Eliminar mi cuenta) o desde <a href="eliminar-cuenta.html">imhomi.com/eliminar-cuenta.html</a>. Te pedimos la contraseña y, si usás la verificación en dos pasos, un código. La eliminación es inmediata y no se puede deshacer, y te mandamos la constancia por correo. No se puede:</p>
+    <ul>
+      <li>Mientras tengas un contrato o una convivencia en curso, en preaviso o con el depósito sin liquidar, porque la otra parte todavía te necesita. Lo que sí podés pedir es <strong>«Cerrar mi cuenta cuando termine»</strong>: tu cuenta sigue funcionando y la eliminamos sola cuando se cierre lo que tenés en curso, con la constancia por correo. Lo podés cancelar antes.</li>
+      <li>Durante los 7 días siguientes a un cambio de correo, mientras el enlace para deshacerlo siga vigente.</li>
+    </ul>
+    <p>Qué se borra, qué se conserva —los contratos, las conversaciones y las calificaciones, sin tus datos— y por cuánto tiempo lo dicen las cláusulas 6 y 7 de la <a href="privacy.html">Política de privacidad</a>.</p>
 
     <h2>15. Propiedad intelectual</h2>
-    <p>El diseño, los logotipos, los textos y el código de ImHomi son de su titularidad. Conservás los derechos sobre el contenido que publicás y nos otorgás una licencia no exclusiva y gratuita para mostrarlo y almacenarlo dentro de la plataforma con el fin de prestarte el servicio.</p>
+    <p>El diseño, los logotipos, los textos y el código de ImHomi son de quien lo opera (cláusula 1). Conservás los derechos sobre el contenido que publicás y nos otorgás una licencia no exclusiva y gratuita para mostrarlo y almacenarlo dentro de la plataforma con el fin de prestarte el servicio.</p>
 
     <h2>16. Disponibilidad y responsabilidad</h2>
     <p>ImHomi se ofrece tal cual está. Procuramos que funcione de forma continua, pero no garantizamos disponibilidad ininterrumpida ni ausencia de errores, y las notificaciones pueden demorarse o no llegar por causas ajenas a nosotros.</p>
-    <p>ImHomi no garantiza la disponibilidad, el estado, la habitabilidad ni la legalidad de las propiedades publicadas, no responde por la conducta de los usuarios ni por los acuerdos que celebren entre sí, y no es parte de sus disputas. Los plazos automáticos descritos en las cláusulas 6 y 7 son parte del funcionamiento de la plataforma y los aceptás al usarla.</p>
+    <p>ImHomi no garantiza la disponibilidad, el estado, la habitabilidad ni la legalidad de las propiedades publicadas, no responde por la conducta de los usuarios ni por los acuerdos que celebren entre sí, y no es parte de sus disputas. Los efectos automáticos descritos en las cláusulas 5, 6, 7 y 11 son parte del funcionamiento de la plataforma y los aceptás al usarla.</p>
     <p>Nada en estos términos limita las responsabilidades que la legislación costarricense no permita limitar, ni los derechos que la ley te reconoce como consumidor.</p>
 
     <h2>17. Cambios en estos términos</h2>
-    <p>Podemos modificar estos términos. Cada versión lleva su fecha de vigencia. Cuando el cambio sea sustancial te lo notificaremos por la app o por correo y te pediremos aceptar la nueva versión antes de seguir usando la plataforma. Conservamos el registro de qué versión aceptaste y cuándo.</p>
+    <p>Podemos modificar estos términos. Cada versión lleva su fecha de vigencia. Cuando el cambio sea sustancial te lo vamos a mostrar en la app, con un resumen de qué cambió, y te vamos a pedir que aceptes la nueva versión antes de seguir usando la plataforma; si no estás de acuerdo, desde esa misma pantalla podés eliminar tu cuenta. Conservamos el registro de qué versión aceptaste y cuándo, y las versiones anteriores siguen publicadas:</p>
+    <ul>
+      <li><a href="terms-2026-09-04.html">Versión 2026-09-04</a></li>
+    </ul>
 
     <h2>18. Ley aplicable</h2>
-    <p>Estos términos se rigen por las leyes de la República de Costa Rica. El tratamiento de tus datos personales se rige además por la Ley 8968 y se detalla en la <a href="privacy.html">Política de Privacidad</a>, que forma parte de estos términos.</p>
+    <p>Estos términos se rigen por las leyes de la República de Costa Rica. El tratamiento de tus datos personales se rige además por la Ley 8968 y se detalla en la <a href="privacy.html">Política de privacidad</a>, que aceptás aparte, con su propia casilla: es un consentimiento independiente de estos términos.</p>
 
     <h2>19. Contacto</h2>
-    <p>Escribinos a <a href="mailto:hola@imhomi.com">hola@imhomi.com</a>.</p>
+    <p>Escribinos a <a href="mailto:soporte@imhomi.com">soporte@imhomi.com</a> o desde Ayuda en la app. Es también el medio para cualquier solicitud o notificación a Adelso Steve Araya Solórzano, con domicilio en Alajuela, Costa Rica.</p>
     </div>
   </main>
 

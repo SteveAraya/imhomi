@@ -11,9 +11,9 @@
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <link rel="manifest" href="/site.webmanifest">
   <meta name="theme-color" content="#0F2329">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400..900&family=Instrument+Serif:ital@1&display=swap">
+  <!-- Las tipografías se sirven desde el sitio (css/fonts.css): ninguna visita le manda la IP a otro. -->
+  <link rel="preload" href="assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/fonts.css">
   <link rel="stylesheet" href="css/site.css">
 </head>
 <body class="legal-page">
@@ -35,36 +35,43 @@
     <div class="legal-in">
     <span class="eyebrow">Legal</span>
     <h1>Política de <span class="serif">privacidad</span></h1>
-    <p class="date">Versión 2026-09-04 &middot; Vigente desde el 4 de setiembre de 2026</p>
+    <p class="date">Versión 2026-11-25 &middot; Vigente desde el 25 de noviembre de 2026</p>
 
-    <p>Esta política explica qué datos personales tratamos en ImHomi, para qué, con quién los compartimos, cuánto los conservamos y qué derechos tenés sobre ellos. Se rige por la Ley 8968 de Protección de la Persona frente al Tratamiento de sus Datos Personales de Costa Rica y forma parte de los <a href="terms.html">Términos y Condiciones</a>.</p>
+    <p>Esta política explica qué datos personales tratamos en ImHomi, para qué, quién los ve, con quién los compartimos, cuánto los conservamos y qué derechos tenés sobre ellos. Se rige por la Ley 8968 de Protección de la Persona frente al Tratamiento de sus Datos Personales de Costa Rica y su Reglamento. Al crear tu cuenta la aceptás con una casilla propia, aparte de los <a href="terms.html">Términos y condiciones</a>.</p>
 
-    <h2>1. Quién es responsable</h2>
-    <p>ImHomi es el responsable de la base de datos y de decidir para qué se usan. Para cualquier tema de privacidad, incluido el ejercicio de tus derechos, escribinos a <a href="mailto:hola@imhomi.com">hola@imhomi.com</a>.</p>
+    <h2 id="responsable">1. Quién es responsable</h2>
+    <!-- Responsable (decisión 58): el mismo nombre y domicilio en la cláusula 11 y en Términos §1 y §19. Sin cédula hasta que lo diga el abogado. -->
+    <p>Mientras se constituye la sociedad que va a operar ImHomi, la persona responsable de la base de datos y de este servicio es Adelso Steve Araya Solórzano, desarrollador de la aplicación, con domicilio en Alajuela, Costa Rica. Para cualquier solicitud o notificación —incluido el ejercicio de tus derechos— escribí a <a href="mailto:soporte@imhomi.com">soporte@imhomi.com</a>.</p>
+    <p>Cuando la sociedad exista, ImHomi —la aplicación, el servicio y esta base de datos— pasa a ella. Te lo vamos a avisar en la app, con el nombre de la sociedad, y te vamos a pedir que aceptes esta política de nuevo antes de seguir.</p>
 
-    <h2>2. Qué datos tratamos</h2>
+    <h2 id="datos">2. Qué datos tratamos</h2>
     <p>Tratamos solo lo que necesitamos para que la plataforma funcione. Según lo que hagas en ella, eso incluye:</p>
 
     <h3>2.1 De tu cuenta</h3>
     <ul>
-      <li>Nombre y apellido, correo electrónico y número de teléfono.</li>
-      <li>Tu contraseña, que se guarda <strong>cifrada</strong>: nadie en ImHomi puede leerla.</li>
-      <li>Foto de perfil, si subís una.</li>
+      <li>Nombre y apellido, y tu correo electrónico.</li>
+      <li>Tu contraseña, guardada con un <strong>hash irreversible</strong>: nadie en ImHomi puede leerla.</li>
+      <li>Tu foto de perfil, si subís una.</li>
+      <li>Tu número de teléfono, si lo cargás en tu perfil. No lo ve nadie más.</li>
       <li>Si activaste la verificación en dos pasos y si confirmaste tu correo.</li>
+      <li>La constancia de qué versión de los Términos y de esta política aceptaste, cada una por separado, y cuándo.</li>
+      <li>Si pediste «Cerrar mi cuenta cuando termine», desde cuándo.</li>
     </ul>
 
     <h3>2.2 Si publicás una propiedad</h3>
     <ul>
-      <li>Las señas exactas, la referencia de zona y, si la marcás, la ubicación en el mapa.</li>
-      <li>Las fotografías del anuncio y las características y precios que declarés.</li>
-      <li>Si verificás el anuncio: fotografías tomadas en el sitio junto con <strong>las coordenadas que reporta tu dispositivo en ese momento</strong>. Solo se leen durante ese proceso; ImHomi <strong>no rastrea tu ubicación</strong> mientras usás la app. Esas fotografías <strong>no se publican</strong>: las ve solo nuestro equipo, para comparar el material con el anuncio antes de aprobar la verificación.</li>
+      <li>Las señas exactas, la referencia de zona y, si lo marcás, el punto en el mapa.</li>
+      <li>Las fotografías del anuncio y las características, precios y condiciones que declarés.</li>
+      <li>Si verificás el anuncio: tres fotografías tomadas en el sitio (exterior, interior y un detalle) y <strong>la ubicación que reporta tu teléfono en ese momento</strong>. ImHomi lee tu ubicación únicamente cuando tocás «Verificar», y <strong>no la sigue</strong> mientras usás la app. Esas fotografías <strong>no se publican</strong>: las ve solo nuestro equipo de soporte, para aprobar o rechazar la verificación. Si la aprueba, esa ubicación pasa a ser el punto del anuncio en el mapa.</li>
     </ul>
 
     <h3>2.3 De tu actividad</h3>
     <ul>
-      <li>Las visitas que agendás o recibís, con sus fechas y su estado.</li>
+      <li>Las visitas que pedís o recibís, con su fecha, su estado y las notas que escribís al pedirlas, responderlas o cancelarlas.</li>
       <li>Los mensajes que intercambiás en el chat de la plataforma.</li>
       <li>Tus favoritos y las alertas de búsqueda que configurés.</li>
+      <li>Las notificaciones que te mostramos dentro de la app.</li>
+      <li>Tus consultas a soporte: lo que escribís, las capturas que adjuntás y el modelo del teléfono, el sistema y la versión de la app desde donde escribís, para entender el problema. Las capturas son privadas: las ven solo vos y el equipo de soporte.</li>
       <li>Los reportes que hacés y los que recibís: qué se reportó, tal como estaba en ese momento, el motivo y lo que resolvió nuestro equipo. Los lee solo el equipo de soporte, y queda registrado quién los abrió. <strong>A la persona reportada no le decimos quién la reportó.</strong> Para entender un mensaje reportado, el equipo ve también los mensajes de alrededor en esa conversación.</li>
       <li>Si suspendimos tu cuenta: cuándo, por qué y quién del equipo lo decidió, y cuándo se levantó.</li>
       <li>A quién bloqueaste. Lo ves solo vos; la otra persona no recibe ningún aviso de que la bloqueaste. Nuestro equipo ve cuántas personas bloquearon a alguien, nunca quiénes.</li>
@@ -73,82 +80,109 @@
     <h3>2.4 Si tenés un contrato o una convivencia</h3>
     <ul>
       <li>Las partes, el monto, el depósito, las fechas, el día de pago y la cuota de condominio si la hay.</li>
+      <li>Los cambios de renta y las renovaciones que se propongan, con el motivo que escriba quien los propone, y el preaviso si alguien lo da.</li>
       <li><strong>Cómo se paga cada servicio del hogar:</strong> el proveedor, el número de cuenta o NIS, el nombre que sale en el recibo, el día de vencimiento y las instrucciones de pago. Estos datos los carga el propietario y se le muestran al inquilino para que pueda pagar.</li>
-      <li>Los inventarios de entrada y salida, con sus fotografías y descripciones.</li>
-      <li>Las averías que reportés y las respuestas que reciban.</li>
+      <li>Los inventarios de entrada y salida, con sus fotografías y notas.</li>
+      <li>Las averías que se reporten, con su foto y las respuestas que reciban.</li>
       <li>La liquidación del depósito: montos, conceptos, fotografías de respaldo y el intercambio entre las partes.</li>
-      <li>Las calificaciones que emitas o recibas, con sus comentarios y respuestas.</li>
+      <li>En una convivencia, además: la cuota, si el depósito se marcó recibido y confirmado, el porcentaje de reparto pactado, los recibos compartidos (servicio, mes, monto, nota y foto del recibo), la parte de cada persona y quién marcó que pagó o que recibió; y las incidencias entre roomies, con sus fotos y notas.</li>
+      <li>Las calificaciones que emitas o recibas: el puntaje general y por criterio, el comentario y la respuesta.</li>
     </ul>
-    <p><strong>Si cargás el nombre de una persona que no usa ImHomi</strong> —por ejemplo, el titular del recibo del agua—, declarás que podés compartirlo para este fin. Tratá ese dato con el mismo cuidado que el tuyo.</p>
 
-    <h3>2.5 Técnicos</h3>
+    <h3>2.5 Datos de otras personas que cargás vos</h3>
+    <p>Si invitás a convivir a alguien que todavía no usa ImHomi, guardamos su correo para mandarle la invitación —con tu nombre, el cuarto y los términos— y lo borramos cuando la invitación se acepta, se rechaza, se cancela o vence. Después conservamos dos días solo una huella irreversible de ese correo, para no mandarle la misma invitación dos veces. Lo mismo vale para el nombre del titular de un recibo de servicios. <strong>Al cargarlos declarás que esa persona sabe que lo hacés y está de acuerdo.</strong> Tratá ese dato con el mismo cuidado que el tuyo.</p>
+
+    <h3>2.6 Técnicos</h3>
     <ul>
-      <li>Registros de acceso y sesión necesarios para mantenerte identificado y detectar accesos indebidos, incluidos los intentos fallidos de ingreso.</li>
-      <li>Informes de errores y fallos de la aplicación, con datos del dispositivo y del sistema operativo, para poder corregirlos.</li>
+      <li>En cada pedido a nuestros servidores registramos la dirección IP, la versión de la app o el navegador, el número de tu cuenta, la hora y la acción, para detectar abusos y corregir errores.</li>
+      <li>Los intentos fallidos de ingreso se guardan con el correo que se escribió y con una huella irreversible de la red desde donde se hicieron.</li>
+      <li>Cuando la app falla, se envía un informe del error con el tipo de error, la pantalla en la que estabas, la versión de la app y el modelo y sistema del teléfono. <strong>No lleva capturas de pantalla, ni lo que escribiste, ni tu correo, ni tu IP.</strong></li>
+      <li>Las fotos que subís se guardan sin sus metadatos, incluida la ubicación en que se sacaron.</li>
     </ul>
     <p>ImHomi <strong>no usa publicidad ni rastreo con fines comerciales</strong>, no construye perfiles publicitarios y no analiza tus mensajes para venderte nada.</p>
 
-    <h2>3. Para qué los usamos</h2>
+    <h3>2.7 Si visitás este sitio web</h3>
+    <p>El sitio no usa cookies ni herramientas de analítica. Al visitarlo, quien lo sirve (Vercel) recibe tu dirección IP y los datos que manda cualquier navegador; las tipografías se sirven desde el propio sitio, sin pasar por nadie más. Las páginas para restablecer la contraseña, deshacer un cambio de correo, eliminar la cuenta o descargar tus datos hablan directamente con nuestros servidores, como la app.</p>
+
+    <h2 id="finalidad">3. Para qué los usamos</h2>
     <ul>
       <li>Crear tu cuenta, autenticarte y mantener tu sesión.</li>
       <li>Publicar y mostrar anuncios, y permitir búsquedas y alertas.</li>
       <li>Coordinar visitas y comunicar a las partes entre sí.</li>
-      <li>Registrar y administrar acuerdos, inventarios, averías, liquidaciones y calificaciones.</li>
+      <li>Registrar y administrar contratos, convivencias, inventarios, averías, incidencias, recibos compartidos, liquidaciones y calificaciones.</li>
       <li>Mostrarte cómo pagar los servicios que te corresponden y avisarte antes de su vencimiento.</li>
-      <li>Enviarte notificaciones sobre tu actividad y comunicaciones necesarias del servicio.</li>
-      <li>Prevenir fraude, abuso y suplantación, y atender denuncias.</li>
+      <li>Enviarte notificaciones sobre tu actividad y comunicaciones necesarias del servicio. No te mandamos promociones.</li>
+      <li>Atender tus consultas, los reportes y los bloqueos, y prevenir fraude, abuso y suplantación.</li>
+      <li>Conservar la prueba de los acuerdos durante el plazo de la cláusula 6.</li>
       <li>Cumplir obligaciones legales y atender requerimientos de autoridad competente.</li>
     </ul>
 
-    <h2>4. Qué ve la otra parte</h2>
-    <p>ImHomi es una plataforma entre personas: parte de tus datos se le muestran a tu contraparte porque sin eso no hay servicio.</p>
+    <h2 id="quien-ve">4. Quién ve qué</h2>
+    <p>ImHomi es una plataforma entre personas: parte de tus datos se le muestran a otras porque sin eso no hay servicio.</p>
     <ul>
-      <li>En un anuncio público se muestran tu nombre, tu foto de perfil y tu calificación promedio. <strong>Tu correo y tu teléfono no se publican.</strong></li>
-      <li><strong>Las señas exactas y el punto en el mapa de una propiedad solo se le muestran a quien agenda una visita</strong>, y no antes.</li>
-      <li>Con un acuerdo activo, ambas partes ven los términos registrados, los inventarios, las averías y la liquidación.</li>
-      <li>Las calificaciones y sus respuestas quedan visibles en el perfil de la persona calificada dentro de la plataforma.</li>
+      <li>En un anuncio se muestran tu nombre, tu foto de perfil y tu calificación promedio como propietario —y como anfitrión, en un cuarto— cuando tenés al menos tres calificaciones. <strong>Tu correo y tu teléfono no se publican.</strong></li>
+      <li><strong>Las señas exactas y el punto en el mapa de una propiedad solo los ve quien publica y quien tiene una visita que el propietario confirmó</strong>, también después de hacerla, hasta que el anuncio se vuelva a publicar. Las partes de un contrato o una convivencia en curso sobre esa propiedad ven las señas, sin el punto del mapa. El anuncio público muestra solo la zona.</li>
+      <li>Con un contrato o una convivencia, las dos partes ven los términos registrados, los servicios, los inventarios, las averías e incidencias, los recibos compartidos y la liquidación, con sus fotos.</li>
+      <li><strong>Las calificaciones, cuando se revelan, las ve cualquier persona con cuenta en ImHomi</strong> en el perfil de la persona calificada: el puntaje general y por criterio, el comentario, el nombre de quien la escribió y la respuesta. La persona calificada puede responder cada una, una vez y en público.</li>
+      <li>Lo que alguien te reporta lo lee nuestro equipo de soporte, como se dice en la cláusula 2.3.</li>
     </ul>
 
-    <h2>5. Con quién los compartimos</h2>
-    <p><strong>No vendemos, alquilamos ni cedemos tus datos con fines comerciales.</strong> Los compartimos únicamente con proveedores que nos prestan servicios y que solo pueden usarlos para eso:</p>
+    <h2 id="terceros">5. Con quién los compartimos</h2>
+    <p><strong>No vendemos, alquilamos ni cedemos tus datos.</strong> Para prestar el servicio usamos estos proveedores, que los tratan por cuenta nuestra, solo para eso y con la obligación de protegerlos:</p>
     <ul>
-      <li><strong>Cloudinary</strong> — almacenamiento de las imágenes que subís.</li>
-      <li><strong>Resend</strong> — envío de los correos del servicio, como la verificación de cuenta y los códigos de un solo uso.</li>
-      <li><strong>Sentry</strong> — recepción de los informes de error de la aplicación.</li>
-      <li>Proveedores de infraestructura en la nube donde se alojan el servidor y la base de datos.</li>
+      <li><strong>Supabase</strong> (Estados Unidos): aloja la base de datos.</li>
+      <li><strong>Railway</strong> (Estados Unidos): aloja el servidor y guarda sus registros técnicos.</li>
+      <li><strong>Cloudinary</strong> (Estados Unidos): guarda y entrega las fotos que subís.</li>
+      <li><strong>Resend</strong> (Estados Unidos): envía los correos del servicio; recibe la dirección y el contenido de cada correo.</li>
+      <li><strong>Sentry</strong> (Estados Unidos): recibe los informes de error de la app y del servidor.</li>
+      <li><strong>Vercel</strong> (Estados Unidos): sirve este sitio web, con sus tipografías; recibe la dirección IP de quien lo visita.</li>
     </ul>
-    <p>Algunos de estos proveedores operan fuera de Costa Rica, por lo que tus datos pueden almacenarse o procesarse en el exterior. También podemos entregar datos cuando lo exija una autoridad competente conforme a la ley.</p>
+    <p>Por eso <strong>tus datos se almacenan y se procesan en Estados Unidos</strong>. Al crear tu cuenta lo autorizás expresamente, con la casilla de esta política. Para mostrar montos en las dos monedas consultamos el tipo de cambio que publica el Ministerio de Hacienda, sin enviarle ningún dato tuyo. Entregamos datos a una autoridad solo cuando lo ordena conforme a la ley.</p>
 
-    <h2>6. Cuánto los conservamos</h2>
+    <h2 id="conservacion">6. Cuánto los conservamos</h2>
     <ul>
-      <li>Los datos de tu cuenta, mientras la mantengas abierta.</li>
-      <li>Los códigos de un solo uso y los tokens de sesión, solo lo que dure su vigencia.</li>
-      <li><strong>Los registros de acuerdos ya ocurridos</strong> —contratos, inventarios, liquidaciones y calificaciones— se conservan aunque cerrés tu cuenta, porque son la constancia de una relación que involucró a otra persona y que puede tener efectos legales. En ese caso se desvinculan de tu perfil en lo que sea posible.</li>
-      <li>Los informes de error, por períodos cortos y acotados a su finalidad.</li>
+      <li>Tu cuenta, tu perfil, tus anuncios, tus favoritos, tus alertas y tus consultas a soporte: mientras tengas la cuenta abierta.</li>
+      <li>Una cuenta que nunca confirmó su correo se borra entera a los 7 días.</li>
+      <li>Los códigos de un solo uso, hasta un día después de vencer. Las sesiones, hasta 30 días sin uso. Los intentos fallidos de ingreso, un día. Los enlaces para deshacer un cambio de correo, 7 días.</li>
+      <li>Las notificaciones dentro de la app: las leídas se borran a los 90 días y todas al año.</li>
+      <li>El correo de alguien que invitaste a convivir, hasta que la invitación se acepta, se rechaza, se cancela o vence.</li>
+      <li><strong>Las invitaciones que se rechazan, se cancelan o vencen, 2 años desde que se cierran</strong> —quién invitó a quién y a qué—, y después se borran solas. Una que se aceptó y dio un contrato o una convivencia se conserva con ese acuerdo.</li>
+      <li><strong>Los contratos y las convivencias, 5 años desde que se cierran</strong> —terminan, se rechazan o se retiran—, con todo lo que cuelga de ellos: cambios de renta, renovaciones, servicios, inventarios, liquidación, recibos compartidos, averías e incidencias, y sus fotos. Son la prueba de un arriendo y son también de la otra persona; pasados los 5 años se borran solos. Un recibo compartido se conserva hasta que vence la última convivencia que tiene parte en él: tiene la parte de cada uno de los que vivían en la casa ese mes, y no se borra con la convivencia de quien lo anotó mientras sea la prueba de otro.</li>
+      <li><strong>Las conversaciones del chat, 2 años desde el último mensaje</strong>, y después se borran solas con todos sus mensajes.</li>
+      <li><strong>Las calificaciones, mientras exista la cuenta de la persona calificada</strong>, aunque el contrato o la convivencia de la que salieron ya se haya borrado. Cuando esa persona elimina su cuenta, se borran las que recibió; las que ella escribió sobre otras personas se quedan, porque son parte del perfil de esas personas.</li>
+      <li><strong>Las visitas, 2 años desde la fecha de la visita</strong>, con sus notas, y después se borran solas. Si de una visita salió una calificación, esa sigue la regla de las calificaciones.</li>
+      <li><strong>Los reportes, 2 años desde que se resuelven</strong>, con la copia de lo reportado. Uno sin resolver se conserva hasta que lo resolvemos.</li>
+      <li>La constancia de qué versión aceptaste, mientras exista tu cuenta. Si la eliminás, <strong>la constancia y lo que queda de tu cuenta sin tus datos («Cuenta eliminada») se conservan 5 años desde la baja</strong>: después se borra la constancia y, cuando ya nada la nombra —ni un contrato, ni un chat, ni una visita, ni una calificación, ni un reporte—, la cuenta entera, con lo que quedaba de tus anuncios.</li>
+      <li>Los registros técnicos del servidor y los informes de error se guardan 30 días. Las copias de respaldo de la base, también 30 días, y después se sobrescriben.</li>
     </ul>
+    <p>Si cerrás tu cuenta, en todo lo que se conserva figurás como <strong>«Cuenta eliminada»</strong>. Lo que vos escribiste en una conversación o un acuerdo —un mensaje, una nota, un comentario— no se reescribe, y se borra cuando vence el plazo de arriba.</p>
 
-    <h2>7. Tus derechos</h2>
-    <p>Podés en cualquier momento:</p>
+    <h2 id="derechos">7. Tus derechos</h2>
+    <p>Podés pedir gratis, en cualquier momento:</p>
     <ul>
-      <li><strong>Acceder</strong> a los datos que tenemos sobre vos.</li>
-      <li><strong>Rectificar</strong> los que estén incompletos o desactualizados.</li>
-      <li><strong>Solicitar su eliminación</strong>, con la salvedad de la cláusula 6. Podés eliminar tu cuenta desde la app (Más › Mi cuenta › Seguridad y 2FA › Eliminar mi cuenta) o desde <a href="eliminar-cuenta.html">esta página</a>, que explica qué se borra y qué se conserva.</li>
-      <li><strong>Revocar tu consentimiento</strong> hacia adelante, entendiendo que sin él no podemos seguir prestándote el servicio.</li>
+      <li><strong>Una copia de tus datos.</strong> Desde la app, en Más › Mi cuenta › Descargar mis datos, al instante: es un archivo con todo lo que guardamos de vos. De las otras personas figura solo el nombre. De lo que escribieron o subieron ellas —mensajes, notas, comentarios, motivos, descripciones y fotos— viene solo lo que escribieron sobre vos: las calificaciones que recibiste y las respuestas de soporte. De tus contratos y convivencias viene lo que pactaron entre las dos partes —montos, fechas, estados, qué tenía cada inventario y en qué estado, qué se descontó del depósito y por cuánto— y lo que escribiste vos; lo que escribió la otra parte lo ves en la app mientras el acuerdo exista. Las fotos que subiste vienen con enlaces que sirven 24 horas, y el archivo dice hasta qué día y hora.</li>
+      <li><strong>Que corrijamos</strong> lo que esté mal o incompleto. Tu nombre, tu foto y tu correo los cambiás desde Más › Mi cuenta.</li>
+      <li><strong>Que los eliminemos</strong>, eliminando tu cuenta: desde la app (Más › Mi cuenta › Seguridad y 2FA › Eliminar mi cuenta) o desde <a href="eliminar-cuenta.html">imhomi.com/eliminar-cuenta.html</a>, sin la app. Borramos tu nombre, tu correo, tu teléfono, tu foto, tus sesiones, tus favoritos, tus alertas, tus notificaciones, tus consultas a soporte, tus bloqueos y tus anuncios con sus fotos y su ubicación. De un anuncio que alguien alquiló, consultó o visitó queda solo la zona, el tipo de propiedad y sus condiciones —cuartos, precio, depósito—, sin título, señas, descripción ni fotos, para que esa persona sepa de qué propiedad habla su contrato o su chat. Lo demás se conserva como dice la cláusula 6. Mientras tengas un contrato o una convivencia en curso —incluida la liquidación del depósito— la cuenta no se puede eliminar, pero podés pedir «Cerrar mi cuenta cuando termine».</li>
+      <li><strong>Revocar tu consentimiento</strong>, que equivale a eliminar la cuenta: sin él no podemos prestarte el servicio.</li>
     </ul>
-    <p>Buena parte de esto lo podés hacer desde la configuración de tu cuenta. Para el resto, escribinos a <a href="mailto:hola@imhomi.com">hola@imhomi.com</a> y te responderemos dentro de los plazos que fija la Ley 8968. Si considerás que no atendimos tu solicitud, podés acudir a la <strong>Agencia de Protección de Datos de los Habitantes (PRODHAB)</strong>.</p>
+    <p>Para lo que no puedas hacer desde la app, escribí a <a href="mailto:soporte@imhomi.com">soporte@imhomi.com</a> desde el correo de tu cuenta: te confirmamos que lo recibimos y te respondemos <strong>dentro de los 5 días hábiles siguientes</strong>. Si necesitamos comprobar que sos vos, te lo pedimos una sola vez. Si considerás que no atendimos tu solicitud, podés acudir a la <strong>Agencia de Protección de Datos de los Habitantes (PRODHAB)</strong>.</p>
 
-    <h2>8. Seguridad</h2>
-    <p>Aplicamos medidas técnicas y organizativas para proteger tu información: las contraseñas se guardan cifradas, el acceso a la base de datos está restringido y los datos privados —como las señas exactas de una propiedad— solo se entregan a quien corresponde. Aun así, ningún sistema es infalible: cuidá tu contraseña, no la compartas y activá la verificación en dos pasos.</p>
+    <h2 id="seguridad">8. Seguridad</h2>
+    <p>Aplicamos medidas técnicas y organizativas para proteger tu información: las contraseñas se guardan con un hash irreversible, el acceso a la base de datos está restringido, las fotos de verificación, las capturas de soporte y las fotos de los contratos y las convivencias (inventarios, deducciones, averías, incidencias y recibos) son privadas —solo se ven con un enlace que vence a los minutos y solo lo reciben las partes; en la copia de tus datos, el de tus fotos vence a las 24 horas—, y los datos privados —como las señas exactas de una propiedad— solo se entregan a quien corresponde. Aun así, ningún sistema es infalible: cuidá tu contraseña, no la compartas y activá la verificación en dos pasos.</p>
+    <p><strong>Si ocurre un incidente que comprometa tus datos, te lo vamos a avisar a vos y a la PRODHAB dentro de los cinco días hábiles siguientes</strong>, diciéndote qué pasó, qué datos se vieron afectados, qué hicimos y dónde informarte.</p>
     <p><strong>ImHomi nunca te va a pedir tu contraseña</strong>, ni la de tu banco, ni la de un portal de servicios, por correo, chat ni ningún otro medio.</p>
 
-    <h2>9. Menores de edad</h2>
-    <p>ImHomi es para mayores de 18 años. No recolectamos datos de menores de forma consciente; si detectamos una cuenta de una persona menor de edad, la eliminamos.</p>
+    <h2 id="menores">9. Menores de edad</h2>
+    <p>ImHomi es para mayores de 18 años, y al crear la cuenta lo declarás. No recolectamos datos de menores de forma consciente; si detectamos una cuenta de una persona menor de edad, la eliminamos.</p>
 
-    <h2>10. Cambios en esta política</h2>
-    <p>Podemos actualizarla. Cada versión lleva su fecha de vigencia y, cuando el cambio sea sustancial, te lo notificaremos y te pediremos aceptar la nueva versión. Conservamos el registro de qué versión aceptaste y cuándo.</p>
+    <h2 id="cambios">10. Cambios en esta política</h2>
+    <p>Podemos actualizarla. Cada versión lleva su fecha de vigencia. Cuando el cambio sea sustancial te lo vamos a mostrar en la app, con un resumen de qué cambió, y te vamos a pedir que aceptes la nueva versión antes de seguir; si no estás de acuerdo, desde esa misma pantalla podés eliminar tu cuenta. Conservamos el registro de qué versión aceptaste y cuándo, y las versiones anteriores siguen publicadas:</p>
+    <ul>
+      <li><a href="privacy-2026-09-04.html">Versión 2026-09-04</a></li>
+    </ul>
 
-    <h2>11. Contacto</h2>
-    <p>Para cualquier consulta sobre privacidad: <a href="mailto:hola@imhomi.com">hola@imhomi.com</a>.</p>
+    <h2 id="contacto">11. Contacto</h2>
+    <p>Para cualquier consulta sobre privacidad: <a href="mailto:soporte@imhomi.com">soporte@imhomi.com</a>. Es también el medio para cualquier solicitud o notificación al responsable, Adelso Steve Araya Solórzano, con domicilio en Alajuela, Costa Rica.</p>
     </div>
   </main>
 

@@ -126,7 +126,7 @@
     const tick = (t) => { const p = clamp((t - t0) / ms); el.textContent = fmt(from + (to - from) * (1 - Math.pow(1 - p, 3))); if (p < 1) requestAnimationFrame(tick); };
     requestAnimationFrame(tick);
   }
-  // La liquidación como en la app: propuesta del dueño → contrapropuesta → aceptada.
+  // La liquidación como en la app: propuesta del propietario → contrapropuesta → aceptada.
   const playSettle = () => {
     negTimers.forEach(clearTimeout); negTimers = [];
     const sv = $('#svSettle'), pill = $('#sPill'), ded = $('#sDed'), ret = $('#sRet');
@@ -200,7 +200,7 @@
   });
 
   /* ---------- Cintas ---------- */
-  const proof = ['Contratos con enmiendas y renovaciones', 'Inventario con disputas y plazos', 'Calificación doble ciega', 'Liquidación con contrapropuesta', 'Incidencias con seguimiento', 'Acuerdos de convivencia', 'Vinculación por código', 'Alertas de búsqueda', 'Tipo de cambio oficial diario'];
+  const proof = ['Contratos con enmiendas y renovaciones', 'Inventario con disputas y plazos', 'Calificación doble ciega', 'Liquidación con contrapropuesta', 'Averías e incidencias con seguimiento', 'Acuerdos de convivencia', 'Vinculación por código', 'Alertas de búsqueda', 'Tipo de cambio oficial diario'];
   const moods = ['Buscar', 'Conversar', 'Visitar', 'Acordar', 'Convivir', 'Salir', 'y quedarse tranquilo'];
   // Cada tira repite las frases solo lo justo para cubrir la cinta (dos mitades iguales: la animación
   // corre -50% y empalma). Antes eran cuatro copias fijas: 11.626 px de tira, más de 34.000 en la
@@ -368,7 +368,7 @@
 
   // Como en la app: seis dígitos, mostrados como 123-456.
   const rnd = () => String(Math.floor(Math.random() * 10));
-  const people = [['Ana', 'tu arrendadora'], ['Luis', 'tu inquilino'], ['Mari', 'tu roomie'], ['Dani', 'quien te sucede']];
+  const people = [['Ana', 'tu propietaria'], ['Luis', 'tu inquilino'], ['Mari', 'tu roomie'], ['Dani', 'quien te sucede']];
   let pIdx = 0;
   demos.codigo = () => {
     const d = $('#demo-codigo'), box = $('#code'), at = later('codigo');

@@ -40,16 +40,21 @@
     // tener que buscarlo.
     if (focus) focus.focus();
   };
-  const showInvalid = (title, text) => {
+  // `lead` es cómo empieza el párrafo de abajo. Cuando el título ya dice qué
+  // abrir (un enlace reemplazado o incompleto), pedir otro es el plan B.
+  const showInvalid = (title, text, lead) => {
     if (title) $('#reset-invalid-title').textContent = title;
     if (text) $('#reset-invalid-text').textContent = text;
+    if (lead) $('#reset-invalid-lead').textContent = lead;
     show(invalid, $('#reset-invalid-title'));
   };
+  const PLAN_B = 'Si no lo encontrás, pedí otro desde la app:';
 
   if (!token) {
     showInvalid(
       'Este enlace está incompleto',
-      'Abrilo de nuevo desde el correo, tocando el botón "Elegir mi contraseña nueva".'
+      'Abrilo de nuevo desde el correo, tocando el botón "Elegir mi contraseña nueva".',
+      PLAN_B
     );
     return;
   }
@@ -64,15 +69,17 @@
 
   /* ---------- La regla de la contraseña ---------- */
   // La misma que aplica el servidor, que es quien decide: esto es para
-  // decirlo antes de mandar. La contraseña no se recorta: un espacio en las
-  // puntas se rechaza diciéndolo, igual que en la app.
+  // decirlo antes de mandar. Con las mismas palabras que la app y el servidor
+  // (`Validators.password`, `IsNewPassword`): decía lo mismo de cuatro formas.
+  // La contraseña no se recorta: un espacio en las puntas se rechaza
+  // diciéndolo, igual que en la app.
   const rule = (value) => {
-    if (!value) return 'Escribí tu contraseña nueva.';
+    if (!value) return 'Ingresá tu contraseña nueva.';
     if (value !== value.trim()) return 'La contraseña no puede empezar ni terminar con un espacio.';
-    if (value.length < 8) return 'La contraseña debe tener al menos 8 caracteres.';
-    if (!/\d/.test(value) || !/[a-z]/.test(value) || !/[A-Z]/.test(value)) {
-      return 'La contraseña debe tener al menos una mayúscula, una minúscula y un número.';
-    }
+    if (value.length < 8) return 'Usá al menos 8 caracteres.';
+    if (!/[A-Z]/.test(value)) return 'Agregá al menos una mayúscula.';
+    if (!/[a-z]/.test(value)) return 'Agregá al menos una minúscula.';
+    if (!/\d/.test(value)) return 'Agregá al menos un número.';
     return '';
   };
   const mark = (field, box, text) => {
@@ -160,7 +167,8 @@
       // correo: decirlo así, y no "ya no sirve", que no dice qué hacer.
       showInvalid(
         'Pediste un enlace más nuevo',
-        'Este dejó de valer cuando pediste otro. Abrí el del último correo que te mandamos: ese sí sirve.'
+        'Este dejó de valer cuando pediste otro. Abrí el del último correo que te mandamos: ese sí sirve.',
+        PLAN_B
       );
       return;
     }
@@ -179,8 +187,10 @@
     }
     // Demasiados intentos, o un problema nuestro: el enlace sigue sin usar.
     fail(
+      // El servidor manda la espera exacta en el mensaje; "un minuto" no
+      // siempre era cierto.
       response.status === 429
-        ? 'Hiciste varios intentos seguidos. Esperá un minuto y tocá el botón de nuevo.'
+        ? message || 'Hiciste varios intentos seguidos. Esperá un momento y tocá el botón de nuevo.'
         : 'Tuvimos un problema de nuestro lado. Probá de nuevo en un momento.'
     );
   });

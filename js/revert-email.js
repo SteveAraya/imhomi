@@ -115,8 +115,9 @@
     // Demasiados intentos, o un problema nuestro: el enlace sigue sin usar.
     sent = false;
     fail(
+      // El servidor manda la espera exacta en el mensaje.
       response.status === 429
-        ? 'Hiciste varios intentos seguidos. Esperá un minuto y tocá el botón de nuevo.'
+        ? message || 'Hiciste varios intentos seguidos. Esperá un momento y tocá el botón de nuevo.'
         : 'Tuvimos un problema de nuestro lado. Probá de nuevo en un momento.'
     );
   });
