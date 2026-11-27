@@ -66,7 +66,7 @@
     Object.entries(views).forEach(([k, v]) => { if (k !== 'panel') v.hidden = k !== name; });
     $('#sop-logout').hidden = !inPanel;
     $('#sop-who').hidden = !inPanel;
-    if (focus) focus.focus();
+    window.imhomiPaso(inPanel ? panel : views[name], focus);
   };
 
   const setError = (box, text) => {

@@ -30,8 +30,8 @@
   const show = (section, focus) => {
     [ask, done, invalid].forEach((s) => { s.hidden = s !== section; });
     // El foco va al título de lo que cambió: quien usa lector de pantalla se
-    // entera sin tener que buscarlo.
-    if (focus) focus.focus();
+    // entera sin tener que buscarlo. Y se ve: ver js/paso.js.
+    window.imhomiPaso(section, focus);
   };
   const showInvalid = (title, text) => {
     if (title) $('#revert-invalid-title').textContent = title;

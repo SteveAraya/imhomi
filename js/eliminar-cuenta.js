@@ -84,7 +84,7 @@
   /* ---------- Piezas de la pantalla ---------- */
   const show = (name, focus) => {
     Object.entries(sections).forEach(([key, el]) => { el.hidden = key !== name; });
-    if (focus) focus.focus();
+    window.imhomiPaso(sections[name], focus);
   };
   const say = (box, text) => {
     box.textContent = text || '';

@@ -30,7 +30,7 @@
 
   const show = (section, focus) => {
     [ask, done, invalid].forEach((s) => { s.hidden = s !== section; });
-    if (focus) focus.focus();
+    window.imhomiPaso(section, focus);
   };
   const showInvalid = (text) => {
     if (text) $('#datos-invalid-text').textContent = text;

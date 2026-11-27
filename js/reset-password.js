@@ -37,8 +37,8 @@
   const show = (section, focus) => {
     [ask, done, invalid].forEach((s) => { s.hidden = s !== section; });
     // El foco va a lo que cambió: quien usa lector de pantalla se entera sin
-    // tener que buscarlo.
-    if (focus) focus.focus();
+    // tener que buscarlo. Y se ve: ver js/paso.js.
+    window.imhomiPaso(section, focus);
   };
   // `lead` es cómo empieza el párrafo de abajo. Cuando el título ya dice qué
   // abrir (un enlace reemplazado o incompleto), pedir otro es el plan B.
